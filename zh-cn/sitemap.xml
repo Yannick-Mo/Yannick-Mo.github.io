@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://yaro-moss.github.io/</loc>
-    <lastmod>2026-01-03T00:00:56+08:00</lastmod>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -26,7 +26,7 @@
                 />
   </url><url>
     <loc>https://yaro-moss.github.io/categories/</loc>
-    <lastmod>2026-01-03T00:00:56+08:00</lastmod>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -48,11 +48,17 @@
                 href="https://yaro-moss.github.io/categories/"
                 />
   </url><url>
+    <loc>https://yaro-moss.github.io/tags/ffmpeg/</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://yaro-moss.github.io/p/ffmpeg-yuv-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://yaro-moss.github.io/post/</loc>
-    <lastmod>2026-01-03T00:00:56+08:00</lastmod>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://yaro-moss.github.io/tags/</loc>
-    <lastmod>2026-01-03T00:00:56+08:00</lastmod>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -73,6 +79,12 @@
                 hreflang="zh-cn"
                 href="https://yaro-moss.github.io/tags/"
                 />
+  </url><url>
+    <loc>https://yaro-moss.github.io/tags/yuv/</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://yaro-moss.github.io/categories/%E9%9F%B3%E8%A7%86%E9%A2%91/</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://yaro-moss.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/</loc>
     <lastmod>2026-01-03T00:00:56+08:00</lastmod>

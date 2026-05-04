@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="欢迎来到我的网站">
-<title>Category: 八股文 - 亚罗.莫斯(Yaro.Moss)</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="FFmpeg YUV 核心原理笔记 一、YUV 基础概念 Y：亮度分量，黑白轮廓信息 U/V：色度分量，控制色彩与饱和度 主流编码 H.264/H.265 内部均使用 YUV 而非 RGB 二、色度子采样（压缩核心） 利用人眼对亮度敏感、对色度不敏感特性，降低 U/V 分辨率节省空间。\n">
+<title>FFmpeg YUV 核心原理笔记</title>
 
-<link rel='canonical' href='https://yaro-moss.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/'>
+<link rel='canonical' href='https://yaro-moss.github.io/p/ffmpeg-yuv-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/'>
 
-<link rel="stylesheet" href="/scss/style.min.21a4fbaa52c88cbbb1e535ff20ea95c2d356a419af6b73e3c62a1d9074929760.css"><meta property='og:title' content="Category: 八股文 - 亚罗.莫斯(Yaro.Moss)">
-<meta property='og:description' content="欢迎来到我的网站">
-<meta property='og:url' content='https://yaro-moss.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/'>
+<link rel="stylesheet" href="/scss/style.min.21a4fbaa52c88cbbb1e535ff20ea95c2d356a419af6b73e3c62a1d9074929760.css"><meta property='og:title' content="FFmpeg YUV 核心原理笔记">
+<meta property='og:description' content="FFmpeg YUV 核心原理笔记 一、YUV 基础概念 Y：亮度分量，黑白轮廓信息 U/V：色度分量，控制色彩与饱和度 主流编码 H.264/H.265 内部均使用 YUV 而非 RGB 二、色度子采样（压缩核心） 利用人眼对亮度敏感、对色度不敏感特性，降低 U/V 分辨率节省空间。\n">
+<meta property='og:url' content='https://yaro-moss.github.io/p/ffmpeg-yuv-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/'>
 <meta property='og:site_name' content='亚罗.莫斯(Yaro.Moss)'>
-<meta property='og:type' content='website'><meta property='og:updated_time' content=' 2026-05-04T00:00:00&#43;00:00 '/>
-<meta name="twitter:title" content="Category: 八股文 - 亚罗.莫斯(Yaro.Moss)">
-<meta name="twitter:description" content="欢迎来到我的网站"><link rel="alternate" type="application/rss&#43;xml" href="https://yaro-moss.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/index.xml">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='FFmpeg' /><meta property='article:tag' content='YUV' /><meta property='article:published_time' content='2026-05-04T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-05-04T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="FFmpeg YUV 核心原理笔记">
+<meta name="twitter:description" content="FFmpeg YUV 核心原理笔记 一、YUV 基础概念 Y：亮度分量，黑白轮廓信息 U/V：色度分量，控制色彩与饱和度 主流编码 H.264/H.265 内部均使用 YUV 而非 RGB 二、色度子采样（压缩核心） 利用人眼对亮度敏感、对色度不敏感特性，降低 U/V 分辨率节省空间。\n">
     <link rel="shortcut icon" href="/favicon.png" />
 
     </head>
-    <body class="">
+    <body class="
+    article-page
+    ">
     <script>
         (function() {
             const colorSchemeKey = 'StackColorScheme';
@@ -281,76 +283,10 @@
     <aside class="sidebar right-sidebar sticky">
         
             
-                <form action="/search/" class="search-form widget" >
-        <p>
-            <label>搜索</label>
-            <input name="keyword" required placeholder="输入关键词..." />
-        
-            <button title="搜索">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="10" cy="10" r="7" />
-  <line x1="21" y1="21" x2="15" y2="15" />
-</svg>
-
-
-
-            </button>
-        </p>
-    </form>
-            
-        
-            
-                <section class="widget archives">
+                
+    <section class="widget archives">
         <div class="widget-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-infinity" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M9.828 9.172a4 4 0 1 0 0 5.656 a10 10 0 0 0 2.172 -2.828a10 10 0 0 1 2.172 -2.828 a4 4 0 1 1 0 5.656a10 10 0 0 1 -2.172 -2.828a10 10 0 0 0 -2.172 -2.828" />
-</svg>
-
-
-
-        </div>
-        <h2 class="widget-title section-title">归档</h2>
-
-        
-        
-        
-        
-        <div class="widget-archive--list">
-            <div class="archives-year">
-                    <a href="/archives/#2026">
-                        
-                            <span class="year">2026</span>
-                            <span class="count">8</span>
-                        
-                    </a> 
-                </div>
-            <div class="archives-year">
-                    <a href="/archives/#2025">
-                        
-                            <span class="year">2025</span>
-                            <span class="count">1</span>
-                        
-                    </a> 
-                </div>
-            <div class="archives-year">
-                    <a href="/archives/#0001">
-                        
-                            <span class="year">0001</span>
-                            <span class="count">1</span>
-                        
-                    </a> 
-                </div>
-            
-        </div>
-    </section>
-            
-        
-            
-                <section class="widget tagCloud">
-    <div class="widget-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <line x1="5" y1="9" x2="19" y2="9" />
   <line x1="5" y1="15" x2="19" y2="15" />
@@ -360,86 +296,26 @@
 
 
 
-    </div>
-    <h2 class="widget-title section-title">分类</h2>
-
-    <div class="tagCloud-tags">
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
         
-            <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" class="font_size_7">
-                八股文
-            </a>
-        
-            <a href="/categories/c/c&#43;&#43;/" class="font_size_6">
-                C/C&#43;&#43;
-            </a>
-        
-            <a href="/categories/%E5%88%86%E7%B1%BB%E4%B8%80/" class="font_size_1">
-                分类一
-            </a>
-        
-            <a href="/categories/%E5%88%86%E7%B1%BB%E4%BA%8C/" class="font_size_1">
-                分类二
-            </a>
-        
-            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="font_size_1">
-                设计模式
-            </a>
-        
-            <a href="/categories/%E9%9F%B3%E8%A7%86%E9%A2%91/" class="font_size_1">
-                音视频
-            </a>
-        
-    </div>
-</section>
-
-            
-        
-            
-                <section class="widget tagCloud">
-    <div class="widget-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
-  <circle cx="9" cy="9" r="2" />
-</svg>
-
-
-
-    </div>
-    <h2 class="widget-title section-title">标签云</h2>
-
-    <div class="tagCloud-tags">
-        
-            <a href="/tags/c/c&#43;&#43;/">
-                C/C&#43;&#43;
-            </a>
-        
-            <a href="/tags/ffmpeg/">
-                FFmpeg
-            </a>
-        
-            <a href="/tags/yuv/">
-                YUV
-            </a>
-        
-            <a href="/tags/%E6%A0%87%E7%AD%BE%E4%B8%80/">
-                标签一
-            </a>
-        
-            <a href="/tags/%E6%A0%87%E7%AD%BE%E4%B8%89/">
-                标签三
-            </a>
-        
-            <a href="/tags/%E6%A0%87%E7%AD%BE%E4%BA%8C/">
-                标签二
-            </a>
-        
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
-                设计模式
-            </a>
-        
-    </div>
-</section>
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#一yuv-基础概念">一、YUV 基础概念</a></li>
+    <li><a href="#二色度子采样压缩核心">二、色度子采样（压缩核心）</a></li>
+    <li><a href="#三内存布局">三、内存布局</a>
+      <ol>
+        <li><a href="#1-planar-平面格式">1. Planar 平面格式</a></li>
+        <li><a href="#2-packed-打包格式">2. Packed 打包格式</a></li>
+      </ol>
+    </li>
+    <li><a href="#四yuv-与-rgb-对比">四、YUV 与 RGB 对比</a></li>
+    <li><a href="#五ffmpeg-常用命令">五、FFmpeg 常用命令</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
 
             
         
@@ -447,89 +323,281 @@
 
 
             <main class="main full-width">
-    <header>
-        <h3 class="section-title">
-            
-                Categories
-            
-        </h3>
+    <article class="main-article">
+    <header class="article-header">
 
-        <div class="section-card">
-            <div class="section-details">
-                <h3 class="section-count">7 个页面</h3>
-                <h1 class="section-term">八股文</h1>
-                
-            </div>
-        </div>
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E9%9F%B3%E8%A7%86%E9%A2%91/" >
+                音视频
+            </a>
+        
     </header>
     
-    <section class="article-list--compact">
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/ffmpeg-yuv-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/">FFmpeg YUV 核心原理笔记</a>
+        </h2>
+    
         
-            <article>
-    <a href="/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/">
-        <div class="article-details">
-            <h2 class="article-title">设计原则</h2>
-            <footer class="article-time">
-                <time datetime='2026-01-03T00:00:56&#43;08:00'>2026-01-03</time>
-            </footer>
-        </div>
-    </a>
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2026-05-04T00:00:00Z'>2026-05-04</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 1 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="ffmpeg-yuv-核心原理笔记">FFmpeg YUV 核心原理笔记
+</h1><h2 id="一yuv-基础概念">一、YUV 基础概念
+</h2><ul>
+<li><strong>Y</strong>：亮度分量，黑白轮廓信息</li>
+<li><strong>U/V</strong>：色度分量，控制色彩与饱和度</li>
+<li>主流编码 H.264/H.265 内部均使用 YUV 而非 RGB</li>
+</ul>
+<h2 id="二色度子采样压缩核心">二、色度子采样（压缩核心）
+</h2><p>利用人眼<strong>对亮度敏感、对色度不敏感</strong>特性，降低 U/V 分辨率节省空间。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>采样格式</th>
+          <th>每像素字节</th>
+          <th>空间节省</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>4:4:4</td>
+          <td>3</td>
+          <td>0%</td>
+      </tr>
+      <tr>
+          <td>4:2:2</td>
+          <td>2</td>
+          <td>33%</td>
+      </tr>
+      <tr>
+          <td>4:2:0</td>
+          <td>1.5</td>
+          <td>50%</td>
+      </tr>
+  </tbody>
+</table></div>
+<ul>
+<li>2×2 像素块：RGB需12个值，YUV420仅需6个值，体积减半。</li>
+</ul>
+<h2 id="三内存布局">三、内存布局
+</h2><h3 id="1-planar-平面格式">1. Planar 平面格式
+</h3><ul>
+<li>布局：<strong>全部Y → 全部U → 全部V</strong></li>
+<li>FFmpeg 特征：后缀带 <code>p</code>，如 <code>yuv420p</code></li>
+<li>适用：软件编码、图像处理、FFmpeg 默认处理格式</li>
+</ul>
+<h3 id="2-packed-打包格式">2. Packed 打包格式
+</h3><ul>
+<li>布局：Y/U/V 像素间交错存储</li>
+<li>常见：<code>YUYV</code>、<code>UYVY</code></li>
+<li>适用：摄像头、采集卡等硬件设备</li>
+<li>注意：仅排列不同，<strong>不减少数据量</strong></li>
+</ul>
+<h2 id="四yuv-与-rgb-对比">四、YUV 与 RGB 对比
+</h2><ol>
+<li>存储：RGB 交错排列；YUV-Planar 分量分块连续</li>
+<li>体积：1080P 8bit，RGB24=6220800B，YUV420=3110400B</li>
+<li>画质：日常场景压缩无感知；仅细线、彩字、绿幕抠像易察觉差异</li>
+</ol>
+<h2 id="五ffmpeg-常用命令">五、FFmpeg 常用命令
+</h2><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 提取YUV原始数据</span>
+</span></span><span class="line"><span class="cl">ffmpeg -i input.mp4 -t <span class="m">3</span> -pix_fmt yuv420p -f rawvideo out.yuv
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 播放YUV</span>
+</span></span><span class="line"><span class="cl">ffplay -pixel_format yuv420p -video_size 1920x1080 -framerate <span class="m">25</span> out.yuv
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看所有像素格式</span>
+</span></span><span class="line"><span class="cl">ffmpeg -pix_fmts
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/ffmpeg/">FFmpeg</a>
+        
+            <a href="/tags/yuv/">YUV</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>根据CC BY-NC-SA 4.0许可授权</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const elementsToRender = [".main-article", ".widget--toc"];
+
+        elementsToRender.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                renderMathInElement(element, {
+                    delimiters: [
+                        { left: "$$", right: "$$", display: true },
+                        { left: "$", right: "$", display: false },
+                        { left: "\\(", right: "\\)", display: false },
+                        { left: "\\[", right: "\\]", display: true }
+                    ],
+                    ignoredClasses: ["gist"]
+                });
+            }
+        });
+    });
+</script>
+    
 </article>
+
+    
+
+    
+
+     
+    
         
-            <article>
-    <a href="/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/">
-        <div class="article-details">
-            <h2 class="article-title">移动语义与完美转发</h2>
-            <footer class="article-time">
-                <time datetime='2026-01-02T00:47:50&#43;08:00'>2026-01-02</time>
-            </footer>
-        </div>
-    </a>
-</article>
-        
-            <article>
-    <a href="/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/">
-        <div class="article-details">
-            <h2 class="article-title">死锁的条件和处理</h2>
-            <footer class="article-time">
-                <time datetime='2026-01-01T23:59:24&#43;08:00'>2026-01-01</time>
-            </footer>
-        </div>
-    </a>
-</article>
-        
-            <article>
-    <a href="/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/">
-        <div class="article-details">
-            <h2 class="article-title">左值引用与右值引用</h2>
-            <footer class="article-time">
-                <time datetime='2026-01-01T20:56:16&#43;08:00'>2026-01-01</time>
-            </footer>
-        </div>
-    </a>
-</article>
-        
-            <article>
-    <a href="/p/the-core-difference-between-pointers-and-references/">
-        <div class="article-details">
-            <h2 class="article-title">C&#43;&#43; 指针与引用的核心区别 &#43; 引用的底层实现</h2>
-            <footer class="article-time">
-                <time datetime='2026-01-01T16:00:00&#43;08:00'>2026-01-01</time>
-            </footer>
-        </div>
-    </a>
-</article>
-        
-    </section><nav class="pagination" role="navigation" aria-label="pagination"><a class="page-link disabled"aria-label="Previous page"aria-disabled="true">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>
-    </a><a class="page-link current" aria-label="Page 1"aria-current="page">
-        1
-    </a><a class="page-link "href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/page/2/"aria-label="Page 2">
-        2
-    </a><a class="page-link "href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/page/2/"aria-label="Next page">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
-    </a>
-</nav><footer class="site-footer">
+    <script
+    src="https://giscus.app/client.js"
+    data-repo="Yarrow-Moss/Yarrow-Moss.github.io"
+    data-repo-id="R_kgDOQuw_0w"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOQuw_084C0QIi"
+    data-mapping="pathname"
+    data-strict="false"
+    data-reactions-enabled="true"
+    data-emit-metadata="false"
+    data-input-position="top"
+    data-theme="light"
+    data-lang="zh-CN"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async
+></script>
+<script>
+    function setGiscusTheme(theme) {
+        let giscus = document.querySelector("iframe.giscus-frame");
+        if (giscus) {
+            giscus.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: theme,
+                        },
+                    },
+                },
+                "https://giscus.app"
+            );
+        }
+    }
+
+    (function () {
+        addEventListener("message", (e) => {
+            if (event.origin !== "https://giscus.app") return;
+            handler();
+        });
+        window.addEventListener("onColorSchemeChange", handler);
+
+        function handler() {
+            if (document.documentElement.dataset.scheme === "light") {
+                setGiscusTheme('light');
+            } else {
+                setGiscusTheme('dark_dimmed');
+            }
+        }
+    })();
+</script>
+
+    
+
+    <footer class="site-footer">
     <section class="copyright">
         &copy; 
         
@@ -546,6 +614,85 @@
     </section>
 </footer>
 
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+    
 
             </main>
         </div>
