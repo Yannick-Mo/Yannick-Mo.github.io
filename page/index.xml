@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Pages on 亚罗.莫斯(Yaro.Moss)</title>
-        <link>https://yaro-moss.github.io/page/</link>
-        <description>Recent content in Pages on 亚罗.莫斯(Yaro.Moss)</description>
+        <title>Pages on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/page/</link>
+        <description>Recent content in Pages on 雅尼克.莫(Yannick.Mo)</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <copyright>亚罗.莫斯(Yaro.Moss)</copyright>
-        <lastBuildDate>Fri, 09 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://yaro-moss.github.io/page/index.xml" rel="self" type="application/rss+xml" /><item>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Fri, 09 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/page/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>归档|Archive</title>
-        <link>https://yaro-moss.github.io/archives/</link>
+        <link>https://Yannick-Mo.github.io/archives/</link>
         <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/archives/</guid>
+        <guid>https://Yannick-Mo.github.io/archives/</guid>
         <description></description>
         </item>
         <item>
         <title>关于|About</title>
-        <link>https://yaro-moss.github.io/%E5%85%B3%E4%BA%8Eabout/</link>
+        <link>https://Yannick-Mo.github.io/%E5%85%B3%E4%BA%8Eabout/</link>
         <pubDate>Thu, 28 Feb 2019 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/%E5%85%B3%E4%BA%8Eabout/</guid>
+        <guid>https://Yannick-Mo.github.io/%E5%85%B3%E4%BA%8Eabout/</guid>
         <description>&lt;p&gt;Written in Go, Hugo is an open source static site generator available under the &lt;a class=&#34;link&#34; href=&#34;https://github.com/gohugoio/hugo/blob/master/LICENSE&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Apache License 2.0.&lt;/a&gt; Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.&lt;/p&gt;
 &lt;p&gt;Hugo makes use of a variety of open source projects including:&lt;/p&gt;
@@ -45,18 +45,18 @@
         </item>
         <item>
         <title>技术链接|Links</title>
-        <link>https://yaro-moss.github.io/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/</link>
+        <link>https://Yannick-Mo.github.io/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/</guid>
+        <guid>https://Yannick-Mo.github.io/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/</guid>
         <description></description>
         </item>
         <item>
         <title>搜索|search</title>
-        <link>https://yaro-moss.github.io/search/</link>
+        <link>https://Yannick-Mo.github.io/search/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/search/</guid>
+        <guid>https://Yannick-Mo.github.io/search/</guid>
         <description></description>
         </item>
         

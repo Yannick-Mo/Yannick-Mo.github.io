@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>八股文 on 亚罗.莫斯(Yaro.Moss)</title>
-        <link>https://yaro-moss.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/</link>
-        <description>Recent content in 八股文 on 亚罗.莫斯(Yaro.Moss)</description>
+        <title>八股文 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/</link>
+        <description>Recent content in 八股文 on 雅尼克.莫(Yannick.Mo)</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <copyright>亚罗.莫斯(Yaro.Moss)</copyright>
-        <lastBuildDate>Sat, 03 Jan 2026 00:00:56 +0800</lastBuildDate><atom:link href="https://yaro-moss.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/index.xml" rel="self" type="application/rss+xml" /><item>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Sat, 03 Jan 2026 00:00:56 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>设计原则</title>
-        <link>https://yaro-moss.github.io/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</link>
+        <link>https://Yannick-Mo.github.io/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</link>
         <pubDate>Sat, 03 Jan 2026 00:00:56 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</guid>
+        <guid>https://Yannick-Mo.github.io/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</guid>
         <description>&lt;h3 id=&#34;一solid-原则核心五大原则&#34;&gt;&lt;strong&gt;一、SOLID 原则（核心五大原则）&lt;/strong&gt;
 &lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;
@@ -119,10 +119,10 @@
         </item>
         <item>
         <title>移动语义与完美转发</title>
-        <link>https://yaro-moss.github.io/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/</link>
+        <link>https://Yannick-Mo.github.io/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/</link>
         <pubDate>Fri, 02 Jan 2026 00:47:50 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/</guid>
+        <guid>https://Yannick-Mo.github.io/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/</guid>
         <description>&lt;h2 id=&#34;移动语义move-semantics&#34;&gt;&lt;strong&gt;移动语义（Move Semantics）&lt;/strong&gt;
 &lt;/h2&gt;&lt;h3 id=&#34;一移动语义的核心目的&#34;&gt;&lt;strong&gt;一、移动语义的核心目的&lt;/strong&gt;
 &lt;/h3&gt;&lt;ul&gt;
@@ -732,10 +732,10 @@
         </item>
         <item>
         <title>死锁的条件和处理</title>
-        <link>https://yaro-moss.github.io/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/</link>
+        <link>https://Yannick-Mo.github.io/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/</link>
         <pubDate>Thu, 01 Jan 2026 23:59:24 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/</guid>
+        <guid>https://Yannick-Mo.github.io/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/</guid>
         <description>&lt;h3 id=&#34;一死锁的条件&#34;&gt;一、死锁的条件
 &lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;
@@ -1004,10 +1004,10 @@
         </item>
         <item>
         <title>左值引用与右值引用</title>
-        <link>https://yaro-moss.github.io/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</link>
+        <link>https://Yannick-Mo.github.io/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</link>
         <pubDate>Thu, 01 Jan 2026 20:56:16 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</guid>
+        <guid>https://Yannick-Mo.github.io/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</guid>
         <description>&lt;h2 id=&#34;一前置基础左值--右值核心判断&#34;&gt;一、前置基础：左值 &amp;amp; 右值（核心判断）
 &lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;左值&lt;/strong&gt;：有名字、可取地址、能被修改，生命周期持久（如局部变量&lt;code&gt;int a&lt;/code&gt;、对象&lt;code&gt;string s&lt;/code&gt;、引用变量）；&lt;strong&gt;本质：能在内存中稳定存在的实体&lt;/strong&gt;。&lt;/li&gt;
@@ -1080,10 +1080,10 @@
         </item>
         <item>
         <title>C&#43;&#43; 指针与引用的核心区别 &#43; 引用的底层实现</title>
-        <link>https://yaro-moss.github.io/p/the-core-difference-between-pointers-and-references/</link>
+        <link>https://Yannick-Mo.github.io/p/the-core-difference-between-pointers-and-references/</link>
         <pubDate>Thu, 01 Jan 2026 16:00:00 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/the-core-difference-between-pointers-and-references/</guid>
+        <guid>https://Yannick-Mo.github.io/p/the-core-difference-between-pointers-and-references/</guid>
         <description>&lt;h2 id=&#34;一引用的底层实现重中之重先讲核心&#34;&gt;一、引用的底层实现（重中之重，先讲核心）
 &lt;/h2&gt;&lt;h3 id=&#34;-1-c-标准对引用的语法层面定义&#34;&gt;✅ 1. C++ 标准对「引用」的&lt;strong&gt;语法层面定义&lt;/strong&gt;
 &lt;/h3&gt;&lt;p&gt;C++ 官方标准中，&lt;strong&gt;引用（reference）是变量的「只读别名」(Read-only Alias)&lt;/strong&gt;，它不是一个新的变量，只是给已经存在的变量起了一个新名字。&lt;/p&gt;
@@ -1364,11 +1364,11 @@
         </item>
         <item>
         <title>常量指针VS指针常量</title>
-        <link>https://yaro-moss.github.io/p/constant-pointer-vs-pointer-to-constant/</link>
+        <link>https://Yannick-Mo.github.io/p/constant-pointer-vs-pointer-to-constant/</link>
         <pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/constant-pointer-vs-pointer-to-constant/</guid>
-        <description>&lt;img src="https://yaro-moss.github.io/p/constant-pointer-vs-pointer-to-constant/Constant_pointer.png" alt="Featured image of post 常量指针VS指针常量" /&gt;&lt;h2 id=&#34;一指针的3个核心基础语法指针的基石必会&#34;&gt;一、指针的3个核心基础语法（指针的基石，必会）
+        <guid>https://Yannick-Mo.github.io/p/constant-pointer-vs-pointer-to-constant/</guid>
+        <description>&lt;img src="https://Yannick-Mo.github.io/p/constant-pointer-vs-pointer-to-constant/Constant_pointer.png" alt="Featured image of post 常量指针VS指针常量" /&gt;&lt;h2 id=&#34;一指针的3个核心基础语法指针的基石必会&#34;&gt;一、指针的3个核心基础语法（指针的基石，必会）
 &lt;/h2&gt;&lt;p&gt;指针的所有操作都基于这3个语法，&lt;strong&gt;缺一不可&lt;/strong&gt;，必须牢记！&lt;/p&gt;
 &lt;h3 id=&#34;1-取地址运算符--读作取地址符&#34;&gt;1. 取地址运算符 &lt;code&gt;&amp;amp;&lt;/code&gt; （读作：取地址符）
 &lt;/h3&gt;&lt;p&gt;作用：&lt;strong&gt;获取一个变量对应的内存地址&lt;/strong&gt;。
@@ -1708,15 +1708,15 @@
         </item>
         <item>
         <title>C&#43;&#43; 程序内存分布</title>
-        <link>https://yaro-moss.github.io/p/c-program-memory-distribution/</link>
+        <link>https://Yannick-Mo.github.io/p/c-program-memory-distribution/</link>
         <pubDate>Thu, 01 Jan 2026 00:00:00 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/c-program-memory-distribution/</guid>
-        <description>&lt;img src="https://yaro-moss.github.io/images/C&#43;&#43;.png" alt="Featured image of post C&#43;&#43; 程序内存分布" /&gt;&lt;!--图片--&gt;
-&lt;p&gt;&lt;img src=&#34;https://yaro-moss.github.io/p/c-program-memory-distribution/memory_distribution.png&#34;
+        <guid>https://Yannick-Mo.github.io/p/c-program-memory-distribution/</guid>
+        <description>&lt;img src="https://Yannick-Mo.github.io/images/C&#43;&#43;.png" alt="Featured image of post C&#43;&#43; 程序内存分布" /&gt;&lt;!--图片--&gt;
+&lt;p&gt;&lt;img src=&#34;https://Yannick-Mo.github.io/p/c-program-memory-distribution/memory_distribution.png&#34;
 	width=&#34;640&#34;
 	height=&#34;501&#34;
-	srcset=&#34;https://yaro-moss.github.io/p/c-program-memory-distribution/memory_distribution_hu1562712778571063436.png 480w, https://yaro-moss.github.io/p/c-program-memory-distribution/memory_distribution_hu4008652610553531344.png 1024w&#34;
+	srcset=&#34;https://Yannick-Mo.github.io/p/c-program-memory-distribution/memory_distribution_hu1562712778571063436.png 480w, https://Yannick-Mo.github.io/p/c-program-memory-distribution/memory_distribution_hu4008652610553531344.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;内存分区图示&#34;

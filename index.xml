@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>亚罗.莫斯(Yaro.Moss)</title>
-        <link>https://yaro-moss.github.io/</link>
-        <description>Recent content on 亚罗.莫斯(Yaro.Moss)</description>
+        <title>雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/</link>
+        <description>Recent content on 雅尼克.莫(Yannick.Mo)</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <copyright>亚罗.莫斯(Yaro.Moss)</copyright>
-        <lastBuildDate>Tue, 05 May 2026 00:47:50 +0800</lastBuildDate><atom:link href="https://yaro-moss.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Tue, 05 May 2026 00:47:50 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>FFmpeg</title>
-        <link>https://yaro-moss.github.io/p/ffmpeg/</link>
+        <link>https://Yannick-Mo.github.io/p/ffmpeg/</link>
         <pubDate>Tue, 05 May 2026 00:47:50 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/ffmpeg/</guid>
+        <guid>https://Yannick-Mo.github.io/p/ffmpeg/</guid>
         <description>&lt;hr&gt;
 &lt;h2 id=&#34;一常用数据类型及内部结构&#34;&gt;一、常用数据类型及内部结构
 &lt;/h2&gt;&lt;h3 id=&#34;1-avformatcontext解封装上下文&#34;&gt;1. &lt;code&gt;AVFormatContext&lt;/code&gt;（解封装上下文）
@@ -999,10 +999,10 @@
         </item>
         <item>
         <title>设计原则</title>
-        <link>https://yaro-moss.github.io/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</link>
+        <link>https://Yannick-Mo.github.io/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</link>
         <pubDate>Sat, 03 Jan 2026 00:00:56 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</guid>
+        <guid>https://Yannick-Mo.github.io/p/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</guid>
         <description>&lt;h3 id=&#34;一solid-原则核心五大原则&#34;&gt;&lt;strong&gt;一、SOLID 原则（核心五大原则）&lt;/strong&gt;
 &lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;
@@ -1109,10 +1109,10 @@
         </item>
         <item>
         <title>移动语义与完美转发</title>
-        <link>https://yaro-moss.github.io/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/</link>
+        <link>https://Yannick-Mo.github.io/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/</link>
         <pubDate>Fri, 02 Jan 2026 00:47:50 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/</guid>
+        <guid>https://Yannick-Mo.github.io/p/%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E4%B8%8E%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/</guid>
         <description>&lt;h2 id=&#34;移动语义move-semantics&#34;&gt;&lt;strong&gt;移动语义（Move Semantics）&lt;/strong&gt;
 &lt;/h2&gt;&lt;h3 id=&#34;一移动语义的核心目的&#34;&gt;&lt;strong&gt;一、移动语义的核心目的&lt;/strong&gt;
 &lt;/h3&gt;&lt;ul&gt;
@@ -1722,10 +1722,10 @@
         </item>
         <item>
         <title>死锁的条件和处理</title>
-        <link>https://yaro-moss.github.io/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/</link>
+        <link>https://Yannick-Mo.github.io/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/</link>
         <pubDate>Thu, 01 Jan 2026 23:59:24 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/</guid>
+        <guid>https://Yannick-Mo.github.io/p/%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E5%A4%84%E7%90%86/</guid>
         <description>&lt;h3 id=&#34;一死锁的条件&#34;&gt;一、死锁的条件
 &lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;
@@ -1994,10 +1994,10 @@
         </item>
         <item>
         <title>左值引用与右值引用</title>
-        <link>https://yaro-moss.github.io/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</link>
+        <link>https://Yannick-Mo.github.io/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</link>
         <pubDate>Thu, 01 Jan 2026 20:56:16 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</guid>
+        <guid>https://Yannick-Mo.github.io/p/%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8%E4%B8%8E%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</guid>
         <description>&lt;h2 id=&#34;一前置基础左值--右值核心判断&#34;&gt;一、前置基础：左值 &amp;amp; 右值（核心判断）
 &lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;左值&lt;/strong&gt;：有名字、可取地址、能被修改，生命周期持久（如局部变量&lt;code&gt;int a&lt;/code&gt;、对象&lt;code&gt;string s&lt;/code&gt;、引用变量）；&lt;strong&gt;本质：能在内存中稳定存在的实体&lt;/strong&gt;。&lt;/li&gt;
@@ -2070,10 +2070,10 @@
         </item>
         <item>
         <title>C&#43;&#43; 指针与引用的核心区别 &#43; 引用的底层实现</title>
-        <link>https://yaro-moss.github.io/p/the-core-difference-between-pointers-and-references/</link>
+        <link>https://Yannick-Mo.github.io/p/the-core-difference-between-pointers-and-references/</link>
         <pubDate>Thu, 01 Jan 2026 16:00:00 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/the-core-difference-between-pointers-and-references/</guid>
+        <guid>https://Yannick-Mo.github.io/p/the-core-difference-between-pointers-and-references/</guid>
         <description>&lt;h2 id=&#34;一引用的底层实现重中之重先讲核心&#34;&gt;一、引用的底层实现（重中之重，先讲核心）
 &lt;/h2&gt;&lt;h3 id=&#34;-1-c-标准对引用的语法层面定义&#34;&gt;✅ 1. C++ 标准对「引用」的&lt;strong&gt;语法层面定义&lt;/strong&gt;
 &lt;/h3&gt;&lt;p&gt;C++ 官方标准中，&lt;strong&gt;引用（reference）是变量的「只读别名」(Read-only Alias)&lt;/strong&gt;，它不是一个新的变量，只是给已经存在的变量起了一个新名字。&lt;/p&gt;
@@ -2354,11 +2354,11 @@
         </item>
         <item>
         <title>常量指针VS指针常量</title>
-        <link>https://yaro-moss.github.io/p/constant-pointer-vs-pointer-to-constant/</link>
+        <link>https://Yannick-Mo.github.io/p/constant-pointer-vs-pointer-to-constant/</link>
         <pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/constant-pointer-vs-pointer-to-constant/</guid>
-        <description>&lt;img src="https://yaro-moss.github.io/p/constant-pointer-vs-pointer-to-constant/Constant_pointer.png" alt="Featured image of post 常量指针VS指针常量" /&gt;&lt;h2 id=&#34;一指针的3个核心基础语法指针的基石必会&#34;&gt;一、指针的3个核心基础语法（指针的基石，必会）
+        <guid>https://Yannick-Mo.github.io/p/constant-pointer-vs-pointer-to-constant/</guid>
+        <description>&lt;img src="https://Yannick-Mo.github.io/p/constant-pointer-vs-pointer-to-constant/Constant_pointer.png" alt="Featured image of post 常量指针VS指针常量" /&gt;&lt;h2 id=&#34;一指针的3个核心基础语法指针的基石必会&#34;&gt;一、指针的3个核心基础语法（指针的基石，必会）
 &lt;/h2&gt;&lt;p&gt;指针的所有操作都基于这3个语法，&lt;strong&gt;缺一不可&lt;/strong&gt;，必须牢记！&lt;/p&gt;
 &lt;h3 id=&#34;1-取地址运算符--读作取地址符&#34;&gt;1. 取地址运算符 &lt;code&gt;&amp;amp;&lt;/code&gt; （读作：取地址符）
 &lt;/h3&gt;&lt;p&gt;作用：&lt;strong&gt;获取一个变量对应的内存地址&lt;/strong&gt;。
@@ -2698,15 +2698,15 @@
         </item>
         <item>
         <title>C&#43;&#43; 程序内存分布</title>
-        <link>https://yaro-moss.github.io/p/c-program-memory-distribution/</link>
+        <link>https://Yannick-Mo.github.io/p/c-program-memory-distribution/</link>
         <pubDate>Thu, 01 Jan 2026 00:00:00 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/c-program-memory-distribution/</guid>
-        <description>&lt;img src="https://yaro-moss.github.io/images/C&#43;&#43;.png" alt="Featured image of post C&#43;&#43; 程序内存分布" /&gt;&lt;!--图片--&gt;
-&lt;p&gt;&lt;img src=&#34;https://yaro-moss.github.io/p/c-program-memory-distribution/memory_distribution.png&#34;
+        <guid>https://Yannick-Mo.github.io/p/c-program-memory-distribution/</guid>
+        <description>&lt;img src="https://Yannick-Mo.github.io/images/C&#43;&#43;.png" alt="Featured image of post C&#43;&#43; 程序内存分布" /&gt;&lt;!--图片--&gt;
+&lt;p&gt;&lt;img src=&#34;https://Yannick-Mo.github.io/p/c-program-memory-distribution/memory_distribution.png&#34;
 	width=&#34;640&#34;
 	height=&#34;501&#34;
-	srcset=&#34;https://yaro-moss.github.io/p/c-program-memory-distribution/memory_distribution_hu1562712778571063436.png 480w, https://yaro-moss.github.io/p/c-program-memory-distribution/memory_distribution_hu4008652610553531344.png 1024w&#34;
+	srcset=&#34;https://Yannick-Mo.github.io/p/c-program-memory-distribution/memory_distribution_hu1562712778571063436.png 480w, https://Yannick-Mo.github.io/p/c-program-memory-distribution/memory_distribution_hu4008652610553531344.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;内存分区图示&#34;
@@ -2990,11 +2990,11 @@
         </item>
         <item>
         <title>文章标题（必填）</title>
-        <link>https://yaro-moss.github.io/p/article-slug-url/</link>
+        <link>https://Yannick-Mo.github.io/p/article-slug-url/</link>
         <pubDate>Wed, 31 Dec 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/article-slug-url/</guid>
-        <description>&lt;img src="https://yaro-moss.github.io/p/article-slug-url/blog.png" alt="Featured image of post 文章标题（必填）" /&gt;&lt;h2 id=&#34;1-代码高亮测试&#34;&gt;1. 代码高亮测试
+        <guid>https://Yannick-Mo.github.io/p/article-slug-url/</guid>
+        <description>&lt;img src="https://Yannick-Mo.github.io/p/article-slug-url/blog.png" alt="Featured image of post 文章标题（必填）" /&gt;&lt;h2 id=&#34;1-代码高亮测试&#34;&gt;1. 代码高亮测试
 &lt;/h2&gt;&lt;h3 id=&#34;python-代码示例&#34;&gt;Python 代码示例
 &lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -3324,10 +3324,10 @@ $$
 P(A|B) = \frac{P(B|A)P(A)}{P(B)}
 $$&lt;h2 id=&#34;5-图像测试&#34;&gt;5. 图像测试
 &lt;/h2&gt;&lt;h3 id=&#34;相对路径图片测试&#34;&gt;相对路径图片测试
-&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://yaro-moss.github.io/p/article-slug-url/blog.png&#34;
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://Yannick-Mo.github.io/p/article-slug-url/blog.png&#34;
 	width=&#34;1920&#34;
 	height=&#34;1080&#34;
-	srcset=&#34;https://yaro-moss.github.io/p/article-slug-url/blog_hu11976661351414867289.png 480w, https://yaro-moss.github.io/p/article-slug-url/blog_hu7778775453211341694.png 1024w&#34;
+	srcset=&#34;https://Yannick-Mo.github.io/p/article-slug-url/blog_hu11976661351414867289.png 480w, https://Yannick-Mo.github.io/p/article-slug-url/blog_hu7778775453211341694.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Hugo Logo&#34;
@@ -3486,9 +3486,9 @@ $$&lt;h2 id=&#34;5-图像测试&#34;&gt;5. 图像测试
 &lt;h2 id=&#34;9-链接测试&#34;&gt;9. 链接测试
 &lt;/h2&gt;&lt;h3 id=&#34;相对链接测试&#34;&gt;相对链接测试
 &lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://yaro-moss.github.io/&#34; &gt;返回首页&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://yaro-moss.github.io/about/&#34; &gt;关于页面&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://yaro-moss.github.io/posts/&#34; &gt;所有文章&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://Yannick-Mo.github.io/&#34; &gt;返回首页&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://Yannick-Mo.github.io/about/&#34; &gt;关于页面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://Yannick-Mo.github.io/posts/&#34; &gt;所有文章&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;外部链接测试&#34;&gt;外部链接测试
 &lt;/h3&gt;&lt;ul&gt;
@@ -3547,18 +3547,18 @@ $$&lt;h2 id=&#34;注意事项&#34;&gt;注意事项
         </item>
         <item>
         <title>归档|Archive</title>
-        <link>https://yaro-moss.github.io/archives/</link>
+        <link>https://Yannick-Mo.github.io/archives/</link>
         <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/archives/</guid>
+        <guid>https://Yannick-Mo.github.io/archives/</guid>
         <description></description>
         </item>
         <item>
         <title>关于|About</title>
-        <link>https://yaro-moss.github.io/%E5%85%B3%E4%BA%8Eabout/</link>
+        <link>https://Yannick-Mo.github.io/%E5%85%B3%E4%BA%8Eabout/</link>
         <pubDate>Thu, 28 Feb 2019 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/%E5%85%B3%E4%BA%8Eabout/</guid>
+        <guid>https://Yannick-Mo.github.io/%E5%85%B3%E4%BA%8Eabout/</guid>
         <description>&lt;p&gt;Written in Go, Hugo is an open source static site generator available under the &lt;a class=&#34;link&#34; href=&#34;https://github.com/gohugoio/hugo/blob/master/LICENSE&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Apache License 2.0.&lt;/a&gt; Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.&lt;/p&gt;
 &lt;p&gt;Hugo makes use of a variety of open source projects including:&lt;/p&gt;
@@ -3583,10 +3583,10 @@ $$&lt;h2 id=&#34;注意事项&#34;&gt;注意事项
         </item>
         <item>
         <title></title>
-        <link>https://yaro-moss.github.io/p/</link>
+        <link>https://Yannick-Mo.github.io/p/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/</guid>
+        <guid>https://Yannick-Mo.github.io/p/</guid>
         <description>&lt;h1 id=&#34;qt-json-完整学习笔记含字节字符串网络传输&#34;&gt;QT JSON 完整学习笔记（含字节/字符串/网络传输）
 &lt;/h1&gt;&lt;h2 id=&#34;一qt-json-核心类基础必掌握&#34;&gt;一、QT JSON 核心类（基础必掌握）
 &lt;/h2&gt;&lt;table&gt;
@@ -3903,18 +3903,18 @@ $$&lt;h2 id=&#34;注意事项&#34;&gt;注意事项
         </item>
         <item>
         <title>技术链接|Links</title>
-        <link>https://yaro-moss.github.io/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/</link>
+        <link>https://Yannick-Mo.github.io/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/</guid>
+        <guid>https://Yannick-Mo.github.io/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/</guid>
         <description></description>
         </item>
         <item>
         <title>搜索|search</title>
-        <link>https://yaro-moss.github.io/search/</link>
+        <link>https://Yannick-Mo.github.io/search/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/search/</guid>
+        <guid>https://Yannick-Mo.github.io/search/</guid>
         <description></description>
         </item>
         

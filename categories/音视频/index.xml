@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>音视频 on 亚罗.莫斯(Yaro.Moss)</title>
-        <link>https://yaro-moss.github.io/categories/%E9%9F%B3%E8%A7%86%E9%A2%91/</link>
-        <description>Recent content in 音视频 on 亚罗.莫斯(Yaro.Moss)</description>
+        <title>音视频 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/categories/%E9%9F%B3%E8%A7%86%E9%A2%91/</link>
+        <description>Recent content in 音视频 on 雅尼克.莫(Yannick.Mo)</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <copyright>亚罗.莫斯(Yaro.Moss)</copyright>
-        <lastBuildDate>Tue, 05 May 2026 00:47:50 +0800</lastBuildDate><atom:link href="https://yaro-moss.github.io/categories/%E9%9F%B3%E8%A7%86%E9%A2%91/index.xml" rel="self" type="application/rss+xml" /><item>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Tue, 05 May 2026 00:47:50 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/categories/%E9%9F%B3%E8%A7%86%E9%A2%91/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>FFmpeg</title>
-        <link>https://yaro-moss.github.io/p/ffmpeg/</link>
+        <link>https://Yannick-Mo.github.io/p/ffmpeg/</link>
         <pubDate>Tue, 05 May 2026 00:47:50 +0800</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/ffmpeg/</guid>
+        <guid>https://Yannick-Mo.github.io/p/ffmpeg/</guid>
         <description>&lt;hr&gt;
 &lt;h2 id=&#34;一常用数据类型及内部结构&#34;&gt;一、常用数据类型及内部结构
 &lt;/h2&gt;&lt;h3 id=&#34;1-avformatcontext解封装上下文&#34;&gt;1. &lt;code&gt;AVFormatContext&lt;/code&gt;（解封装上下文）

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>标签二 on 亚罗.莫斯(Yaro.Moss)</title>
-        <link>https://yaro-moss.github.io/tags/%E6%A0%87%E7%AD%BE%E4%BA%8C/</link>
-        <description>Recent content in 标签二 on 亚罗.莫斯(Yaro.Moss)</description>
+        <title>标签二 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%A0%87%E7%AD%BE%E4%BA%8C/</link>
+        <description>Recent content in 标签二 on 雅尼克.莫(Yannick.Mo)</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <copyright>亚罗.莫斯(Yaro.Moss)</copyright>
-        <lastBuildDate>Wed, 31 Dec 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://yaro-moss.github.io/tags/%E6%A0%87%E7%AD%BE%E4%BA%8C/index.xml" rel="self" type="application/rss+xml" /><item>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Wed, 31 Dec 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E6%A0%87%E7%AD%BE%E4%BA%8C/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>文章标题（必填）</title>
-        <link>https://yaro-moss.github.io/p/article-slug-url/</link>
+        <link>https://Yannick-Mo.github.io/p/article-slug-url/</link>
         <pubDate>Wed, 31 Dec 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://yaro-moss.github.io/p/article-slug-url/</guid>
-        <description>&lt;img src="https://yaro-moss.github.io/p/article-slug-url/blog.png" alt="Featured image of post 文章标题（必填）" /&gt;&lt;h2 id=&#34;1-代码高亮测试&#34;&gt;1. 代码高亮测试
+        <guid>https://Yannick-Mo.github.io/p/article-slug-url/</guid>
+        <description>&lt;img src="https://Yannick-Mo.github.io/p/article-slug-url/blog.png" alt="Featured image of post 文章标题（必填）" /&gt;&lt;h2 id=&#34;1-代码高亮测试&#34;&gt;1. 代码高亮测试
 &lt;/h2&gt;&lt;h3 id=&#34;python-代码示例&#34;&gt;Python 代码示例
 &lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -343,10 +343,10 @@ $$
 P(A|B) = \frac{P(B|A)P(A)}{P(B)}
 $$&lt;h2 id=&#34;5-图像测试&#34;&gt;5. 图像测试
 &lt;/h2&gt;&lt;h3 id=&#34;相对路径图片测试&#34;&gt;相对路径图片测试
-&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://yaro-moss.github.io/p/article-slug-url/blog.png&#34;
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://Yannick-Mo.github.io/p/article-slug-url/blog.png&#34;
 	width=&#34;1920&#34;
 	height=&#34;1080&#34;
-	srcset=&#34;https://yaro-moss.github.io/p/article-slug-url/blog_hu11976661351414867289.png 480w, https://yaro-moss.github.io/p/article-slug-url/blog_hu7778775453211341694.png 1024w&#34;
+	srcset=&#34;https://Yannick-Mo.github.io/p/article-slug-url/blog_hu11976661351414867289.png 480w, https://Yannick-Mo.github.io/p/article-slug-url/blog_hu7778775453211341694.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Hugo Logo&#34;
@@ -505,9 +505,9 @@ $$&lt;h2 id=&#34;5-图像测试&#34;&gt;5. 图像测试
 &lt;h2 id=&#34;9-链接测试&#34;&gt;9. 链接测试
 &lt;/h2&gt;&lt;h3 id=&#34;相对链接测试&#34;&gt;相对链接测试
 &lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://yaro-moss.github.io/&#34; &gt;返回首页&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://yaro-moss.github.io/about/&#34; &gt;关于页面&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://yaro-moss.github.io/posts/&#34; &gt;所有文章&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://Yannick-Mo.github.io/&#34; &gt;返回首页&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://Yannick-Mo.github.io/about/&#34; &gt;关于页面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://Yannick-Mo.github.io/posts/&#34; &gt;所有文章&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;外部链接测试&#34;&gt;外部链接测试
 &lt;/h3&gt;&lt;ul&gt;

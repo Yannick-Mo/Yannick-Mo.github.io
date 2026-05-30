@@ -4,12 +4,12 @@
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="QT JSON 完整学习笔记（含字节/字符串/网络传输） 一、QT JSON 核心类（基础必掌握） 类名 核心作用 常用方法/注意事项 QJsonDocument JSON 数据的“容器+转换器”，连接 JSON 字节流与 QT 内部 JSON 对象/数组 - toJson()：转 QByteArray（支持 Compact/Indented 格式）\n- fromJson()：从字节流解析，需传入 QJsonParseError QJsonObject 对应 JSON 对象（{}），存储键值对（键=字符串，值=QJsonValue） - insert(key, value)：添加键值对\n- contains(key)：检查键是否存在\n- [key]：取值（需先做类型检查） QJsonArray 对应 JSON 数组（[]），存储有序的 QJsonValue 列表 - append(value)：添加元素\n- size()：获取长度\n- 遍历：for 循环/迭代器 QJsonValue 封装所有 JSON 基础类型（字符串/数字/布尔/对象/数组/null） - 类型判断：isString()/isDouble()/isArray()/isObject()\n- 类型转换：toString()/toInt()/toArray() QJsonParseError 存储 JSON 解析错误信息（原因、位置） - error：错误类型（NoError 表示无错）\n- errorString()：错误描述\n- offset：错误位置 二、JSON 构建与解析（核心操作） 1. 构建 JSON（从空到字节流） 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 // 1. 构建JSON对象 QJsonObject userObj; userObj.insert(&#34;name&#34;, &#34;张三&#34;); // 字符串值 userObj.insert(&#34;age&#34;, 25); // 数字值（自动转QJsonValue） userObj.insert(&#34;isStudent&#34;, false);// 布尔值 userObj.insert(&#34;score&#34;, QJsonValue::Null); // null值 // 2. 构建JSON数组并嵌套 QJsonArray hobbyArr; hobbyArr.append(&#34;编程&#34;); hobbyArr.append(&#34;跑步&#34;); userObj.insert(&#34;hobbies&#34;, hobbyArr); // 3. 封装为QJsonDocument，转字节流（QByteArray） QJsonDocument doc(userObj); QByteArray jsonBytes = doc.toJson(QJsonDocument::Compact); // 紧凑格式（传输用） // QByteArray jsonBytes = doc.toJson(QJsonDocument::Indented); // 格式化（调试用） 2. 解析 JSON（从字节流到数据） 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 QJsonParseError parseError; // 1. 从字节流解析为QJsonDocument（必传错误对象） QJsonDocument parseDoc = QJsonDocument::fromJson(jsonBytes, &amp;parseError); // 2. 检查解析错误（第一步必做） if (parseError.error != QJsonParseError::NoError) { qDebug() &lt;&lt; &#34;解析失败：&#34; &lt;&lt; parseError.errorString() &lt;&lt; &#34;位置：&#34; &lt;&lt; parseError.offset; return; } // 3. 检查类型并提取数据（必做类型检查） if (parseDoc.isObject()) { QJsonObject parseObj = parseDoc.object(); // 读取普通值 if (parseObj.contains(&#34;name&#34;) &amp;&amp; parseObj[&#34;name&#34;].isString()) { QString name = parseObj[&#34;name&#34;].toString(); } if (parseObj.contains(&#34;age&#34;) &amp;&amp; parseObj[&#34;age&#34;].isDouble()) { // JSON数字统一存为double int age = parseObj[&#34;age&#34;].toInt(); } // 读取数组 if (parseObj.contains(&#34;hobbies&#34;) &amp;&amp; parseObj[&#34;hobbies&#34;].isArray()) { QJsonArray hobbies = parseObj[&#34;hobbies&#34;].toArray(); for (auto val : hobbies) { if (val.isString()) qDebug() &lt;&lt; val.toString(); } } } 三、JSON 与字节/字符串的转换（关键关联） 1. 核心逻辑 JSON 本质是“UTF-8 编码的文本字节流”，QT 中以 QByteArray 存储，与 QString 转换需指定 UTF-8 编码（避免乱码）。\n">
 <title></title>
 
-<link rel='canonical' href='https://yaro-moss.github.io/p/'>
+<link rel='canonical' href='https://Yannick-Mo.github.io/p/'>
 
 <link rel="stylesheet" href="/scss/style.min.21a4fbaa52c88cbbb1e535ff20ea95c2d356a419af6b73e3c62a1d9074929760.css"><meta property='og:title' content="">
 <meta property='og:description' content="QT JSON 完整学习笔记（含字节/字符串/网络传输） 一、QT JSON 核心类（基础必掌握） 类名 核心作用 常用方法/注意事项 QJsonDocument JSON 数据的“容器+转换器”，连接 JSON 字节流与 QT 内部 JSON 对象/数组 - toJson()：转 QByteArray（支持 Compact/Indented 格式）\n- fromJson()：从字节流解析，需传入 QJsonParseError QJsonObject 对应 JSON 对象（{}），存储键值对（键=字符串，值=QJsonValue） - insert(key, value)：添加键值对\n- contains(key)：检查键是否存在\n- [key]：取值（需先做类型检查） QJsonArray 对应 JSON 数组（[]），存储有序的 QJsonValue 列表 - append(value)：添加元素\n- size()：获取长度\n- 遍历：for 循环/迭代器 QJsonValue 封装所有 JSON 基础类型（字符串/数字/布尔/对象/数组/null） - 类型判断：isString()/isDouble()/isArray()/isObject()\n- 类型转换：toString()/toInt()/toArray() QJsonParseError 存储 JSON 解析错误信息（原因、位置） - error：错误类型（NoError 表示无错）\n- errorString()：错误描述\n- offset：错误位置 二、JSON 构建与解析（核心操作） 1. 构建 JSON（从空到字节流） 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 // 1. 构建JSON对象 QJsonObject userObj; userObj.insert(&#34;name&#34;, &#34;张三&#34;); // 字符串值 userObj.insert(&#34;age&#34;, 25); // 数字值（自动转QJsonValue） userObj.insert(&#34;isStudent&#34;, false);// 布尔值 userObj.insert(&#34;score&#34;, QJsonValue::Null); // null值 // 2. 构建JSON数组并嵌套 QJsonArray hobbyArr; hobbyArr.append(&#34;编程&#34;); hobbyArr.append(&#34;跑步&#34;); userObj.insert(&#34;hobbies&#34;, hobbyArr); // 3. 封装为QJsonDocument，转字节流（QByteArray） QJsonDocument doc(userObj); QByteArray jsonBytes = doc.toJson(QJsonDocument::Compact); // 紧凑格式（传输用） // QByteArray jsonBytes = doc.toJson(QJsonDocument::Indented); // 格式化（调试用） 2. 解析 JSON（从字节流到数据） 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 QJsonParseError parseError; // 1. 从字节流解析为QJsonDocument（必传错误对象） QJsonDocument parseDoc = QJsonDocument::fromJson(jsonBytes, &amp;parseError); // 2. 检查解析错误（第一步必做） if (parseError.error != QJsonParseError::NoError) { qDebug() &lt;&lt; &#34;解析失败：&#34; &lt;&lt; parseError.errorString() &lt;&lt; &#34;位置：&#34; &lt;&lt; parseError.offset; return; } // 3. 检查类型并提取数据（必做类型检查） if (parseDoc.isObject()) { QJsonObject parseObj = parseDoc.object(); // 读取普通值 if (parseObj.contains(&#34;name&#34;) &amp;&amp; parseObj[&#34;name&#34;].isString()) { QString name = parseObj[&#34;name&#34;].toString(); } if (parseObj.contains(&#34;age&#34;) &amp;&amp; parseObj[&#34;age&#34;].isDouble()) { // JSON数字统一存为double int age = parseObj[&#34;age&#34;].toInt(); } // 读取数组 if (parseObj.contains(&#34;hobbies&#34;) &amp;&amp; parseObj[&#34;hobbies&#34;].isArray()) { QJsonArray hobbies = parseObj[&#34;hobbies&#34;].toArray(); for (auto val : hobbies) { if (val.isString()) qDebug() &lt;&lt; val.toString(); } } } 三、JSON 与字节/字符串的转换（关键关联） 1. 核心逻辑 JSON 本质是“UTF-8 编码的文本字节流”，QT 中以 QByteArray 存储，与 QString 转换需指定 UTF-8 编码（避免乱码）。\n">
-<meta property='og:url' content='https://yaro-moss.github.io/p/'>
-<meta property='og:site_name' content='亚罗.莫斯(Yaro.Moss)'>
+<meta property='og:url' content='https://Yannick-Mo.github.io/p/'>
+<meta property='og:site_name' content='雅尼克.莫(Yannick.Mo)'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' />
 <meta name="twitter:title" content="">
 <meta name="twitter:description" content="QT JSON 完整学习笔记（含字节/字符串/网络传输） 一、QT JSON 核心类（基础必掌握） 类名 核心作用 常用方法/注意事项 QJsonDocument JSON 数据的“容器+转换器”，连接 JSON 字节流与 QT 内部 JSON 对象/数组 - toJson()：转 QByteArray（支持 Compact/Indented 格式）\n- fromJson()：从字节流解析，需传入 QJsonParseError QJsonObject 对应 JSON 对象（{}），存储键值对（键=字符串，值=QJsonValue） - insert(key, value)：添加键值对\n- contains(key)：检查键是否存在\n- [key]：取值（需先做类型检查） QJsonArray 对应 JSON 数组（[]），存储有序的 QJsonValue 列表 - append(value)：添加元素\n- size()：获取长度\n- 遍历：for 循环/迭代器 QJsonValue 封装所有 JSON 基础类型（字符串/数字/布尔/对象/数组/null） - 类型判断：isString()/isDouble()/isArray()/isObject()\n- 类型转换：toString()/toInt()/toArray() QJsonParseError 存储 JSON 解析错误信息（原因、位置） - error：错误类型（NoError 表示无错）\n- errorString()：错误描述\n- offset：错误位置 二、JSON 构建与解析（核心操作） 1. 构建 JSON（从空到字节流） 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 // 1. 构建JSON对象 QJsonObject userObj; userObj.insert(&#34;name&#34;, &#34;张三&#34;); // 字符串值 userObj.insert(&#34;age&#34;, 25); // 数字值（自动转QJsonValue） userObj.insert(&#34;isStudent&#34;, false);// 布尔值 userObj.insert(&#34;score&#34;, QJsonValue::Null); // null值 // 2. 构建JSON数组并嵌套 QJsonArray hobbyArr; hobbyArr.append(&#34;编程&#34;); hobbyArr.append(&#34;跑步&#34;); userObj.insert(&#34;hobbies&#34;, hobbyArr); // 3. 封装为QJsonDocument，转字节流（QByteArray） QJsonDocument doc(userObj); QByteArray jsonBytes = doc.toJson(QJsonDocument::Compact); // 紧凑格式（传输用） // QByteArray jsonBytes = doc.toJson(QJsonDocument::Indented); // 格式化（调试用） 2. 解析 JSON（从字节流到数据） 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 QJsonParseError parseError; // 1. 从字节流解析为QJsonDocument（必传错误对象） QJsonDocument parseDoc = QJsonDocument::fromJson(jsonBytes, &amp;parseError); // 2. 检查解析错误（第一步必做） if (parseError.error != QJsonParseError::NoError) { qDebug() &lt;&lt; &#34;解析失败：&#34; &lt;&lt; parseError.errorString() &lt;&lt; &#34;位置：&#34; &lt;&lt; parseError.offset; return; } // 3. 检查类型并提取数据（必做类型检查） if (parseDoc.isObject()) { QJsonObject parseObj = parseDoc.object(); // 读取普通值 if (parseObj.contains(&#34;name&#34;) &amp;&amp; parseObj[&#34;name&#34;].isString()) { QString name = parseObj[&#34;name&#34;].toString(); } if (parseObj.contains(&#34;age&#34;) &amp;&amp; parseObj[&#34;age&#34;].isDouble()) { // JSON数字统一存为double int age = parseObj[&#34;age&#34;].toInt(); } // 读取数组 if (parseObj.contains(&#34;hobbies&#34;) &amp;&amp; parseObj[&#34;hobbies&#34;].isArray()) { QJsonArray hobbies = parseObj[&#34;hobbies&#34;].toArray(); for (auto val : hobbies) { if (val.isString()) qDebug() &lt;&lt; val.toString(); } } } 三、JSON 与字节/字符串的转换（关键关联） 1. 核心逻辑 JSON 本质是“UTF-8 编码的文本字节流”，QT 中以 QByteArray 存储，与 QString 转换需指定 UTF-8 编码（避免乱码）。\n">
@@ -71,7 +71,7 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/">亚罗.莫斯(Yaro.Moss)</a></h1>
+            <h1 class="site-name"><a href="/">雅尼克.莫(Yannick.Mo)</a></h1>
             <h2 class="site-description">欢迎来到我的网站</h2>
         </div>
     </header><ol class="menu-social">
@@ -106,7 +106,7 @@
             
                 <li>
                     <a 
-                        href='https://github.com/Yarrow-Moss'
+                        href='https://github.com/Yannick-Mo'
                         target="_blank"
                         title="GitHub"
                         rel="me"
@@ -241,13 +241,13 @@
 
                             <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
                                 
-                                    <option value="https://yaro-moss.github.io/" selected>简体中文</option>
+                                    <option value="https://Yannick-Mo.github.io/" selected>简体中文</option>
                                 
-                                    <option value="https://yaro-moss.github.io/en/" >English</option>
+                                    <option value="https://Yannick-Mo.github.io/en/" >English</option>
                                 
-                                    <option value="https://yaro-moss.github.io/zh-tw/" >正體中文</option>
+                                    <option value="https://Yannick-Mo.github.io/zh-tw/" >正體中文</option>
                                 
-                                    <option value="https://yaro-moss.github.io/ja/" >日本語</option>
+                                    <option value="https://Yannick-Mo.github.io/ja/" >日本語</option>
                                 
                             </select>
                         </li>
@@ -818,7 +818,7 @@
         
             2025 - 
         
-        2026 亚罗.莫斯(Yaro.Moss)
+        2026 雅尼克.莫(Yannick.Mo)
     </section>
     
     <section class="powerby">
@@ -970,7 +970,7 @@
 <style>
      
     body {
-        background: url(https://yaro-moss.github.io/background/bg.png) no-repeat center top;
+        background: url(https://Yannick-Mo.github.io/background/bg.png) no-repeat center top;
         background-size: cover;
         background-attachment: fixed;
         background-color: #ffffff;
@@ -1015,7 +1015,7 @@
         cursor: pointer;
         width: 30px;
         height: 30px;
-        background-image: url(https://yaro-moss.github.io/icons/backTop.svg);
+        background-image: url(https://Yannick-Mo.github.io/icons/backTop.svg);
         background-size: 100% 100%;
         background-repeat: no-repeat;
         background-position: center;
@@ -1086,8 +1086,8 @@
 
 <script>
     
-    const codeMoreIconUrl = "https://yaro-moss.github.io/icons/codeMore.svg";
-    const backTopIconUrl = "https://yaro-moss.github.io/icons/backTop.svg";
+    const codeMoreIconUrl = "https://Yannick-Mo.github.io/icons/codeMore.svg";
+    const backTopIconUrl = "https://Yannick-Mo.github.io/icons/backTop.svg";
 
     
     function initTocHide() {
@@ -1169,7 +1169,7 @@
     function initSakura() {
         if (sakuraIsLoaded) return;
         const sakuraScript = document.createElement('script');
-        sakuraScript.src = "https://yaro-moss.github.io/background/sakura.js";
+        sakuraScript.src = "https://Yannick-Mo.github.io/background/sakura.js";
         sakuraScript.onload = () => { sakuraIsLoaded = true; };
         document.body.appendChild(sakuraScript);
     }
