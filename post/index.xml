@@ -3551,7 +3551,17 @@ $$&lt;h2 id=&#34;注意事项&#34;&gt;注意事项
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>https://Yannick-Mo.github.io/p/</guid>
-        <description>&lt;h2 id=&#34;1-匿名管道父进程写子进程读&#34;&gt;1. 匿名管道：父进程写，子进程读
+        <description>&lt;p&gt;date = &amp;lsquo;2026-05-30T00:01:50+08:00&amp;rsquo;&lt;br&gt;
+draft = false
+title = &amp;lsquo;Linux 管道通信与 I/O 多路复用&amp;rsquo;
+description = &amp;ldquo;深入讲解匿名管道、命名管道（FIFO）、dup2 重定向、非阻塞模式及 poll/epoll 多路复用技术，包含完整代码示例和常见陷阱说明&amp;rdquo;
+categories = [&amp;ldquo;系统编程&amp;rdquo;, &amp;ldquo;进程间通信&amp;rdquo;]
+tags = [&amp;ldquo;Linux&amp;rdquo;, &amp;ldquo;C/C++&amp;rdquo;, &amp;ldquo;管道&amp;rdquo;, &amp;ldquo;多路复用&amp;rdquo;, &amp;ldquo;epoll&amp;rdquo;, &amp;ldquo;非阻塞I/O&amp;rdquo;]
+author = &amp;ldquo;Yannick-Mo&amp;rdquo;
+summary = &amp;ldquo;本文详细介绍了 Linux 下匿名管道和命名管道的使用方法，结合 dup2 实现 shell 管道操作（如 ls | grep），并扩展到非阻塞模式与 select/poll/epoll 多路复用，最后给出边缘触发（ET）和水平触发（LT）的实践建议。&amp;rdquo;
+toc = true
++++&lt;/p&gt;
+&lt;h2 id=&#34;1-匿名管道父进程写子进程读&#34;&gt;1. 匿名管道：父进程写，子进程读
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
