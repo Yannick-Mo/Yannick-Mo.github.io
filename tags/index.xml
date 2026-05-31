@@ -7,12 +7,28 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
-        <lastBuildDate>Sat, 30 May 2026 00:01:50 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 30 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>C/C&#43;&#43;</title>
         <link>https://Yannick-Mo.github.io/tags/c/c&#43;&#43;/</link>
-        <pubDate>Sat, 30 May 2026 00:01:50 +0800</pubDate>
+        <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/c/c&#43;&#43;/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>JSON</title>
+        <link>https://Yannick-Mo.github.io/tags/json/</link>
+        <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/json/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>QT</title>
+        <link>https://Yannick-Mo.github.io/tags/qt/</link>
+        <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/qt/</guid>
         <description></description>
         </item>
         <item>
@@ -61,14 +77,6 @@
         <pubDate>Tue, 05 May 2026 00:47:50 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/ffmpeg/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>设计模式</title>
-        <link>https://Yannick-Mo.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
-        <pubDate>Sat, 03 Jan 2026 00:00:56 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
         <description></description>
         </item>
         <item>

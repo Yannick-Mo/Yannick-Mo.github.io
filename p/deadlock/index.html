@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="互斥、保持与请求、不可剥夺、循环等待四个条件，以及C++中死锁的预防、检测与解决方法">
+<title>死锁的条件和处理</title>
+
+<link rel='canonical' href='https://Yannick-Mo.github.io/p/deadlock/'>
+
+<link rel="stylesheet" href="/scss/style.min.92528eb56f39e44e070a1ea8808b6d8f6d681ac4f2849a3f53c98bddcde86fa9.css"><meta property='og:title' content="死锁的条件和处理">
+<meta property='og:description' content="互斥、保持与请求、不可剥夺、循环等待四个条件，以及C++中死锁的预防、检测与解决方法">
+<meta property='og:url' content='https://Yannick-Mo.github.io/p/deadlock/'>
+<meta property='og:site_name' content='雅尼克.莫(Yannick.Mo)'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='C/C&#43;&#43;' /><meta property='article:published_time' content='2026-01-01T23:59:24&#43;08:00'/><meta property='article:modified_time' content='2026-01-01T23:59:24&#43;08:00'/><meta property='og:image' content='https://Yannick-Mo.github.io/img/avatar.png' />
+<meta name="twitter:title" content="死锁的条件和处理">
+<meta name="twitter:description" content="互斥、保持与请求、不可剥夺、循环等待四个条件，以及C++中死锁的预防、检测与解决方法"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://Yannick-Mo.github.io/img/avatar.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+<script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7/dist/turbo.es5-umd.min.js"></script><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/waifu.css">
+<script type="module" src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/waifu-tips.js"></script>
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu14133112665799786173.png" width="300"
+                            height="282" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😁</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">雅尼克.莫(Yannick.Mo)</a></h1>
+            <h2 class="site-description">欢迎来到我的网站</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/1399620506'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1766655316953" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4996" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M419.5 309.304c-17.514-9.487-35.029-18.974-52.543-28.583l-87.209-47.435c-11.798-6.447-16.663-16.299-9.973-28.462 6.69-12.284 17.88-13.136 29.434-6.81 68.113 37.096 136.347 74.072 204.338 111.655 17.393 9.609 48.773 3.892 59.842-12.406a66632.417 66632.417 0 0 0 104.115-151.55c1.216-1.825 2.432-3.65 3.648-5.352 9.852-13.745 21.164-17.393 31.38-9.366 11.799 9.366 9.853 20.434 2.19 31.624a18582.62 18582.62 0 0 0-42.205 61.788c-19.461 28.583-38.922 57.166-60.694 88.911h245.084c22.867 0 26.394 3.649 26.515 26.515 0.244 156.78 0.365 313.44 0.609 470.22 0 22.38-4.014 26.272-26.88 26.394-5.96 0-12.042 0.608-17.88-0.122-21.65-2.432-37.462-0.364-45.003 26.394-6.811 24.083-32.475 36.367-55.585 33.935-26.758-2.798-44.395-18.61-51.206-43.544-4.135-15.082-11.19-17.15-24.812-17.028-94.02 0.608-187.918 0.365-281.938 0.122-10.825 0-17.15 0.973-20.312 14.109-6.811 28.218-30.043 46.098-55.706 46.584-26.637 0.487-49.747-16.907-57.531-46.22-3.284-12.284-8.758-15.081-20.07-14.473-14.595 0.851-29.312 0.365-44.029 0.121-16.055-0.364-23.11-6.932-23.11-22.623 0.122-159.334 0.365-318.791 0.73-478.247 0-16.542 6.69-22.015 25.056-22.015 75.532-0.122 151.064 0 226.474 0h15.812c0.487-1.338 0.973-2.676 1.46-4.136z m417.555 490.29V349.076H188.648v450.516h648.407z m-520.94 37.948h-44.638c3.041 12.77 9.244 21.771 21.164 22.501 13.258 0.973 19.582-8.879 23.474-22.501z m394.445-0.122c4.5 13.623 10.582 23.596 23.961 22.623 12.042-0.851 17.637-10.217 21.286-22.623H710.56z" fill="#1296DB" p-id="4997"></path><path d="M513.399 768.578H252.746c-25.299 0-29.312-4.014-29.312-29.313 0.121-108.98 0.243-217.96 0.486-327.062 0-22.988 4.744-27.732 27.61-27.732h523.008c23.23 0 27.974 4.622 28.096 27.367 0.365 109.588 0.608 219.055 0.73 328.643 0 23.475-4.865 27.975-29.07 28.097H513.4z m250.678-38.557V423.393H262.234V730.02h501.843z" fill="#1296DB" p-id="4998"></path><path d="M515.71 675.653c-6.69 4.743-12.893 10.095-19.948 13.865-23.23 12.285-46.34 11.19-67.747-3.77-23.596-16.542-34.057-40.746-31.989-68.964 0.487-6.082 11.677-15.69 18.123-15.934 6.325-0.243 14.352 8.515 18.974 15.204 3.65 5.352 2.068 13.866 4.622 20.312 4.865 12.285 13.866 23.961 27.367 21.042 9.973-2.067 18.974-12.163 26.393-20.434 3.65-4.135 3.041-12.284 4.014-18.609 1.703-12.041 8.636-19.339 20.434-19.096 10.703 0.244 17.636 6.812 19.096 18.488 0.851 7.42 1.094 16.663 5.473 21.528 7.055 7.906 17.028 17.393 26.15 17.758 8.15 0.244 18.123-9.73 24.57-17.514 4.257-5.109 4.013-14.231 5.351-21.65 2.19-11.798 8.88-18.975 21.042-18.123 12.042 0.973 18.366 8.757 17.88 21.042-1.216 31.015-13.38 56.193-42.084 70.058-26.758 12.893-51.814 7.42-73.708-12.527-1.216-0.852-2.554-1.582-4.013-2.676z m214.068-116.035c0.365 18.366-14.596 28.461-28.461 20.555-37.097-21.163-73.586-43.421-109.954-65.801-9.608-5.96-11.676-15.69-6.081-25.542 5.716-10.096 15.812-12.772 25.177-7.42 37.462 21.65 74.56 43.908 111.413 66.653 4.257 2.798 6.325 9.244 7.906 11.555z m-316.602-70.667c3.406 3.406 12.163 8.15 13.136 13.988 1.095 6.932-2.554 18.974-7.906 21.65-32.232 16.541-65.315 31.38-98.52 46.097-10.095 4.5-21.164 1.095-23.718-9.852-1.703-7.176 1.338-20.677 6.447-23.353 33.204-17.028 67.504-31.745 101.439-47.192 1.46-0.608 3.162-0.486 9.122-1.338z" fill="#1296DB" p-id="4999"></path></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.douyin.com/user/MS4wLjABAAAAaWBHMYjfaJN34aCrci_aWVyr9e-zaNSUhhqmsk3_xMbhRmCBmSmLzPhzv0TowMWH'
+                        target="_blank"
+                        title="douyin"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1766656006310" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10109" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M890.368 431.1552a362.8544 362.8544 0 0 1-210.6368-66.2016c0 94.5152 0 188.9792 1.1776 283.4944 0 12.6464 0.6144 25.2928-0.5632 37.888a307.2 307.2 0 0 1-40.96 131.2256 288.2048 288.2048 0 0 1-79.4624 89.088A256 256 0 0 1 414.72 956.0064a308.7872 308.7872 0 0 1-78.2336-6.6048A282.112 282.112 0 0 1 235.52 905.472c-0.6144-0.6144-1.792-1.2288-1.792-1.8432a272.64 272.64 0 0 1-79.4624-86.6816A281.0368 281.0368 0 0 1 249.344 433.5616 282.112 282.112 0 0 1 434.7392 394.24v35.84c0.6144 15.0528 0 30.1056 0.6144 44.544v76.4416a107.776 107.776 0 0 0-60.16-1.792 155.8528 155.8528 0 0 0-65.024 31.2832 108.4928 108.4928 0 0 0-27.6992 34.304 133.9392 133.9392 0 0 0-13.2608 73.4208 129.1776 129.1776 0 0 0 28.928 66.2528 152.1664 152.1664 0 0 0 38.5024 31.8976 127.6928 127.6928 0 0 0 187.8016-111.36V287.8976c0.6144-74.0352 0-148.0704 0.6144-222.1056h152.8832a171.264 171.264 0 0 0 3.584 39.1168h0.6144a231.1168 231.1168 0 0 0 22.272 62.0032 187.5968 187.5968 0 0 0 67.4304 74.6496c1.792 1.1776 2.9696 3.0208 4.8128 4.1984a212.5824 212.5824 0 0 0 69.7856 28.3136 272.5888 272.5888 0 0 0 43.9296 4.8128z m0 0" fill="#6C6CEA" p-id="10110"></path><path d="M836.7104 336.5376a536.7808 536.7808 0 0 0-4.096-65.8432A221.6448 221.6448 0 0 1 776.6528 245.76c-1.8432-1.1776-3.0208-3.0208-4.8128-4.1984a187.5968 187.5968 0 0 1-67.4304-74.6496 231.1168 231.1168 0 0 1-22.272-62.0032h-0.6144a171.264 171.264 0 0 1-3.584-39.1168h-152.8832c-0.6144 74.0352 0 148.0704-0.6144 222.1056v387.6352a127.6928 127.6928 0 0 1-187.8016 111.36 152.1664 152.1664 0 0 1-38.5024-31.8976 129.1776 129.1776 0 0 1-28.928-66.2528 133.9392 133.9392 0 0 1 13.2608-73.4208 109.2096 109.2096 0 0 1 27.6992-34.304 155.9552 155.9552 0 0 1 64.9728-31.2832 107.9808 107.9808 0 0 1 60.2112 1.792V475.0848c-0.6144-14.4384 0-29.4912-0.6144-44.544V394.24a282.112 282.112 0 0 0-185.3952 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 282.2656 282.2656 0 0 0-1.792 290.0992 273.6128 273.6128 0 0 0 16.1792 24.7296 525.056 525.056 0 0 0 506.88-128.4096c1.4848-8.9088 2.6624-17.8688 3.2768-26.9312 1.1776-12.5952 0.5632-25.2416 0.5632-37.888-1.1776-94.5152-1.1776-188.9792-1.1776-283.4944a363.8272 363.8272 0 0 0 149.2992 61.44 527.872 527.872 0 0 0 7.424-89.856z" fill="#757BF2" p-id="10111"></path><path d="M743.7312 220.16a201.8304 201.8304 0 0 1-39.3216-52.992 231.1168 231.1168 0 0 1-22.272-62.0032h-0.6144a171.264 171.264 0 0 1-3.584-39.1168h-152.8832c-0.6144 74.0352 0 148.0704-0.6144 222.1056v326.7584a526.2336 526.2336 0 0 0 155.2896-174.08V364.9536c8.9088 6.2976 18.176 12.032 27.648 17.4592a521.5232 521.5232 0 0 0 36.352-162.2528zM273.7152 709.4272a125.3376 125.3376 0 0 1-4.5056-20.48 133.9392 133.9392 0 0 1 13.2608-73.4208 109.2096 109.2096 0 0 1 27.6992-34.304 155.9552 155.9552 0 0 1 64.9728-31.2832 107.9808 107.9808 0 0 1 60.2112 1.792V475.0848c-0.6144-14.4384 0-29.4912-0.6144-44.544V394.24a282.112 282.112 0 0 0-185.3952 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 284.3136 284.3136 0 0 0-39.68 174.9504 525.8752 525.8752 0 0 0 103.8336 10.24c18.0736 0.0512 35.7888-0.8704 53.504-2.6112z" fill="#8486F8" p-id="10112"></path><path d="M435.2 458.8032c0-9.3184 0-18.7904-0.3584-28.2624V394.24a282.112 282.112 0 0 0-185.4976 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 288.1536 288.1536 0 0 0-20.48 40.4992A521.8304 521.8304 0 0 0 435.2 458.8032zM639.0272 65.792h-113.9712c-0.6144 74.0352 0 148.0704-0.6144 222.1056v83.2a522.24 522.24 0 0 0 114.5856-305.3056z" fill="#8D92F8" p-id="10113"></path></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yannick-Mo'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页|home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E-about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于 | About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档|Archive</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索|search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>技术链接|Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://Yannick-Mo.github.io/" selected>简体中文</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/en/" >English</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/zh-tw/" >正體中文</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/ja/" >日本語</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#一死锁的条件">一、死锁的条件</a></li>
+        <li><a href="#二c中常见的死锁场景与示例">二、C++中常见的死锁场景与示例</a></li>
+        <li><a href="#三c中预防死锁的实用策略">三、C++中预防死锁的实用策略</a></li>
+        <li><a href="#四c中死锁的检测与解决">四、C++中死锁的检测与解决</a></li>
+        <li><a href="#五c面试中关于死锁的常见问题">五、C++面试中关于死锁的常见问题</a></li>
+        <li><a href="#六总结">六、总结</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" >
+                八股文
+            </a>
+        
+            <a href="/categories/c/c&#43;&#43;/" >
+                C/C&#43;&#43;
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/deadlock/">死锁的条件和处理</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            互斥、保持与请求、不可剥夺、循环等待四个条件，以及C&#43;&#43;中死锁的预防、检测与解决方法
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2026-01-01T23:59:24&#43;08:00'>2026-01-01</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 4 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h3 id="一死锁的条件">一、死锁的条件
+</h3><ol>
+<li>
+<p>互斥条件（Mutual Exclusion）
+资源（如互斥锁std::mutex）一次只能被一个线程持有
+示例：std::mutex一旦被线程A锁定，线程B必须等待A释放后才能获取</p>
+</li>
+<li>
+<p>请求和保持条件（Hold and Wait）
+线程已持有至少一个资源，同时请求其他线程持有的资源
+示例：线程A持有锁1，请求锁2；线程B持有锁2，请求锁1</p>
+</li>
+<li>
+<p>不可剥夺条件（No Preemption）
+线程已持有的资源不能被强制剥夺，只能由持有者主动释放
+示例：C++的std::mutex没有&quot;强制解锁&quot;接口</p>
+</li>
+<li>
+<p>循环等待条件（Circular Wait）
+存在资源请求的循环链：T1等待T2的资源，T2等待T3的资源，&hellip;，Tn等待T1的资源
+示例：线程A→锁B→线程B→锁A</p>
+</li>
+</ol>
+<hr>
+<h3 id="二c中常见的死锁场景与示例">二、C++中常见的死锁场景与示例
+</h3><ol>
+<li>嵌套锁顺序不一致（最常见死锁场景）</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;chrono&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mutexA</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mutexB</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">threadA</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lockA</span><span class="p">(</span><span class="n">mutexA</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;[Thread A] Locked mutexA&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="mi">100</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lockB</span><span class="p">(</span><span class="n">mutexB</span><span class="p">);</span> <span class="c1">// 等待mutexB
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;[Thread A] Locked mutexB&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">threadB</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lockB</span><span class="p">(</span><span class="n">mutexB</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;[Thread B] Locked mutexB&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="mi">100</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lockA</span><span class="p">(</span><span class="n">mutexA</span><span class="p">);</span> <span class="c1">// 等待mutexA
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;[Thread B] Locked mutexA&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t1</span><span class="p">(</span><span class="n">threadA</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t2</span><span class="p">(</span><span class="n">threadB</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>问题分析：线程A先获取mutexA，再请求mutexB；线程B先获取mutexB，再请求mutexA，形成循环等待。</p>
+<hr>
+<h3 id="三c中预防死锁的实用策略">三、C++中预防死锁的实用策略
+</h3><ol>
+<li>破坏&quot;循环等待&quot;条件 - 统一加锁顺序（推荐）</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// 正确做法：确保所有线程以相同顺序获取锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">safe_function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 无论哪个线程先执行，都先获取mutexA，再获取mutexB
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lockA</span><span class="p">(</span><span class="n">mutexA</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lockB</span><span class="p">(</span><span class="n">mutexB</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 临界区操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>使用std::lock一次性锁定多个互斥量（C++11）</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">safe_function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 使用std::lock一次性锁定多个互斥量，避免死锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">lock</span><span class="p">(</span><span class="n">mutexA</span><span class="p">,</span> <span class="n">mutexB</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lockA</span><span class="p">(</span><span class="n">mutexA</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">adopt_lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lockB</span><span class="p">(</span><span class="n">mutexB</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">adopt_lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 临界区操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>C++17最佳实践：使用std::scoped_lock</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">safe_function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// C++17推荐方式，更简洁安全
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">scoped_lock</span> <span class="n">lock</span><span class="p">(</span><span class="n">mutexA</span><span class="p">,</span> <span class="n">mutexB</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 临界区操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="4">
+<li>使用超时机制（try_lock）</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">timeout_lock</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">mutexA</span><span class="p">.</span><span class="n">try_lock_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="mi">100</span><span class="p">)))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">mutexB</span><span class="p">.</span><span class="n">try_lock_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="mi">100</span><span class="p">)))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 成功获取两个锁
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 临界区操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">mutexB</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">finally</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="n">mutexA</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 超时处理
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="5">
+<li>避免在持有锁时调用外部函数</li>
+</ol>
+<p>在持有锁期间避免调用可能获取其他锁的函数，防止引入复杂的锁依赖关系。</p>
+<hr>
+<h3 id="四c中死锁的检测与解决">四、C++中死锁的检测与解决
+</h3><ol>
+<li>
+<p>代码审查
+检查所有获取锁的代码路径，确保锁的获取顺序一致
+使用静态代码分析工具（如Clang Static Analyzer）检测潜在死锁</p>
+</li>
+<li>
+<p>运行时检测
+使用std::lock和std::scoped_lock等安全工具
+在关键路径添加日志，记录锁获取顺序</p>
+</li>
+<li>
+<p>实际解决方法</p>
+</li>
+<li>
+<p>重新设计锁获取顺序：确保所有线程以相同顺序获取锁</p>
+</li>
+<li>
+<p>使用超时机制：避免无限等待</p>
+</li>
+<li>
+<p>简化锁粒度：减少需要同时获取的锁数量</p>
+</li>
+<li>
+<p>使用更高级的并发工具：如std::shared_mutex、std::atomic等</p>
+</li>
+</ol>
+<hr>
+<h3 id="五c面试中关于死锁的常见问题">五、C++面试中关于死锁的常见问题
+</h3><ol>
+<li>问：C++中死锁的四个必要条件是什么？如何预防？</li>
+</ol>
+<p>答：C++中死锁的四个必要条件是互斥条件、占有并等待条件、不可剥夺条件和循环等待条件。</p>
+<p>预防方法：
+破坏循环等待：统一加锁顺序（如先锁ID小的，再锁ID大的）
+使用std::lock或std::scoped_lock一次性锁定多个互斥量
+使用超时机制（try_lock、try_lock_for）
+2. 问：为什么std::lock可以避免死锁？</p>
+<p>答：std::lock会自动处理多个互斥量的加锁顺序，确保所有线程以相同的顺序获取锁。它会按照互斥量的地址顺序进行加锁，避免了因加锁顺序不一致导致的循环等待。
+3. 问：C++17中std::scoped_lock相比std::lock有什么优势？</p>
+<p>答：std::scoped_lock是C++17引入的，它结合了std::lock和RAII的特性，提供更简洁、更安全的锁管理方式。它自动处理多个互斥量的加锁和解锁，避免了忘记使用std::adopt_lock的错误。
+4. 问：在C++中如何检测死锁？</p>
+<p>答：C++标准库没有直接提供死锁检测API，但可以通过以下方式：
+使用jstack（Java）或gdb（C++）分析线程状态
+在关键位置添加日志，记录锁获取顺序
+使用第三方库如Deadlock Detector（如Intel Thread Checker）</p>
+<hr>
+<h3 id="六总结">六、总结
+</h3><p>C++中死锁是多线程编程的常见问题，但可以通过以下关键实践有效预防：</p>
+<ol>
+<li>始终以相同顺序获取锁（破坏循环等待条件）</li>
+<li>使用标准库提供的安全工具（std::lock、std::scoped_lock）</li>
+<li>设置锁获取超时（避免无限等待）</li>
+<li>避免在持有锁时调用外部函数</li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>根据CC BY-NC-SA 4.0许可授权</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const elementsToRender = [".main-article", ".widget--toc"];
+
+        elementsToRender.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                renderMathInElement(element, {
+                    delimiters: [
+                        { left: "$$", right: "$$", display: true },
+                        { left: "$", right: "$", display: false },
+                        { left: "\\(", right: "\\)", display: false },
+                        { left: "\\[", right: "\\]", display: true }
+                    ],
+                    ignoredClasses: ["gist"]
+                });
+            }
+        });
+    });
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/lvalue-rvalue-reference/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">左值引用与右值引用</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/the-core-difference-between-pointers-and-references/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">C&#43;&#43; 指针与引用的核心区别 &#43; 引用的底层实现</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/constant-pointer-vs-pointer-to-constant/">
+        
+        
+            <div class="article-image">
+                <img src="/p/constant-pointer-vs-pointer-to-constant/Constant_pointer.07f949343d912e0b8aaf6f25c2956762_hu17261436587961763750.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 常量指针VS指针常量"
+                        data-key="Constant pointer VS pointer to constant" 
+                        data-hash="md5-B/lJND2RLguKr28lwpVnYg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">常量指针VS指针常量</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/c-program-memory-distribution/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/cpp.png" loading="lazy" data-key="c&#43;&#43;-program-memory-distribution" data-hash="/images/cpp.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">C&#43;&#43; 程序内存分布</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/qt-json/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">QT JSON 完整学习笔记</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script
+    src="https://giscus.app/client.js"
+    data-repo="Yannick-Mo/Yannick-Mo.github.io"
+    data-repo-id="R_kgDOQuw_0w"
+    data-category="Q&amp;A"
+    data-category-id="DIC_kwDOQuw_084C0QIk"
+    data-mapping="pathname"
+    data-strict="false"
+    data-reactions-enabled="true"
+    data-emit-metadata="true"
+    data-input-position="top"
+    data-theme="light"
+    data-lang="zh-CN"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async
+></script>
+<script>
+    function setGiscusTheme(theme) {
+        let giscus = document.querySelector("iframe.giscus-frame");
+        if (giscus) {
+            giscus.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: theme,
+                        },
+                    },
+                },
+                "https://giscus.app"
+            );
+        }
+    }
+
+    (function () {
+        addEventListener("message", (e) => {
+            if (event.origin !== "https://giscus.app") return;
+            handler();
+        });
+        window.addEventListener("onColorSchemeChange", handler);
+
+        function handler() {
+            if (document.documentElement.dataset.scheme === "light") {
+                setGiscusTheme('light');
+            } else {
+                setGiscusTheme('dark_dimmed');
+            }
+        }
+    })();
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2025 - 
+        
+        2026 雅尼克.莫(Yannick.Mo)
+    </section>
+    
+    <section class="powerby">
+        
+            少年，你不是可以逆风翻盘吗？
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+    
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function () {
+  function getMermaidTheme() {
+    const scheme = document.documentElement.getAttribute('data-scheme');
+    return scheme === 'dark' ? 'dark' : 'default';
+  }
+
+  function runMermaid() {
+    if (!window.mermaid) return;
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: getMermaidTheme(),
+      themeVariables: { fontFamily: "JetBrains Mono" }
+    });
+    mermaid.run({ querySelector: ".mermaid" });
+  }
+
+  document.addEventListener("DOMContentLoaded", runMermaid);
+  document.addEventListener("turbo:load", runMermaid);
+
+  new MutationObserver(function () { runMermaid(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-scheme'] });
+})();
+</script>
+
+
+
+
+<style>
+     
+    body {
+        background: url(https://Yannick-Mo.github.io/background/bg.png) no-repeat center top;
+        background-size: cover;
+        background-attachment: fixed;
+        background-color: #ffffff;
+        position: relative;
+    }
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.50);
+        z-index: -1;
+    }
+    [data-scheme="dark"] body {
+        background-color: #1a1a1a;
+    }
+    [data-scheme="dark"] body::before {
+        background-color: rgba(26, 26, 26, 0.8);
+    }
+
+     
+    .left-sidebar {
+        padding-bottom: calc(var(--main-top-padding) + 100px) !important;
+    }
+
+     
+    .site-avatar .site-logo {
+        transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    .site-avatar:hover .site-logo {
+        transform: rotate(360deg);
+    }
+
+     
+    #TableOfContents > ul ul,
+    #TableOfContents > ul ol,
+    #TableOfContents > ol ul,
+    #TableOfContents > ol ol {
+        display: none;
+    }
+    #TableOfContents > ul .open,
+    #TableOfContents > ol .open {
+        display: block;
+    }
+
+     
+    #backTopBtn {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 20px;
+        z-index: 99;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        background-image: url(https://Yannick-Mo.github.io/icons/backTop.svg);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+	border: none;
+        background-color: transparent;
+    }
+    #backTopBtn:hover {
+        opacity: 1;
+    }
+
+     
+    .highlight {
+        max-height: 400px;
+        overflow: hidden;
+        position: relative;
+        transition: max-height 0.3s ease-in-out;
+    }
+    .code-show {
+        max-height: 9999px !important;
+    }
+    .code-more-box {
+        width: 100%;
+        padding-top: 78px;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), to(#fff));
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+    [data-scheme="dark"] .code-more-box {
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(#1a1a1a));
+    }
+    .code-more-btn {
+        display: block;
+        margin: auto;
+        width: 44px;
+        height: 22px;
+        background: #f0f0f5;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+        padding-top: 6px;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+    }
+    .code-more-btn:hover {
+        opacity: 1;
+    }
+    [data-scheme="dark"] .code-more-btn {
+        background: #333;
+    }
+    .code-more-img {
+        cursor: pointer !important;
+        display: block;
+        margin: auto;
+        width: 22px;
+        height: 16px;
+        transition: transform 0.2s ease;
+    }
+    .code-more-img-fold {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script data-turbo-eval="false">
+    const codeMoreIconUrl = "https://Yannick-Mo.github.io/icons/codeMore.svg";
+    const backTopIconUrl = "https://Yannick-Mo.github.io/icons/backTop.svg";
+
+    
+    (function() {
+        window.addEventListener('scroll', function() {
+            document.querySelectorAll(".open").forEach(el => el.classList.remove("open"));
+            let li = document.querySelector(".active-class");
+            if (!li) return;
+            if (li.children.length > 1) li.children[1].classList.add("open");
+            let ul = li.parentElement;
+            do {
+                ul.classList.add("open");
+                ul = ul.parentElement?.parentElement;
+            } while (ul && (ul.localName === 'ul' || ul.localName === 'ol'));
+        });
+
+        window.addEventListener('scroll', function() {
+            let btn = document.getElementById("backTopBtn");
+            if (!btn) return;
+            btn.style.display = (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) ? "block" : "none";
+        });
+    })();
+
+    
+    function initScrollTop() {
+        if (document.getElementById("backTopBtn")) return;
+        let sidebar = document.querySelector(".right-sidebar");
+        if (!sidebar) return;
+        let btn = document.createElement("div");
+        btn.id = "backTopBtn";
+        btn.onclick = function() { window.scrollTo({ top: 0, behavior: "smooth" }); };
+        btn.style.backgroundImage = "url(" + backTopIconUrl + ")";
+        sidebar.appendChild(btn);
+    }
+
+    
+    function initCodeMoreBox() {
+        document.querySelectorAll(".highlight").forEach(codeBlock => {
+            if (codeBlock.querySelector(".code-more-box")) return;
+            if (codeBlock.scrollHeight <= codeBlock.clientHeight) return;
+            let box = document.createElement('div');
+            box.classList.add('code-more-box');
+            let btn = document.createElement('span');
+            btn.classList.add('code-more-btn');
+            let img = document.createElement('img');
+            img.classList.add('code-more-img');
+            img.src = codeMoreIconUrl;
+            btn.addEventListener('click', function() {
+                codeBlock.classList.toggle('code-show');
+                img.classList.toggle('code-more-img-fold', codeBlock.classList.contains('code-show'));
+                window.dispatchEvent(new Event('resize'));
+            });
+            btn.appendChild(img);
+            box.appendChild(btn);
+            codeBlock.appendChild(box);
+        });
+    }
+
+    
+    let sakuraIsLoaded = false;
+    function initSakura() {
+        if (sakuraIsLoaded) return;
+        const sakuraScript = document.createElement('script');
+        sakuraScript.src = "https://Yannick-Mo.github.io/background/sakura.js";
+        sakuraScript.onload = function() { sakuraIsLoaded = true; };
+        document.body.appendChild(sakuraScript);
+    }
+
+    
+    function initPage() {
+        initScrollTop();
+        initCodeMoreBox();
+        initSakura();
+    }
+    document.addEventListener('DOMContentLoaded', initPage);
+    document.addEventListener('turbo:load', initPage);
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<div id="global-player" data-turbo-permanent></div>
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function() {
+    if (window.globalPlayer) return;
+    var songs = [
+        {
+            name: "起风了",
+            artist: "买辣椒也用券",
+            url: "\/audio\/qifengle.mp3",
+            cover: "\/img\/qifengle.png"
+        },
+        {
+            name: "凉城",
+            artist: "任然",
+            url: "\/audio\/liangcheng.mp3",
+            cover: "\/img\/liangcheng.png"
+        },
+        {
+            name: "不如就等风来",
+            artist: "林宝馨",
+            url: "\/audio\/burujiudengfenglai.mp3",
+            cover: "\/img\/burujiudengfenglai.png"
+        },
+        {
+            name: "Catch My Breath",
+            artist: "Kelly Clarkson",
+            url: "\/audio\/catch-my-breath.mp3",
+            cover: "\/img\/catch-my-breath.png"
+        },
+        {
+            name: "离开我的依赖",
+            artist: "蓝心羽",
+            url: "\/audio\/li-kai-wo-de-yi-lai.mp3",
+            cover: "\/img\/li-kai-wo-de-yi-lai.png"
+        },
+        {
+            name: "Shots",
+            artist: "Imagine Dragons",
+            url: "\/audio\/shots.mp3",
+            cover: "\/img\/shots.png"
+        },
+        {
+            name: "失控",
+            artist: "蓝心羽",
+            url: "\/audio\/shi-kong.mp3",
+            cover: "\/img\/shi-kong.png"
+        },
+        {
+            name: "晚风",
+            artist: "Lker林柯",
+            url: "\/audio\/wan-feng.mp3",
+            cover: "\/img\/wan-feng.png"
+        },
+        {
+            name: "海阔天空",
+            artist: "Beyond",
+            url: "\/audio\/hai-kuo-tian-kong.mp3",
+            cover: "\/img\/hai-kuo-tian-kong.png"
+        },
+        {
+            name: "爱错",
+            artist: "王力宏",
+            url: "\/audio\/ai-cuo.mp3",
+            cover: "\/img\/ai-cuo.png"
+        },
+        {
+            name: "夜空中最亮的星",
+            artist: "逃跑计划",
+            url: "\/audio\/ye-kong-zui-liang-de-xing.mp3",
+            cover: "\/img\/ye-kong-zui-liang-de-xing.png"
+        },
+        {
+            name: "晴天",
+            artist: "周杰伦",
+            url: "\/audio\/qing-tian.mp3",
+            cover: "\/img\/qing-tian.png"
+        },
+        {
+            name: "稻香",
+            artist: "周杰伦",
+            url: "\/audio\/dao-xiang.mp3",
+            cover: "\/img\/dao-xiang.png"
+        },
+        {
+            name: "花海",
+            artist: "周杰伦",
+            url: "\/audio\/hua-hai.mp3",
+            cover: "\/img\/hua-hai.png"
+        },
+        {
+            name: "七里香",
+            artist: "周杰伦",
+            url: "\/audio\/qi-li-xiang.mp3",
+            cover: "\/img\/qi-li-xiang.png"
+        },
+        {
+            name: "红色高跟鞋",
+            artist: "蔡健雅",
+            url: "\/audio\/hong-se-gao-gen-xie.mp3",
+            cover: "\/img\/hong-se-gao-gen-xie.png"
+        },
+    ];
+    if (songs.length > 0) {
+        window.globalPlayer = new APlayer({
+            container: document.getElementById('global-player'),
+            fixed: true,
+            mini: true,
+            autoplay: false,
+            loop: 'all',
+            order: 'list',
+            preload: 'auto',
+            volume: 0.3,
+            audio: songs
+        });
+    }
+})();
+</script><script data-turbo-eval="false">
+(function() {
+    var config = {
+        waifuPath: '/waifu-tips.json',
+        cubism2Path: 'https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/live2d.min.js',
+        tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
+        logLevel: 'warn',
+        drag: false,
+    };
+
+    function initWaifu() {
+        if (document.getElementById('waifu')) return;
+        if (window.initWidget) {
+            window.initWidget(config);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', initWaifu);
+    document.addEventListener('turbo:load', initWaifu);
+})();
+</script>
+<style>
+#waifu { left: auto !important; right: 65px !important; }
+#waifu-toggle { display: none !important; }
+#waifu-tips { left: auto !important; right: calc(100% + 10px) !important; margin: -30px 0 !important; }
+</style><div id="ambient-widget" data-turbo-permanent>
+    <button id="ambient-toggle" title="氛围音">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+    </button>
+    <div id="ambient-panel" class="hidden">
+        <button data-sound="rain">🌧️ 雨声</button>
+        <button data-sound="coffee" class="active">☕ 咖啡店</button>
+        <button data-sound="fire">🔥 壁炉</button>
+    </div>
+</div>
+<style>
+#ambient-widget {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+#ambient-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card-background);
+    color: var(--card-text-color-main);
+    box-shadow: var(--shadow-l2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+#ambient-toggle:hover { transform: scale(1.1); }
+#ambient-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 12px;
+    background: var(--card-background);
+    box-shadow: var(--shadow-l2);
+    transition: all 0.2s;
+}
+#ambient-panel.hidden { display: none; }
+#ambient-panel button {
+    border: none;
+    background: transparent;
+    color: var(--card-text-color-main);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: left;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+#ambient-panel button:hover { background: var(--card-separator-color); }
+#ambient-panel button.active {
+    background: var(--accent-color);
+    color: #fff;
+}
+[data-scheme="dark"] #ambient-toggle,
+[data-scheme="dark"] #ambient-panel {
+    background: #2d2d2d;
+}
+</style>
+<script data-turbo-eval="false">
+(function() {
+    if (window._ambientInited) return;
+    window._ambientInited = true;
+
+    var ctx, sources = {}, gains = {}, currentSound = 'coffee', isPlaying = false;
+
+    function createNoiseBuffer() {
+        var buf = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
+        var d = buf.getChannelData(0);
+        for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+        return buf;
+    }
+
+    function startRain() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1200;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.25;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.rain = src; gains.rain = gain;
+    }
+
+    function startCoffee() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 200;
+        filter.Q.value = 0.5;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.15;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.coffee = src; gains.coffee = gain;
+    }
+
+    function startFire() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var lp = ctx.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = 400;
+        var hp = ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 60;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.2;
+        src.connect(lp);
+        lp.connect(hp);
+        hp.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.fire = src; gains.fire = gain;
+
+        var crackle = setInterval(function() {
+            if (gains.fire) {
+                gains.fire.gain.value = 0.3 + Math.random() * 0.15;
+                setTimeout(function() { if (gains.fire) gains.fire.gain.value = 0.2; }, 80);
+            }
+        }, 300);
+        sources._crackle = crackle;
+    }
+
+    var starters = { rain: startRain, coffee: startCoffee, fire: startFire };
+
+    function stopAll() {
+        Object.keys(sources).forEach(function(k) {
+            if (k === '_crackle') { clearInterval(sources[k]); return; }
+            try { sources[k].stop(); } catch(e) {}
+        });
+        sources = {};
+        gains = {};
+        if (window.globalPlayer) { try { window.globalPlayer.pause(); } catch(e) {} }
+    }
+
+    function play(name) {
+        if (!ctx) {
+            ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+        stopAll();
+        if (starters[name]) starters[name]();
+        currentSound = name;
+        isPlaying = true;
+    }
+
+    function stop() {
+        stopAll();
+        isPlaying = false;
+    }
+
+    var btn = document.getElementById('ambient-toggle');
+    var panel = document.getElementById('ambient-panel');
+    var soundBtns = panel.querySelectorAll('button[data-sound]');
+
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        panel.classList.toggle('hidden');
+    });
+
+    soundBtns.forEach(function(b) {
+        b.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var sound = this.dataset.sound;
+            soundBtns.forEach(function(x) { x.classList.remove('active'); });
+            if (isPlaying && currentSound === sound) {
+                stop();
+            } else {
+                this.classList.add('active');
+                play(sound);
+            }
+            panel.classList.add('hidden');
+        });
+    });
+
+    document.addEventListener('click', function() { panel.classList.add('hidden'); });
+})();
+</script>
+    </body>
+</html>

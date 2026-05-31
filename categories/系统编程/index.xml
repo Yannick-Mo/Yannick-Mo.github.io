@@ -9,10 +9,10 @@
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
         <lastBuildDate>Sat, 30 May 2026 00:01:50 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Linux 管道通信与 I/O 多路复用</title>
-        <link>https://Yannick-Mo.github.io/p/linux-%E7%AE%A1%E9%81%93%E9%80%9A%E4%BF%A1%E4%B8%8E-i/o-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</link>
+        <link>https://Yannick-Mo.github.io/p/linux-pipe-ipc/</link>
         <pubDate>Sat, 30 May 2026 00:01:50 +0800</pubDate>
         
-        <guid>https://Yannick-Mo.github.io/p/linux-%E7%AE%A1%E9%81%93%E9%80%9A%E4%BF%A1%E4%B8%8E-i/o-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</guid>
+        <guid>https://Yannick-Mo.github.io/p/linux-pipe-ipc/</guid>
         <description>&lt;h2 id=&#34;1-匿名管道父进程写子进程读&#34;&gt;1. 匿名管道：父进程写，子进程读
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
