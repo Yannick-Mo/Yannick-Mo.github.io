@@ -1355,6 +1355,7 @@
         waifuPath: '/waifu-tips.json',
         cubism2Path: 'https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/live2d.min.js',
         tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
+        showToggleAfterQuit: true,
         logLevel: 'warn',
         drag: false,
     };
@@ -1371,7 +1372,9 @@
 </script>
 <style>
 #waifu { left: auto !important; right: 65px !important; }
-#waifu-toggle { display: none !important; }
+#waifu-toggle { left: auto !important; right: 0 !important; justify-content: flex-start !important; margin-left: 0 !important; margin-right: -100px !important; transition: margin-right 1s !important; }
+#waifu-toggle.waifu-toggle-active { display: flex !important; margin-right: -50px !important; }
+#waifu-toggle.waifu-toggle-active:hover { margin-right: -30px !important; }
 #waifu-tips { left: auto !important; right: calc(100% + (10px + 300px * (var(--ws, 1) - 1))) !important; margin: calc(-30px + 400px * (1 - var(--ws, 1))) 0 !important; }
 </style>
 <script data-turbo-eval="false">
