@@ -971,31 +971,6 @@
     document.addEventListener('turbo:load', function() { setTimeout(init, 300); });
     setTimeout(init, 800);
 })();
-</script>
-<script src="/fireworks-js.umd.js" data-turbo-eval="false"></script>
-<script src="/waifu-fireworks.js" data-turbo-eval="false"></script>
-<script data-turbo-eval="false">
-(function() {
-    function fw() { return window.WaifuFireworks; }
-    function hookHitokoto() {
-        var btn = document.getElementById('waifu-tool-hitokoto');
-        if (!btn || btn.dataset.fwHooked) return;
-        btn.dataset.fwHooked = '1';
-        btn.addEventListener('click', function() {
-            var wf = fw();
-            if (!wf) return;
-            wf.soundEngine.launch();
-            wf.fireworksManager.start();
-        });
-    }
-    document.addEventListener('DOMContentLoaded', hookHitokoto);
-    document.addEventListener('turbo:load', hookHitokoto);
-    document.addEventListener('turbo:before-cache', function() {
-        var wf = fw();
-        if (wf) wf.fireworksManager.cleanup();
-    });
-    setTimeout(hookHitokoto, 1500);
-})();
 </script><script src="/waifu-games/menu.js" data-turbo-eval="false"></script><div id="ambient-widget" data-turbo-permanent>
     <button id="ambient-toggle" title="氛围音">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
