@@ -1207,5 +1207,39 @@
     document.addEventListener('click', function() { panel.classList.add('hidden'); });
 })();
 </script>
+<button id="fireworks-btn" title="烟花模式" data-turbo-permanent>🎆</button>
+
+<link rel="stylesheet" href="/fireworks/style.css" data-turbo-track="reload">
+<script src="/fireworks/fireworks-bundle.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function() {
+  
+  var btn = document.getElementById('fireworks-btn');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      if (!window.FireworksMode) return;
+      if (window._fwRunning) return;
+      window.FireworksMode.start();
+    });
+  }
+
+  
+  var navCount = 0;
+  document.addEventListener('turbo:load', function() {
+    navCount++;
+    if (navCount === 1) return; 
+
+    var toggle = document.getElementById('dark-mode-toggle');
+    if (toggle && !toggle.dataset.fwFixed) {
+      toggle.dataset.fwFixed = '1';
+      toggle.addEventListener('click', function() {
+        var el = document.documentElement;
+        el.dataset.scheme = el.dataset.scheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('StackColorScheme', el.dataset.scheme);
+      });
+    }
+  });
+})();
+</script>
     </body>
 </html>
