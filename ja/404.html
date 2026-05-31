@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='https://Yannick-Mo.github.io/ja/404.html'>
 
-<link rel="stylesheet" href="/scss/style.min.92528eb56f39e44e070a1ea8808b6d8f6d681ac4f2849a3f53c98bddcde86fa9.css"><meta property='og:title' content="404 Page not found">
+<link rel="stylesheet" href="/scss/style.min.22fe0601e48b9f23a7b6d2523f0f78450a0b5b3b25fdd49d655878cc28ca49b7.css"><meta property='og:title' content="404 Page not found">
 <meta property='og:description' content="サンプル説明">
 <meta property='og:url' content='https://Yannick-Mo.github.io/ja/404.html'>
 <meta property='og:site_name' content='雅尼克.莫(Yannick.Mo)'>
@@ -493,7 +493,7 @@
         },
         {
             name: "离开我的依赖",
-            artist: "蓝心羽",
+            artist: "王艳薇",
             url: "\/audio\/li-kai-wo-de-yi-lai.mp3",
             cover: "\/img\/li-kai-wo-de-yi-lai.png"
         },
@@ -505,7 +505,7 @@
         },
         {
             name: "失控",
-            artist: "蓝心羽",
+            artist: "井迪儿",
             url: "\/audio\/shi-kong.mp3",
             cover: "\/img\/shi-kong.png"
         },
@@ -601,8 +601,48 @@
 <style>
 #waifu { left: auto !important; right: 65px !important; }
 #waifu-toggle { display: none !important; }
-#waifu-tips { left: auto !important; right: calc(100% + 10px) !important; margin: -30px 0 !important; }
-</style><div id="ambient-widget" data-turbo-permanent>
+#waifu-tips { left: auto !important; right: calc(100% + (10px + 300px * (var(--ws, 1) - 1))) !important; margin: calc(-30px + 400px * (1 - var(--ws, 1))) 0 !important; }
+</style>
+<script data-turbo-eval="false">
+(function() {
+    var KEY = 'waifu-scale';
+    function apply(s) {
+        var m = document.getElementById('live2d');
+        if (m) m.style.transform = 'scale(' + s + ')';
+        var t = document.getElementById('waifu-tips');
+        if (t) t.style.setProperty('--ws', s);
+    }
+    function init() {
+        var tool = document.getElementById('waifu-tool');
+        if (!tool || document.getElementById('waifu-tool-zoomin')) return;
+        var saved = parseFloat(localStorage.getItem(KEY)) || 1;
+        apply(saved);
+        function mk(id, text, title, delta) {
+            var btn = document.createElement('span');
+            btn.id = id;
+            btn.textContent = text;
+            btn.title = title;
+            btn.style.cssText = 'cursor:pointer;color:#7b8c9d;font-size:20px;font-weight:bold;line-height:25px;text-align:center;transition:color .3s;user-select:none;';
+            btn.addEventListener('mouseenter', function() { this.style.color = '#0684bd'; });
+            btn.addEventListener('mouseleave', function() { this.style.color = '#7b8c9d'; });
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var cur = parseFloat(localStorage.getItem(KEY)) || 1;
+                var nxt = Math.round(Math.min(Math.max(cur + delta, 0.3), 3) * 10) / 10;
+                localStorage.setItem(KEY, nxt);
+                apply(nxt);
+            });
+            return btn;
+        }
+        tool.insertBefore(mk('waifu-tool-zoomout', '−', '缩小', -0.1), tool.firstChild);
+        tool.insertBefore(mk('waifu-tool-zoomin', '+', '放大', 0.1), tool.firstChild);
+    }
+    var obs = new MutationObserver(function() { init(); });
+    obs.observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('turbo:load', function() { setTimeout(init, 300); });
+    setTimeout(init, 800);
+})();
+</script><script src="/waifu-games/menu.js" data-turbo-eval="false"></script><div id="ambient-widget" data-turbo-permanent>
     <button id="ambient-toggle" title="氛围音">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 18V5l12-2v13"></path>
