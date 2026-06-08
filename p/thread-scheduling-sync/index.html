@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="一、线程调度 Q1 常见调度算法？ 算法 特点 问题 FCFS 非抢占，先来先跑 护航效应（长任务堵后面所有） SJF 平均等待时间最短 长任务可能饥饿 优先级调度 高优先级先跑 优先级反转 时间片轮转 固定时间片，公平响应快 时间片大小难权衡 多级反馈队列 多队列 + 优先级升降，经典调度算法（BSD ULE 等） 实现复杂 Q2 抢占式 vs 协作式调度？ 抢占式：OS 强行剥夺 CPU，线程无需主动让出。响应快、公平，需同步保护 协作式：线程主动 yield 让出 CPU。实现简单，但一个线程死循环会阻塞整个进程 C++ 线程由 OS 调度，通常为抢占式 Q3 Linux CFS 原理？ 用虚拟运行时间（vruntime）记录线程已运行时间 每次选 vruntime 最小的运行 使用红黑树组织可运行线程，调度复杂度 O(log N) Nice 值调节优先级（-20~19） Q4 上下文切换开销？ 线程切换（同进程）：\n">
+<title>线程调度与线程同步</title>
+
+<link rel='canonical' href='https://Yannick-Mo.github.io/p/thread-scheduling-sync/'>
+
+<link rel="stylesheet" href="/scss/style.min.22fe0601e48b9f23a7b6d2523f0f78450a0b5b3b25fdd49d655878cc28ca49b7.css"><meta property='og:title' content="线程调度与线程同步">
+<meta property='og:description' content="一、线程调度 Q1 常见调度算法？ 算法 特点 问题 FCFS 非抢占，先来先跑 护航效应（长任务堵后面所有） SJF 平均等待时间最短 长任务可能饥饿 优先级调度 高优先级先跑 优先级反转 时间片轮转 固定时间片，公平响应快 时间片大小难权衡 多级反馈队列 多队列 + 优先级升降，经典调度算法（BSD ULE 等） 实现复杂 Q2 抢占式 vs 协作式调度？ 抢占式：OS 强行剥夺 CPU，线程无需主动让出。响应快、公平，需同步保护 协作式：线程主动 yield 让出 CPU。实现简单，但一个线程死循环会阻塞整个进程 C++ 线程由 OS 调度，通常为抢占式 Q3 Linux CFS 原理？ 用虚拟运行时间（vruntime）记录线程已运行时间 每次选 vruntime 最小的运行 使用红黑树组织可运行线程，调度复杂度 O(log N) Nice 值调节优先级（-20~19） Q4 上下文切换开销？ 线程切换（同进程）：\n">
+<meta property='og:url' content='https://Yannick-Mo.github.io/p/thread-scheduling-sync/'>
+<meta property='og:site_name' content='雅尼克.莫(Yannick.Mo)'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='C/C&#43;&#43;' /><meta property='article:published_time' content='2026-06-07T00:00:00&#43;08:00'/><meta property='article:modified_time' content='2026-06-07T00:00:00&#43;08:00'/><meta property='og:image' content='https://Yannick-Mo.github.io/img/avatar.png' />
+<meta name="twitter:title" content="线程调度与线程同步">
+<meta name="twitter:description" content="一、线程调度 Q1 常见调度算法？ 算法 特点 问题 FCFS 非抢占，先来先跑 护航效应（长任务堵后面所有） SJF 平均等待时间最短 长任务可能饥饿 优先级调度 高优先级先跑 优先级反转 时间片轮转 固定时间片，公平响应快 时间片大小难权衡 多级反馈队列 多队列 + 优先级升降，经典调度算法（BSD ULE 等） 实现复杂 Q2 抢占式 vs 协作式调度？ 抢占式：OS 强行剥夺 CPU，线程无需主动让出。响应快、公平，需同步保护 协作式：线程主动 yield 让出 CPU。实现简单，但一个线程死循环会阻塞整个进程 C++ 线程由 OS 调度，通常为抢占式 Q3 Linux CFS 原理？ 用虚拟运行时间（vruntime）记录线程已运行时间 每次选 vruntime 最小的运行 使用红黑树组织可运行线程，调度复杂度 O(log N) Nice 值调节优先级（-20~19） Q4 上下文切换开销？ 线程切换（同进程）：\n"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://Yannick-Mo.github.io/img/avatar.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+<script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7/dist/turbo.es5-umd.min.js"></script><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/waifu.css">
+<script type="module" src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/waifu-tips.js"></script>
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu14133112665799786173.png" width="300"
+                            height="282" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😁</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">雅尼克.莫(Yannick.Mo)</a></h1>
+            <h2 class="site-description">欢迎来到我的网站</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/1399620506'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1766655316953" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4996" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M419.5 309.304c-17.514-9.487-35.029-18.974-52.543-28.583l-87.209-47.435c-11.798-6.447-16.663-16.299-9.973-28.462 6.69-12.284 17.88-13.136 29.434-6.81 68.113 37.096 136.347 74.072 204.338 111.655 17.393 9.609 48.773 3.892 59.842-12.406a66632.417 66632.417 0 0 0 104.115-151.55c1.216-1.825 2.432-3.65 3.648-5.352 9.852-13.745 21.164-17.393 31.38-9.366 11.799 9.366 9.853 20.434 2.19 31.624a18582.62 18582.62 0 0 0-42.205 61.788c-19.461 28.583-38.922 57.166-60.694 88.911h245.084c22.867 0 26.394 3.649 26.515 26.515 0.244 156.78 0.365 313.44 0.609 470.22 0 22.38-4.014 26.272-26.88 26.394-5.96 0-12.042 0.608-17.88-0.122-21.65-2.432-37.462-0.364-45.003 26.394-6.811 24.083-32.475 36.367-55.585 33.935-26.758-2.798-44.395-18.61-51.206-43.544-4.135-15.082-11.19-17.15-24.812-17.028-94.02 0.608-187.918 0.365-281.938 0.122-10.825 0-17.15 0.973-20.312 14.109-6.811 28.218-30.043 46.098-55.706 46.584-26.637 0.487-49.747-16.907-57.531-46.22-3.284-12.284-8.758-15.081-20.07-14.473-14.595 0.851-29.312 0.365-44.029 0.121-16.055-0.364-23.11-6.932-23.11-22.623 0.122-159.334 0.365-318.791 0.73-478.247 0-16.542 6.69-22.015 25.056-22.015 75.532-0.122 151.064 0 226.474 0h15.812c0.487-1.338 0.973-2.676 1.46-4.136z m417.555 490.29V349.076H188.648v450.516h648.407z m-520.94 37.948h-44.638c3.041 12.77 9.244 21.771 21.164 22.501 13.258 0.973 19.582-8.879 23.474-22.501z m394.445-0.122c4.5 13.623 10.582 23.596 23.961 22.623 12.042-0.851 17.637-10.217 21.286-22.623H710.56z" fill="#1296DB" p-id="4997"></path><path d="M513.399 768.578H252.746c-25.299 0-29.312-4.014-29.312-29.313 0.121-108.98 0.243-217.96 0.486-327.062 0-22.988 4.744-27.732 27.61-27.732h523.008c23.23 0 27.974 4.622 28.096 27.367 0.365 109.588 0.608 219.055 0.73 328.643 0 23.475-4.865 27.975-29.07 28.097H513.4z m250.678-38.557V423.393H262.234V730.02h501.843z" fill="#1296DB" p-id="4998"></path><path d="M515.71 675.653c-6.69 4.743-12.893 10.095-19.948 13.865-23.23 12.285-46.34 11.19-67.747-3.77-23.596-16.542-34.057-40.746-31.989-68.964 0.487-6.082 11.677-15.69 18.123-15.934 6.325-0.243 14.352 8.515 18.974 15.204 3.65 5.352 2.068 13.866 4.622 20.312 4.865 12.285 13.866 23.961 27.367 21.042 9.973-2.067 18.974-12.163 26.393-20.434 3.65-4.135 3.041-12.284 4.014-18.609 1.703-12.041 8.636-19.339 20.434-19.096 10.703 0.244 17.636 6.812 19.096 18.488 0.851 7.42 1.094 16.663 5.473 21.528 7.055 7.906 17.028 17.393 26.15 17.758 8.15 0.244 18.123-9.73 24.57-17.514 4.257-5.109 4.013-14.231 5.351-21.65 2.19-11.798 8.88-18.975 21.042-18.123 12.042 0.973 18.366 8.757 17.88 21.042-1.216 31.015-13.38 56.193-42.084 70.058-26.758 12.893-51.814 7.42-73.708-12.527-1.216-0.852-2.554-1.582-4.013-2.676z m214.068-116.035c0.365 18.366-14.596 28.461-28.461 20.555-37.097-21.163-73.586-43.421-109.954-65.801-9.608-5.96-11.676-15.69-6.081-25.542 5.716-10.096 15.812-12.772 25.177-7.42 37.462 21.65 74.56 43.908 111.413 66.653 4.257 2.798 6.325 9.244 7.906 11.555z m-316.602-70.667c3.406 3.406 12.163 8.15 13.136 13.988 1.095 6.932-2.554 18.974-7.906 21.65-32.232 16.541-65.315 31.38-98.52 46.097-10.095 4.5-21.164 1.095-23.718-9.852-1.703-7.176 1.338-20.677 6.447-23.353 33.204-17.028 67.504-31.745 101.439-47.192 1.46-0.608 3.162-0.486 9.122-1.338z" fill="#1296DB" p-id="4999"></path></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.douyin.com/user/MS4wLjABAAAAaWBHMYjfaJN34aCrci_aWVyr9e-zaNSUhhqmsk3_xMbhRmCBmSmLzPhzv0TowMWH'
+                        target="_blank"
+                        title="douyin"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1766656006310" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10109" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M890.368 431.1552a362.8544 362.8544 0 0 1-210.6368-66.2016c0 94.5152 0 188.9792 1.1776 283.4944 0 12.6464 0.6144 25.2928-0.5632 37.888a307.2 307.2 0 0 1-40.96 131.2256 288.2048 288.2048 0 0 1-79.4624 89.088A256 256 0 0 1 414.72 956.0064a308.7872 308.7872 0 0 1-78.2336-6.6048A282.112 282.112 0 0 1 235.52 905.472c-0.6144-0.6144-1.792-1.2288-1.792-1.8432a272.64 272.64 0 0 1-79.4624-86.6816A281.0368 281.0368 0 0 1 249.344 433.5616 282.112 282.112 0 0 1 434.7392 394.24v35.84c0.6144 15.0528 0 30.1056 0.6144 44.544v76.4416a107.776 107.776 0 0 0-60.16-1.792 155.8528 155.8528 0 0 0-65.024 31.2832 108.4928 108.4928 0 0 0-27.6992 34.304 133.9392 133.9392 0 0 0-13.2608 73.4208 129.1776 129.1776 0 0 0 28.928 66.2528 152.1664 152.1664 0 0 0 38.5024 31.8976 127.6928 127.6928 0 0 0 187.8016-111.36V287.8976c0.6144-74.0352 0-148.0704 0.6144-222.1056h152.8832a171.264 171.264 0 0 0 3.584 39.1168h0.6144a231.1168 231.1168 0 0 0 22.272 62.0032 187.5968 187.5968 0 0 0 67.4304 74.6496c1.792 1.1776 2.9696 3.0208 4.8128 4.1984a212.5824 212.5824 0 0 0 69.7856 28.3136 272.5888 272.5888 0 0 0 43.9296 4.8128z m0 0" fill="#6C6CEA" p-id="10110"></path><path d="M836.7104 336.5376a536.7808 536.7808 0 0 0-4.096-65.8432A221.6448 221.6448 0 0 1 776.6528 245.76c-1.8432-1.1776-3.0208-3.0208-4.8128-4.1984a187.5968 187.5968 0 0 1-67.4304-74.6496 231.1168 231.1168 0 0 1-22.272-62.0032h-0.6144a171.264 171.264 0 0 1-3.584-39.1168h-152.8832c-0.6144 74.0352 0 148.0704-0.6144 222.1056v387.6352a127.6928 127.6928 0 0 1-187.8016 111.36 152.1664 152.1664 0 0 1-38.5024-31.8976 129.1776 129.1776 0 0 1-28.928-66.2528 133.9392 133.9392 0 0 1 13.2608-73.4208 109.2096 109.2096 0 0 1 27.6992-34.304 155.9552 155.9552 0 0 1 64.9728-31.2832 107.9808 107.9808 0 0 1 60.2112 1.792V475.0848c-0.6144-14.4384 0-29.4912-0.6144-44.544V394.24a282.112 282.112 0 0 0-185.3952 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 282.2656 282.2656 0 0 0-1.792 290.0992 273.6128 273.6128 0 0 0 16.1792 24.7296 525.056 525.056 0 0 0 506.88-128.4096c1.4848-8.9088 2.6624-17.8688 3.2768-26.9312 1.1776-12.5952 0.5632-25.2416 0.5632-37.888-1.1776-94.5152-1.1776-188.9792-1.1776-283.4944a363.8272 363.8272 0 0 0 149.2992 61.44 527.872 527.872 0 0 0 7.424-89.856z" fill="#757BF2" p-id="10111"></path><path d="M743.7312 220.16a201.8304 201.8304 0 0 1-39.3216-52.992 231.1168 231.1168 0 0 1-22.272-62.0032h-0.6144a171.264 171.264 0 0 1-3.584-39.1168h-152.8832c-0.6144 74.0352 0 148.0704-0.6144 222.1056v326.7584a526.2336 526.2336 0 0 0 155.2896-174.08V364.9536c8.9088 6.2976 18.176 12.032 27.648 17.4592a521.5232 521.5232 0 0 0 36.352-162.2528zM273.7152 709.4272a125.3376 125.3376 0 0 1-4.5056-20.48 133.9392 133.9392 0 0 1 13.2608-73.4208 109.2096 109.2096 0 0 1 27.6992-34.304 155.9552 155.9552 0 0 1 64.9728-31.2832 107.9808 107.9808 0 0 1 60.2112 1.792V475.0848c-0.6144-14.4384 0-29.4912-0.6144-44.544V394.24a282.112 282.112 0 0 0-185.3952 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 284.3136 284.3136 0 0 0-39.68 174.9504 525.8752 525.8752 0 0 0 103.8336 10.24c18.0736 0.0512 35.7888-0.8704 53.504-2.6112z" fill="#8486F8" p-id="10112"></path><path d="M435.2 458.8032c0-9.3184 0-18.7904-0.3584-28.2624V394.24a282.112 282.112 0 0 0-185.4976 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 288.1536 288.1536 0 0 0-20.48 40.4992A521.8304 521.8304 0 0 0 435.2 458.8032zM639.0272 65.792h-113.9712c-0.6144 74.0352 0 148.0704-0.6144 222.1056v83.2a522.24 522.24 0 0 0 114.5856-305.3056z" fill="#8D92F8" p-id="10113"></path></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yannick-Mo'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页|home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E-about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于 | About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档|Archive</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索|search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>技术链接|Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://Yannick-Mo.github.io/" selected>简体中文</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/en/" >English</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/zh-tw/" >正體中文</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/ja/" >日本語</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#一线程调度">一、线程调度</a>
+      <ol>
+        <li><a href="#q1-常见调度算法">Q1 常见调度算法？</a></li>
+        <li><a href="#q2-抢占式-vs-协作式调度">Q2 抢占式 vs 协作式调度？</a></li>
+        <li><a href="#q3-linux-cfs-原理">Q3 Linux CFS 原理？</a></li>
+        <li><a href="#q4-上下文切换开销">Q4 上下文切换开销？</a></li>
+        <li><a href="#q5-优先级反转与解决">Q5 优先级反转与解决？</a></li>
+        <li><a href="#q6-c-设置线程优先级">Q6 C++ 设置线程优先级？</a></li>
+        <li><a href="#q7-减少上下文切换">Q7 减少上下文切换？</a></li>
+        <li><a href="#q8-cpu-亲和性">Q8 CPU 亲和性？</a></li>
+        <li><a href="#q9-协程-vs-内核线程对比">Q9 协程 vs 内核线程对比？</a></li>
+      </ol>
+    </li>
+    <li><a href="#二线程同步">二、线程同步</a>
+      <ol>
+        <li><a href="#q10-互斥锁-vs-自旋锁">Q10 互斥锁 vs 自旋锁？</a></li>
+        <li><a href="#q11-lock_guard-vs-unique_lock">Q11 lock_guard vs unique_lock？</a></li>
+        <li><a href="#q12-条件变量为什么必须配合互斥锁">Q12 条件变量为什么必须配合互斥锁？</a></li>
+        <li><a href="#q13-虚假唤醒如何避免">Q13 虚假唤醒？如何避免？</a></li>
+        <li><a href="#q14-notify_one-vs-notify_all">Q14 notify_one vs notify_all？</a></li>
+        <li><a href="#q15-死锁的四个必要条件">Q15 死锁的四个必要条件？</a></li>
+        <li><a href="#q16-原子操作-vs-互斥锁">Q16 原子操作 vs 互斥锁？</a></li>
+        <li><a href="#q17-c-六种-memory_order-选择">Q17 C++ 六种 memory_order 选择？</a></li>
+        <li><a href="#q18-aba-问题如何解决">Q18 ABA 问题？如何解决？</a></li>
+        <li><a href="#q19-伪共享false-sharing">Q19 伪共享（False Sharing）？</a></li>
+        <li><a href="#q20-线程安全的单例">Q20 线程安全的单例？</a></li>
+        <li><a href="#q21-生产者-消费者核心要点">Q21 生产者-消费者核心要点？</a></li>
+        <li><a href="#q22-atomic_flag-vs-atomicbool">Q22 atomic_flag vs atomic<bool>？</a></li>
+        <li><a href="#q23-shared_ptr-的线程安全性">Q23 shared_ptr 的线程安全性？</a></li>
+        <li><a href="#q24-自旋锁实现">Q24 自旋锁实现？</a></li>
+        <li><a href="#q25-call_once-场景">Q25 call_once 场景？</a></li>
+        <li><a href="#q26-future-vs-shared_future">Q26 future vs shared_future？</a></li>
+        <li><a href="#q27-线程池核心设计要素">Q27 线程池核心设计要素？</a></li>
+        <li><a href="#q28-内存屏障与-memory_order">Q28 内存屏障与 memory_order？</a></li>
+        <li><a href="#q29-x86-vs-arm-内存模型差异">Q29 x86 vs ARM 内存模型差异？</a></li>
+        <li><a href="#q30-如何调试死锁">Q30 如何调试死锁？</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" >
+                八股文
+            </a>
+        
+            <a href="/categories/c/c&#43;&#43;/" >
+                C/C&#43;&#43;
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/thread-scheduling-sync/">线程调度与线程同步</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2026-06-07T00:00:00&#43;08:00'>2026-06-07</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 5 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="一线程调度">一、线程调度
+</h2><h3 id="q1-常见调度算法">Q1 常见调度算法？
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>算法</th>
+          <th>特点</th>
+          <th>问题</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>FCFS</strong></td>
+          <td>非抢占，先来先跑</td>
+          <td>护航效应（长任务堵后面所有）</td>
+      </tr>
+      <tr>
+          <td><strong>SJF</strong></td>
+          <td>平均等待时间最短</td>
+          <td>长任务可能饥饿</td>
+      </tr>
+      <tr>
+          <td><strong>优先级调度</strong></td>
+          <td>高优先级先跑</td>
+          <td>优先级反转</td>
+      </tr>
+      <tr>
+          <td><strong>时间片轮转</strong></td>
+          <td>固定时间片，公平响应快</td>
+          <td>时间片大小难权衡</td>
+      </tr>
+      <tr>
+          <td><strong>多级反馈队列</strong></td>
+          <td>多队列 + 优先级升降，经典调度算法（BSD ULE 等）</td>
+          <td>实现复杂</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="q2-抢占式-vs-协作式调度">Q2 抢占式 vs 协作式调度？
+</h3><ul>
+<li><strong>抢占式</strong>：OS 强行剥夺 CPU，线程无需主动让出。响应快、公平，需同步保护</li>
+<li><strong>协作式</strong>：线程主动 <code>yield</code> 让出 CPU。实现简单，但一个线程死循环会阻塞整个进程</li>
+<li>C++ 线程由 OS 调度，通常为<strong>抢占式</strong></li>
+</ul>
+<h3 id="q3-linux-cfs-原理">Q3 Linux CFS 原理？
+</h3><ul>
+<li>用<strong>虚拟运行时间</strong>（vruntime）记录线程已运行时间</li>
+<li>每次选 vruntime 最小的运行</li>
+<li>使用<strong>红黑树</strong>组织可运行线程，调度复杂度 O(log N)</li>
+<li>Nice 值调节优先级（-20~19）</li>
+</ul>
+<h3 id="q4-上下文切换开销">Q4 上下文切换开销？
+</h3><p><strong>线程切换（同进程）</strong>：</p>
+<ul>
+<li>保存/恢复寄存器、PC、栈指针、线程局部存储</li>
+<li>内核调度算法执行</li>
+<li>缓存污染（L1/L2 失效）</li>
+<li><strong>不同进程的线程切换</strong>额外需切换页表 + TLB 刷新，开销更大</li>
+<li><strong>量级</strong>：同进程线程切换 1<del>3μs，跨进程 3</del>10μs</li>
+</ul>
+<h3 id="q5-优先级反转与解决">Q5 优先级反转与解决？
+</h3><p>高优等待低优持有的锁，中优抢占 CPU → 低优无法释放 → 高优无限阻塞</p>
+<ul>
+<li><strong>优先级继承</strong>：低优临时继承高优优先级</li>
+<li><strong>优先级天花板</strong>：锁设置一个最高优先级</li>
+</ul>
+<h3 id="q6-c-设置线程优先级">Q6 C++ 设置线程优先级？
+</h3><p>标准库无跨平台接口</p>
+<ul>
+<li>POSIX：<code>pthread_setschedparam</code> + <code>SCHED_FIFO</code>/<code>SCHED_RR</code></li>
+<li>Windows：<code>SetThreadPriority</code></li>
+<li><strong>建议</strong>：尽量用同步机制控制顺序，避免依赖优先级</li>
+</ul>
+<h3 id="q7-减少上下文切换">Q7 减少上下文切换？
+</h3><ul>
+<li>减少线程数（线程池）</li>
+<li>降低锁竞争（细粒度锁、无锁结构）</li>
+<li>使用协程（用户态切换，无内核开销）</li>
+<li>设置 CPU 亲和性减少迁移</li>
+</ul>
+<h3 id="q8-cpu-亲和性">Q8 CPU 亲和性？
+</h3><p>将线程绑定到指定 CPU 核心运行，减少缓存迁移、避免锁竞争、提升 NUMA 性能</p>
+<ul>
+<li>API：<code>pthread_setaffinity_np</code> / <code>SetThreadAffinityMask</code></li>
+<li>场景：高性能计算、延迟敏感服务</li>
+</ul>
+<h3 id="q9-协程-vs-内核线程对比">Q9 协程 vs 内核线程对比？
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>协程（C++20 stackless）</th>
+          <th>内核线程</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>调度</td>
+          <td>用户态（非抢占）</td>
+          <td>内核抢占式</td>
+      </tr>
+      <tr>
+          <td>切换开销</td>
+          <td>纳秒级</td>
+          <td>微秒级（陷入内核）</td>
+      </tr>
+      <tr>
+          <td>数量</td>
+          <td>百万级</td>
+          <td>数千受限</td>
+      </tr>
+      <tr>
+          <td>栈</td>
+          <td><strong>无独立栈</strong>（frame 在堆上）</td>
+          <td>固定独立栈（MB级）</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="二线程同步">二、线程同步
+</h2><h3 id="q10-互斥锁-vs-自旋锁">Q10 互斥锁 vs 自旋锁？
+</h3><ul>
+<li><strong>自旋锁</strong>：临界区极短（&lt;10μs）且多核 → 避免上下文切换</li>
+<li><strong>互斥锁</strong>：临界区长或单核 → 自旋浪费 CPU</li>
+</ul>
+<h3 id="q11-lock_guard-vs-unique_lock">Q11 lock_guard vs unique_lock？
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>lock_guard</th>
+          <th>unique_lock</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>RAII 加解锁</td>
+          <td>✅</td>
+          <td>✅</td>
+      </tr>
+      <tr>
+          <td>延迟锁 / 提前解锁 / try_lock</td>
+          <td>❌</td>
+          <td>✅</td>
+      </tr>
+      <tr>
+          <td>所有权转移</td>
+          <td>❌</td>
+          <td>✅</td>
+      </tr>
+      <tr>
+          <td>用于条件变量</td>
+          <td>❌</td>
+          <td><strong>必须</strong></td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="q12-条件变量为什么必须配合互斥锁">Q12 条件变量为什么必须配合互斥锁？
+</h3><p>保护共享条件的检查与等待之间的竞态。<code>wait()</code> 原子地释放锁并进入等待，被唤醒后重新加锁，确保条件检查到等待无空隙。</p>
+<h3 id="q13-虚假唤醒如何避免">Q13 虚假唤醒？如何避免？
+</h3><p>线程在未收到 <code>notify</code> 或条件不满足时被唤醒。原因：OS 调度策略、POSIX 允许。
+<strong>必须用 <code>while</code> 循环（或 <code>wait</code> 的谓词版本）反复验证条件。</strong></p>
+<h3 id="q14-notify_one-vs-notify_all">Q14 notify_one vs notify_all？
+</h3><ul>
+<li><code>notify_one</code>：唤醒一个等待线程，适合单消费者</li>
+<li><code>notify_all</code>：唤醒全部等待线程，适合多条件或所有线程需响应变化</li>
+</ul>
+<h3 id="q15-死锁的四个必要条件">Q15 死锁的四个必要条件？
+</h3><p><strong>互斥、请求与保持、不剥夺、循环等待</strong></p>
+<ul>
+<li><strong>避免</strong>：固定顺序加锁、<code>std::lock</code> 一次获取多锁、<code>try_lock</code>+回退、避免嵌套锁、缩小锁粒度</li>
+</ul>
+<h3 id="q16-原子操作-vs-互斥锁">Q16 原子操作 vs 互斥锁？
+</h3><ul>
+<li><strong>原子操作</strong>：单个变量的简单读写/自增，无锁高效</li>
+<li><strong>互斥锁</strong>：保护代码块（多个相关变量或复杂逻辑）</li>
+</ul>
+<h3 id="q17-c-六种-memory_order-选择">Q17 C++ 六种 memory_order 选择？
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>内存序</th>
+          <th>用途</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>relaxed</code></td>
+          <td>计数器，不要求顺序</td>
+      </tr>
+      <tr>
+          <td><code>acquire</code></td>
+          <td>读端，与 release 配对</td>
+      </tr>
+      <tr>
+          <td><code>release</code></td>
+          <td>写端，与 acquire 配对</td>
+      </tr>
+      <tr>
+          <td><code>acq_rel</code></td>
+          <td>read-modify-write</td>
+      </tr>
+      <tr>
+          <td><code>seq_cst</code></td>
+          <td>默认，全局顺序一致（最慢）</td>
+      </tr>
+      <tr>
+          <td><code>consume</code></td>
+          <td>数据依赖，C++17 弃用，C++20 移除</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="q18-aba-问题如何解决">Q18 ABA 问题？如何解决？
+</h3><p>CAS 时值从 A→B→A，另一线程误以为未变化</p>
+<ul>
+<li>加版本号（Double-Word CAS）</li>
+<li><code>std::atomic</code> 的 LL/SC（某些平台）</li>
+<li>Hazard Pointer 或 RCU</li>
+</ul>
+<h3 id="q19-伪共享false-sharing">Q19 伪共享（False Sharing）？
+</h3><p>多个不同变量落在同一 CPU 缓存行（64 字节），一个线程修改导致整行失效</p>
+<ul>
+<li><strong>避免</strong>：<code>alignas(64)</code> 对齐变量到缓存行、填充 padding 独占缓存行</li>
+</ul>
+<h3 id="q20-线程安全的单例">Q20 线程安全的单例？
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// Meyers Singleton（最推荐，C++11起局部静态初始化线程安全）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Singleton</span><span class="o">&amp;</span> <span class="n">get</span><span class="p">()</span> <span class="p">{</span> <span class="k">static</span> <span class="n">Singleton</span> <span class="n">instance</span><span class="p">;</span> <span class="k">return</span> <span class="n">instance</span><span class="p">;</span> <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>std::call_once</code> + <code>once_flag</code>：适合复杂初始化</li>
+<li>不推荐双重检查锁（DCLP）</li>
+</ul>
+<h3 id="q21-生产者-消费者核心要点">Q21 生产者-消费者核心要点？
+</h3><ul>
+<li><code>unique_lock</code> + <code>condition_variable</code></li>
+<li>生产者：队列未满时生产，<code>notify_one</code></li>
+<li>消费者：队列非空时消费，<code>notify_one</code></li>
+<li><strong>必须用 while 循环检查条件</strong>防止虚假唤醒</li>
+</ul>
+<h3 id="q22-atomic_flag-vs-atomicbool">Q22 atomic_flag vs atomic<bool>？
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>atomic_flag</th>
+          <th>atomic<bool></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>保证无锁</td>
+          <td>✅ <strong>唯一保证</strong></td>
+          <td>❌ 可能用锁实现</td>
+      </tr>
+      <tr>
+          <td>test_and_set</td>
+          <td>✅</td>
+          <td>❌</td>
+      </tr>
+      <tr>
+          <td>适合</td>
+          <td>自旋锁</td>
+          <td>普通原子 bool</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="q23-shared_ptr-的线程安全性">Q23 shared_ptr 的线程安全性？
+</h3><ul>
+<li>引用计数操作：<strong>安全</strong>（原子操作）</li>
+<li>指向对象的内容访问：<strong>不安全</strong>，需额外加锁</li>
+<li>多个线程对同一 <code>shared_ptr</code> 实例写（如 <code>reset</code>）：<strong>不安全</strong></li>
+</ul>
+<h3 id="q24-自旋锁实现">Q24 自旋锁实现？
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Spinlock</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">atomic_flag</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">ATOMIC_FLAG_INIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="n">lock</span><span class="p">()</span> <span class="p">{</span> <span class="k">while</span> <span class="p">(</span><span class="n">flag</span><span class="p">.</span><span class="n">test_and_set</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_acquire</span><span class="p">));</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">unlock</span><span class="p">()</span> <span class="p">{</span> <span class="n">flag</span><span class="p">.</span><span class="n">clear</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_release</span><span class="p">);</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="q25-call_once-场景">Q25 call_once 场景？
+</h3><p>线程安全的延迟初始化，保证函数只被执行一次，即使多线程同时调用（单例、全局资源加载）</p>
+<h3 id="q26-future-vs-shared_future">Q26 future vs shared_future？
+</h3><ul>
+<li><code>future</code>：仅可移动，<code>get()</code> 只能一次，之后状态失效</li>
+<li><code>shared_future</code>：可拷贝，多线程等同一结果，<code>get()</code> 可多次调用</li>
+</ul>
+<h3 id="q27-线程池核心设计要素">Q27 线程池核心设计要素？
+</h3><ul>
+<li>任务队列（线程安全：<code>mutex</code>+<code>condition_variable</code>）</li>
+<li>工作线程循环：取任务并执行</li>
+<li>优雅关闭：<code>stop</code> 标志 + <code>notify_all</code>，等待剩余任务完成</li>
+<li>异常安全：任务抛异常时线程继续运行</li>
+<li>可选：动态扩容、任务优先级、工作窃取</li>
+</ul>
+<h3 id="q28-内存屏障与-memory_order">Q28 内存屏障与 memory_order？
+</h3><p>内存屏障阻止 CPU/编译器对内存访问的重排</p>
+<ul>
+<li><code>acquire</code> → 读屏障（后续读写不可提前）</li>
+<li><code>release</code> → 写屏障（前面读写不可延后）</li>
+<li><code>seq_cst</code> → 全屏障</li>
+</ul>
+<h3 id="q29-x86-vs-arm-内存模型差异">Q29 x86 vs ARM 内存模型差异？
+</h3><ul>
+<li><strong>x86</strong>：强模型（TSO），大部分操作天然顺序一致，原子开销较小</li>
+<li><strong>ARM</strong>：弱模型，需显式内存屏障（<code>dmb</code>），<code>seq_cst</code> 开销远大于 x86</li>
+</ul>
+<h3 id="q30-如何调试死锁">Q30 如何调试死锁？
+</h3><ul>
+<li>Linux：<code>gdb</code> 中 <code>info threads</code>、<code>thread apply all bt</code>、<code>pstack</code></li>
+<li><code>std::unique_lock</code> 的 <code>owns_lock()</code> 辅助</li>
+<li>静态分析工具（ThreadSanitizer）</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>根据CC BY-NC-SA 4.0许可授权</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const elementsToRender = [".main-article", ".widget--toc"];
+
+        elementsToRender.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                renderMathInElement(element, {
+                    delimiters: [
+                        { left: "$$", right: "$$", display: true },
+                        { left: "$", right: "$", display: false },
+                        { left: "\\(", right: "\\)", display: false },
+                        { left: "\\[", right: "\\]", display: true }
+                    ],
+                    ignoredClasses: ["gist"]
+                });
+            }
+        });
+    });
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/move-semantics-perfect-forwarding/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">移动语义与完美转发</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/cpp-auto-interview-qa/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">C&#43;&#43; auto 关键字：面试回答与基础参考</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/memory-alignment/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">内存对齐</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/procedural-vs-oop/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">面向过程 vs 面向对象：对比与选型</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/cpp-thread-synchronization/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">现代 C&#43;&#43; 线程同步：从互斥锁到原子操作</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script
+    src="https://giscus.app/client.js"
+    data-repo="Yannick-Mo/Yannick-Mo.github.io"
+    data-repo-id="R_kgDOQuw_0w"
+    data-category="Q&amp;A"
+    data-category-id="DIC_kwDOQuw_084C0QIk"
+    data-mapping="pathname"
+    data-strict="false"
+    data-reactions-enabled="true"
+    data-emit-metadata="true"
+    data-input-position="top"
+    data-theme="light"
+    data-lang="zh-CN"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async
+></script>
+<script>
+    function setGiscusTheme(theme) {
+        let giscus = document.querySelector("iframe.giscus-frame");
+        if (giscus) {
+            giscus.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: theme,
+                        },
+                    },
+                },
+                "https://giscus.app"
+            );
+        }
+    }
+
+    (function () {
+        addEventListener("message", (e) => {
+            if (event.origin !== "https://giscus.app") return;
+            handler();
+        });
+        window.addEventListener("onColorSchemeChange", handler);
+
+        function handler() {
+            if (document.documentElement.dataset.scheme === "light") {
+                setGiscusTheme('light');
+            } else {
+                setGiscusTheme('dark_dimmed');
+            }
+        }
+    })();
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2025 - 
+        
+        2026 雅尼克.莫(Yannick.Mo)
+    </section>
+    
+    <section class="powerby">
+        
+            少年，你不是可以逆风翻盘吗？
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+    
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function () {
+  function getMermaidTheme() {
+    const scheme = document.documentElement.getAttribute('data-scheme');
+    return scheme === 'dark' ? 'dark' : 'default';
+  }
+
+  function runMermaid() {
+    if (!window.mermaid) return;
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: getMermaidTheme(),
+      themeVariables: { fontFamily: "JetBrains Mono" }
+    });
+    mermaid.run({ querySelector: ".mermaid" });
+  }
+
+  document.addEventListener("DOMContentLoaded", runMermaid);
+  document.addEventListener("turbo:load", runMermaid);
+
+  new MutationObserver(function () { runMermaid(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-scheme'] });
+})();
+</script>
+
+
+
+
+<style>
+     
+    body {
+        background: url(https://Yannick-Mo.github.io/background/bg.png) no-repeat center top;
+        background-size: cover;
+        background-attachment: fixed;
+        background-color: #ffffff;
+        position: relative;
+    }
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.50);
+        z-index: -1;
+    }
+    [data-scheme="dark"] body {
+        background-color: #1a1a1a;
+    }
+    [data-scheme="dark"] body::before {
+        background-color: rgba(26, 26, 26, 0.8);
+    }
+
+     
+    .left-sidebar {
+        padding-bottom: calc(var(--main-top-padding) + 100px) !important;
+    }
+
+     
+    .site-avatar .site-logo {
+        transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    .site-avatar:hover .site-logo {
+        transform: rotate(360deg);
+    }
+
+     
+    #TableOfContents > ul ul,
+    #TableOfContents > ul ol,
+    #TableOfContents > ol ul,
+    #TableOfContents > ol ol {
+        display: none;
+    }
+    #TableOfContents > ul .open,
+    #TableOfContents > ol .open {
+        display: block;
+    }
+
+     
+    #backTopBtn {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 20px;
+        z-index: 99;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        background-image: url(https://Yannick-Mo.github.io/icons/backTop.svg);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+	border: none;
+        background-color: transparent;
+    }
+    #backTopBtn:hover {
+        opacity: 1;
+    }
+
+     
+    .highlight {
+        max-height: 400px;
+        overflow: hidden;
+        position: relative;
+        transition: max-height 0.3s ease-in-out;
+    }
+    .code-show {
+        max-height: 9999px !important;
+    }
+    .code-more-box {
+        width: 100%;
+        padding-top: 78px;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), to(#fff));
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+    [data-scheme="dark"] .code-more-box {
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(#1a1a1a));
+    }
+    .code-more-btn {
+        display: block;
+        margin: auto;
+        width: 44px;
+        height: 22px;
+        background: #f0f0f5;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+        padding-top: 6px;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+    }
+    .code-more-btn:hover {
+        opacity: 1;
+    }
+    [data-scheme="dark"] .code-more-btn {
+        background: #333;
+    }
+    .code-more-img {
+        cursor: pointer !important;
+        display: block;
+        margin: auto;
+        width: 22px;
+        height: 16px;
+        transition: transform 0.2s ease;
+    }
+    .code-more-img-fold {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script data-turbo-eval="false">
+    const codeMoreIconUrl = "https://Yannick-Mo.github.io/icons/codeMore.svg";
+    const backTopIconUrl = "https://Yannick-Mo.github.io/icons/backTop.svg";
+
+    
+    (function() {
+        window.addEventListener('scroll', function() {
+            document.querySelectorAll(".open").forEach(el => el.classList.remove("open"));
+            let li = document.querySelector(".active-class");
+            if (!li) return;
+            if (li.children.length > 1) li.children[1].classList.add("open");
+            let ul = li.parentElement;
+            do {
+                ul.classList.add("open");
+                ul = ul.parentElement?.parentElement;
+            } while (ul && (ul.localName === 'ul' || ul.localName === 'ol'));
+        });
+
+        window.addEventListener('scroll', function() {
+            let btn = document.getElementById("backTopBtn");
+            if (!btn) return;
+            btn.style.display = (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) ? "block" : "none";
+        });
+    })();
+
+    
+    function initScrollTop() {
+        if (document.getElementById("backTopBtn")) return;
+        let sidebar = document.querySelector(".right-sidebar");
+        if (!sidebar) return;
+        let btn = document.createElement("div");
+        btn.id = "backTopBtn";
+        btn.onclick = function() { window.scrollTo({ top: 0, behavior: "smooth" }); };
+        btn.style.backgroundImage = "url(" + backTopIconUrl + ")";
+        sidebar.appendChild(btn);
+    }
+
+    
+    function initCodeMoreBox() {
+        document.querySelectorAll(".highlight").forEach(codeBlock => {
+            if (codeBlock.querySelector(".code-more-box")) return;
+            if (codeBlock.scrollHeight <= codeBlock.clientHeight) return;
+            let box = document.createElement('div');
+            box.classList.add('code-more-box');
+            let btn = document.createElement('span');
+            btn.classList.add('code-more-btn');
+            let img = document.createElement('img');
+            img.classList.add('code-more-img');
+            img.src = codeMoreIconUrl;
+            btn.addEventListener('click', function() {
+                codeBlock.classList.toggle('code-show');
+                img.classList.toggle('code-more-img-fold', codeBlock.classList.contains('code-show'));
+                window.dispatchEvent(new Event('resize'));
+            });
+            btn.appendChild(img);
+            box.appendChild(btn);
+            codeBlock.appendChild(box);
+        });
+    }
+
+    
+    let sakuraIsLoaded = false;
+    function initSakura() {
+        if (sakuraIsLoaded) return;
+        const sakuraScript = document.createElement('script');
+        sakuraScript.src = "https://Yannick-Mo.github.io/background/sakura.js";
+        sakuraScript.onload = function() { sakuraIsLoaded = true; };
+        document.body.appendChild(sakuraScript);
+    }
+
+    
+    function initPage() {
+        initScrollTop();
+        initCodeMoreBox();
+        initSakura();
+    }
+    document.addEventListener('DOMContentLoaded', initPage);
+    document.addEventListener('turbo:load', initPage);
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<div id="global-player" data-turbo-permanent></div>
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function() {
+    if (window.globalPlayer) return;
+    var songs = [
+        {
+            name: "起风了",
+            artist: "买辣椒也用券",
+            url: "\/audio\/qifengle.mp3",
+            cover: "\/img\/qifengle.png"
+        },
+        {
+            name: "凉城",
+            artist: "任然",
+            url: "\/audio\/liangcheng.mp3",
+            cover: "\/img\/liangcheng.png"
+        },
+        {
+            name: "不如就等风来",
+            artist: "林宝馨",
+            url: "\/audio\/burujiudengfenglai.mp3",
+            cover: "\/img\/burujiudengfenglai.png"
+        },
+        {
+            name: "Catch My Breath",
+            artist: "Kelly Clarkson",
+            url: "\/audio\/catch-my-breath.mp3",
+            cover: "\/img\/catch-my-breath.png"
+        },
+        {
+            name: "离开我的依赖",
+            artist: "王艳薇",
+            url: "\/audio\/li-kai-wo-de-yi-lai.mp3",
+            cover: "\/img\/li-kai-wo-de-yi-lai.png"
+        },
+        {
+            name: "Shots",
+            artist: "Imagine Dragons",
+            url: "\/audio\/shots.mp3",
+            cover: "\/img\/shots.png"
+        },
+        {
+            name: "失控",
+            artist: "井迪儿",
+            url: "\/audio\/shi-kong.mp3",
+            cover: "\/img\/shi-kong.png"
+        },
+        {
+            name: "晚风",
+            artist: "Lker林柯",
+            url: "\/audio\/wan-feng.mp3",
+            cover: "\/img\/wan-feng.png"
+        },
+        {
+            name: "海阔天空",
+            artist: "Beyond",
+            url: "\/audio\/hai-kuo-tian-kong.mp3",
+            cover: "\/img\/hai-kuo-tian-kong.png"
+        },
+        {
+            name: "爱错",
+            artist: "王力宏",
+            url: "\/audio\/ai-cuo.mp3",
+            cover: "\/img\/ai-cuo.png"
+        },
+        {
+            name: "夜空中最亮的星",
+            artist: "逃跑计划",
+            url: "\/audio\/ye-kong-zui-liang-de-xing.mp3",
+            cover: "\/img\/ye-kong-zui-liang-de-xing.png"
+        },
+        {
+            name: "晴天",
+            artist: "周杰伦",
+            url: "\/audio\/qing-tian.mp3",
+            cover: "\/img\/qing-tian.png"
+        },
+        {
+            name: "稻香",
+            artist: "周杰伦",
+            url: "\/audio\/dao-xiang.mp3",
+            cover: "\/img\/dao-xiang.png"
+        },
+        {
+            name: "花海",
+            artist: "周杰伦",
+            url: "\/audio\/hua-hai.mp3",
+            cover: "\/img\/hua-hai.png"
+        },
+        {
+            name: "七里香",
+            artist: "周杰伦",
+            url: "\/audio\/qi-li-xiang.mp3",
+            cover: "\/img\/qi-li-xiang.png"
+        },
+        {
+            name: "红色高跟鞋",
+            artist: "蔡健雅",
+            url: "\/audio\/hong-se-gao-gen-xie.mp3",
+            cover: "\/img\/hong-se-gao-gen-xie.png"
+        },
+    ];
+    if (songs.length > 0) {
+        window.globalPlayer = new APlayer({
+            container: document.getElementById('global-player'),
+            fixed: true,
+            mini: true,
+            autoplay: false,
+            loop: 'all',
+            order: 'list',
+            preload: 'auto',
+            volume: 0.3,
+            audio: songs
+        });
+    }
+})();
+</script><script data-turbo-eval="false">
+(function() {
+    var config = {
+        waifuPath: '/waifu-tips.json',
+        cubism2Path: 'https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/live2d.min.js',
+        tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
+        showToggleAfterQuit: true,
+        logLevel: 'warn',
+        drag: false,
+    };
+
+    function initWaifu() {
+        if (document.getElementById('waifu')) return;
+        if (window.initWidget) {
+            window.initWidget(config);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', initWaifu);
+    document.addEventListener('turbo:load', initWaifu);
+})();
+</script>
+<style>
+#waifu { left: auto !important; right: 65px !important; }
+#waifu-toggle { left: auto !important; right: 0 !important; justify-content: flex-start !important; margin-left: 0 !important; margin-right: -100px !important; transition: margin-right 1s !important; }
+#waifu-toggle.waifu-toggle-active { display: flex !important; margin-right: -50px !important; }
+#waifu-toggle.waifu-toggle-active:hover { margin-right: -30px !important; }
+#waifu-tips { left: auto !important; right: calc(100% + (10px + 300px * (var(--ws, 1) - 1))) !important; margin: calc(-30px + 400px * (1 - var(--ws, 1))) 0 !important; }
+</style>
+<script data-turbo-eval="false">
+(function() {
+    var KEY = 'waifu-scale';
+    function apply(s) {
+        var m = document.getElementById('live2d');
+        if (m) m.style.transform = 'scale(' + s + ')';
+        var t = document.getElementById('waifu-tips');
+        if (t) t.style.setProperty('--ws', s);
+    }
+    function init() {
+        var tool = document.getElementById('waifu-tool');
+        if (!tool || document.getElementById('waifu-tool-zoomin')) return;
+        var saved = parseFloat(localStorage.getItem(KEY)) || 1;
+        apply(saved);
+        function mk(id, text, title, delta) {
+            var btn = document.createElement('span');
+            btn.id = id;
+            btn.textContent = text;
+            btn.title = title;
+            btn.style.cssText = 'cursor:pointer;color:#7b8c9d;font-size:20px;font-weight:bold;line-height:25px;text-align:center;transition:color .3s;user-select:none;';
+            btn.addEventListener('mouseenter', function() { this.style.color = '#0684bd'; });
+            btn.addEventListener('mouseleave', function() { this.style.color = '#7b8c9d'; });
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var cur = parseFloat(localStorage.getItem(KEY)) || 1;
+                var nxt = Math.round(Math.min(Math.max(cur + delta, 0.3), 3) * 10) / 10;
+                localStorage.setItem(KEY, nxt);
+                apply(nxt);
+            });
+            return btn;
+        }
+        tool.insertBefore(mk('waifu-tool-zoomout', '−', '缩小', -0.1), tool.firstChild);
+        tool.insertBefore(mk('waifu-tool-zoomin', '+', '放大', 0.1), tool.firstChild);
+    }
+    var obs = new MutationObserver(function() { init(); });
+    obs.observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('turbo:load', function() { setTimeout(init, 300); });
+    setTimeout(init, 800);
+})();
+</script><script src="/waifu-games/menu.js" data-turbo-eval="false"></script><div id="ambient-widget" data-turbo-permanent>
+    <button id="ambient-toggle" title="氛围音">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+    </button>
+    <div id="ambient-panel" class="hidden">
+        <button data-sound="rain">🌧️ 雨声</button>
+        <button data-sound="coffee" class="active">☕ 咖啡店</button>
+        <button data-sound="fire">🔥 壁炉</button>
+    </div>
+</div>
+<style>
+#ambient-widget {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+#ambient-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card-background);
+    color: var(--card-text-color-main);
+    box-shadow: var(--shadow-l2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+#ambient-toggle:hover { transform: scale(1.1); }
+#ambient-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 12px;
+    background: var(--card-background);
+    box-shadow: var(--shadow-l2);
+    transition: all 0.2s;
+}
+#ambient-panel.hidden { display: none; }
+#ambient-panel button {
+    border: none;
+    background: transparent;
+    color: var(--card-text-color-main);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: left;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+#ambient-panel button:hover { background: var(--card-separator-color); }
+#ambient-panel button.active {
+    background: var(--accent-color);
+    color: #fff;
+}
+[data-scheme="dark"] #ambient-toggle,
+[data-scheme="dark"] #ambient-panel {
+    background: #2d2d2d;
+}
+</style>
+<script data-turbo-eval="false">
+(function() {
+    if (window._ambientInited) return;
+    window._ambientInited = true;
+
+    var ctx, sources = {}, gains = {}, currentSound = 'coffee', isPlaying = false;
+
+    function createNoiseBuffer() {
+        var buf = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
+        var d = buf.getChannelData(0);
+        for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+        return buf;
+    }
+
+    function startRain() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1200;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.25;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.rain = src; gains.rain = gain;
+    }
+
+    function startCoffee() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 200;
+        filter.Q.value = 0.5;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.15;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.coffee = src; gains.coffee = gain;
+    }
+
+    function startFire() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var lp = ctx.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = 400;
+        var hp = ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 60;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.2;
+        src.connect(lp);
+        lp.connect(hp);
+        hp.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.fire = src; gains.fire = gain;
+
+        var crackle = setInterval(function() {
+            if (gains.fire) {
+                gains.fire.gain.value = 0.3 + Math.random() * 0.15;
+                setTimeout(function() { if (gains.fire) gains.fire.gain.value = 0.2; }, 80);
+            }
+        }, 300);
+        sources._crackle = crackle;
+    }
+
+    var starters = { rain: startRain, coffee: startCoffee, fire: startFire };
+
+    function stopAll() {
+        Object.keys(sources).forEach(function(k) {
+            if (k === '_crackle') { clearInterval(sources[k]); return; }
+            try { sources[k].stop(); } catch(e) {}
+        });
+        sources = {};
+        gains = {};
+        if (window.globalPlayer) { try { window.globalPlayer.pause(); } catch(e) {} }
+    }
+
+    function play(name) {
+        if (!ctx) {
+            ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+        stopAll();
+        if (starters[name]) starters[name]();
+        currentSound = name;
+        isPlaying = true;
+    }
+
+    function stop() {
+        stopAll();
+        isPlaying = false;
+    }
+
+    var btn = document.getElementById('ambient-toggle');
+    var panel = document.getElementById('ambient-panel');
+    var soundBtns = panel.querySelectorAll('button[data-sound]');
+
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        panel.classList.toggle('hidden');
+    });
+
+    soundBtns.forEach(function(b) {
+        b.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var sound = this.dataset.sound;
+            soundBtns.forEach(function(x) { x.classList.remove('active'); });
+            if (isPlaying && currentSound === sound) {
+                stop();
+            } else {
+                this.classList.add('active');
+                play(sound);
+            }
+            panel.classList.add('hidden');
+        });
+    });
+
+    document.addEventListener('click', function() { panel.classList.add('hidden'); });
+})();
+</script>
+<button id="fireworks-btn" title="烟花模式" data-turbo-permanent>🎆</button>
+
+<link rel="stylesheet" href="/fireworks/style.css" data-turbo-track="reload">
+<script src="/fireworks/fireworks-bundle.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function() {
+  
+  var btn = document.getElementById('fireworks-btn');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      if (!window.FireworksMode) return;
+      if (window._fwRunning) return;
+      window.FireworksMode.start();
+    });
+  }
+
+  
+  var navCount = 0;
+  document.addEventListener('turbo:load', function() {
+    navCount++;
+    if (navCount === 1) return; 
+
+    var toggle = document.getElementById('dark-mode-toggle');
+    if (toggle && !toggle.dataset.fwFixed) {
+      toggle.dataset.fwFixed = '1';
+      toggle.addEventListener('click', function() {
+        var el = document.documentElement;
+        el.dataset.scheme = el.dataset.scheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('StackColorScheme', el.dataset.scheme);
+      });
+    }
+  });
+})();
+</script>
+    </body>
+</html>

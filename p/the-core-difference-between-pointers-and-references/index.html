@@ -323,7 +323,13 @@
         <li><a href="#-区别8生命周期风险悬空引用-vs-野指针共性问题易错点">✅ 区别8：【生命周期风险】悬空引用 vs 野指针（共性问题，易错点）</a></li>
       </ol>
     </li>
-    <li><a href="#三补充指针与引用的共性容易被忽略">三、补充：指针与引用的「共性」（容易被忽略）</a></li>
+    <li><a href="#三引用与指针的优劣势对比">三、引用与指针的优劣势对比</a>
+      <ol>
+        <li><a href="#引用reference">引用（Reference）</a></li>
+        <li><a href="#指针pointer">指针（Pointer）</a></li>
+      </ol>
+    </li>
+    <li><a href="#四补充指针与引用的共性容易被忽略">四、补充：指针与引用的「共性」（容易被忽略）</a></li>
     <li><a href="#四核心总结必考必记精炼版">四、核心总结（必考+必记，精炼版）</a>
       <ol>
         <li><a href="#-引用的核心本质">✅ 引用的核心本质</a></li>
@@ -404,7 +410,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 8 分钟
+                    阅读时长: 9 分钟
                 </time>
             </div>
         
@@ -665,7 +671,40 @@
 </div></li>
 </ul>
 <hr>
-<h2 id="三补充指针与引用的共性容易被忽略">三、补充：指针与引用的「共性」（容易被忽略）
+<h2 id="三引用与指针的优劣势对比">三、引用与指针的优劣势对比
+</h2><h3 id="引用reference">引用（Reference）
+</h3><p><strong>优势：</strong></p>
+<ol>
+<li><strong>语法简洁</strong>：使用引用时无需解引用运算符（<code>*</code>），像普通变量一样直接访问，代码更清晰</li>
+<li><strong>一定不为空</strong>：引用必须初始化，且绑定到一个有效的对象（不能为 <code>nullptr</code>），省去空值检查</li>
+<li><strong>无所有权语义</strong>：通常不涉及内存释放问题，不易产生内存泄漏或悬垂引用（但引用原对象销毁后，引用仍然会悬垂）</li>
+<li><strong>支持运算符重载链式调用</strong>：如 <code>cout &lt;&lt; a &lt;&lt; b</code> 返回引用，便于连续操作</li>
+</ol>
+<p><strong>劣势：</strong></p>
+<ol>
+<li><strong>不能重新绑定</strong>：引用一旦绑定，始终指向同一个对象，无法改变指向</li>
+<li><strong>不能为空</strong>：无法用引用表达&quot;可选&quot;或&quot;无效&quot;状态（除非配合 <code>std::optional</code> 包装）</li>
+<li><strong>受限于生命周期</strong>：如果引用绑定到临时对象或已销毁的对象，会产生未定义行为（悬垂引用）</li>
+<li><strong>不能进行指针运算</strong>：无法通过引用操作数组元素偏移</li>
+</ol>
+<h3 id="指针pointer">指针（Pointer）
+</h3><p><strong>优势：</strong></p>
+<ol>
+<li><strong>灵活</strong>：可以重新指向不同对象，可以指向 <code>nullptr</code>，表达&quot;无对象&quot;状态</li>
+<li><strong>支持指针运算</strong>：方便遍历数组、管理连续内存</li>
+<li><strong>可管理动态内存</strong>：与 <code>new</code>/<code>delete</code> 配合，是手动内存管理的基础（现代 C++ 推荐用智能指针）</li>
+<li><strong>可存储函数地址</strong>：用于回调、动态调用（函数指针）</li>
+<li><strong>可以指向派生类对象</strong>，通过基类指针实现多态（引用也可以，但指针更常见于容器等场景）</li>
+</ol>
+<p><strong>劣势：</strong></p>
+<ol>
+<li><strong>语法繁琐</strong>：需要 <code>*</code> 解引用、<code>&amp;</code> 取地址，容易写错优先级</li>
+<li><strong>可能为空</strong>：必须检查 <code>nullptr</code>，否则解引用崩溃</li>
+<li><strong>容易产生错误</strong>：野指针、重复释放、内存泄漏、指针悬挂等</li>
+<li><strong>语义模糊</strong>：所有权不明确（谁负责释放？）容易导致内存问题</li>
+</ol>
+<hr>
+<h2 id="四补充指针与引用的共性容易被忽略">四、补充：指针与引用的「共性」（容易被忽略）
 </h2><ol>
 <li>两者都是<strong>间接访问变量</strong>的方式，本质都是通过内存地址操作变量；</li>
 <li>两者<strong>效率完全相同</strong>：引用底层是指针，编译后的汇编代码一模一样，无任何性能差异；</li>
@@ -769,12 +808,12 @@
             
                 
 <article class="">
-    <a href="/p/deadlock/">
+    <a href="/p/move-semantics-perfect-forwarding/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">死锁的条件和处理</h2>
+            <h2 class="article-title">移动语义与完美转发</h2>
         </div>
     </a>
 </article>
@@ -782,55 +821,12 @@
             
                 
 <article class="">
-    <a href="/p/lvalue-rvalue-reference/">
+    <a href="/p/cpp-auto-interview-qa/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">左值引用与右值引用</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/p/constant-pointer-vs-pointer-to-constant/">
-        
-        
-            <div class="article-image">
-                <img src="/p/constant-pointer-vs-pointer-to-constant/Constant_pointer.07f949343d912e0b8aaf6f25c2956762_hu17261436587961763750.png" 
-                        width="250" 
-                        height="150" 
-                        loading="lazy"
-                        alt="Featured image of post 常量指针VS指针常量"
-                        data-key="Constant pointer VS pointer to constant" 
-                        data-hash="md5-B/lJND2RLguKr28lwpVnYg==">
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">常量指针VS指针常量</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/p/c-program-memory-distribution/">
-        
-        
-            <div class="article-image">
-                
-                    <img src="/images/cpp.png" loading="lazy" data-key="c&#43;&#43;-program-memory-distribution" data-hash="/images/cpp.png"/>
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">C&#43;&#43; 程序内存分布</h2>
+            <h2 class="article-title">C&#43;&#43; auto 关键字：面试回答与基础参考</h2>
         </div>
     </a>
 </article>
@@ -838,12 +834,38 @@
             
                 
 <article class="">
-    <a href="/p/qt-json/">
+    <a href="/p/memory-alignment/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">QT JSON 完整学习笔记</h2>
+            <h2 class="article-title">内存对齐</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/procedural-vs-oop/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">面向过程 vs 面向对象：对比与选型</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/cpp-thread-synchronization/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">现代 C&#43;&#43; 线程同步：从互斥锁到原子操作</h2>
         </div>
     </a>
 </article>
