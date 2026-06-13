@@ -11,7 +11,7 @@
 <meta property='og:description' content="欢迎来到我的网站">
 <meta property='og:url' content='https://Yannick-Mo.github.io/'>
 <meta property='og:site_name' content='雅尼克.莫(Yannick.Mo)'>
-<meta property='og:type' content='website'><meta property='og:updated_time' content=' 2026-06-09T02:57:21&#43;08:00 '/><meta property='og:image' content='https://Yannick-Mo.github.io/img/avatar.png' />
+<meta property='og:type' content='website'><meta property='og:updated_time' content=' 2026-06-14T01:22:27&#43;08:00 '/><meta property='og:image' content='https://Yannick-Mo.github.io/img/avatar.png' />
 <meta name="twitter:title" content="雅尼克.莫(Yannick.Mo)">
 <meta name="twitter:description" content="欢迎来到我的网站"><meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content='https://Yannick-Mo.github.io/img/avatar.png' /><link rel="alternate" type="application/rss&#43;xml" href="https://Yannick-Mo.github.io/index.xml">
@@ -325,7 +325,7 @@
                     <a href="/archives/#2026">
                         
                             <span class="year">2026</span>
-                            <span class="count">19</span>
+                            <span class="count">25</span>
                         
                     </a> 
                 </div>
@@ -368,6 +368,14 @@
                 八股文
             </a>
         
+            <a href="/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" class="font_size_7">
+                系统编程
+            </a>
+        
+            <a href="/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/" class="font_size_5">
+                进程间通信
+            </a>
+        
             <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="font_size_2">
                 操作系统
             </a>
@@ -382,14 +390,6 @@
         
             <a href="/categories/%E5%88%86%E7%B1%BB%E4%BA%8C/" class="font_size_1">
                 分类二
-            </a>
-        
-            <a href="/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" class="font_size_1">
-                系统编程
-            </a>
-        
-            <a href="/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/" class="font_size_1">
-                进程间通信
             </a>
         
             <a href="/categories/%E9%9F%B3%E8%A7%86%E9%A2%91/" class="font_size_1">
@@ -421,6 +421,14 @@
                 C/C&#43;&#43;
             </a>
         
+            <a href="/tags/linux/">
+                Linux
+            </a>
+        
+            <a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">
+                进程间通信
+            </a>
+        
             <a href="/tags/qt/">
                 QT
             </a>
@@ -429,32 +437,24 @@
                 C&#43;&#43;
             </a>
         
-            <a href="/tags/linux/">
-                Linux
+            <a href="/tags/ipc/">
+                IPC
             </a>
         
             <a href="/tags/moc/">
                 MOC
             </a>
         
+            <a href="/tags/posix/">
+                POSIX
+            </a>
+        
+            <a href="/tags/system-v/">
+                System V
+            </a>
+        
             <a href="/tags/%E4%BF%A1%E5%8F%B7%E6%A7%BD/">
                 信号槽
-            </a>
-        
-            <a href="/tags/%E5%85%83%E5%AF%B9%E8%B1%A1%E7%B3%BB%E7%BB%9F/">
-                元对象系统
-            </a>
-        
-            <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
-                操作系统
-            </a>
-        
-            <a href="/tags/epoll/">
-                Epoll
-            </a>
-        
-            <a href="/tags/ffmpeg/">
-                FFmpeg
             </a>
         
     </div>
@@ -480,12 +480,8 @@
     
     <header class="article-category">
         
-            <a href="/categories/c/c&#43;&#43;/" >
-                C/C&#43;&#43;
-            </a>
-        
-            <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" >
-                八股文
+            <a href="/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" >
+                系统编程
             </a>
         
     </header>
@@ -493,12 +489,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/qt-signals-slots-simple-text/">Qt 信号槽实现原理（简明文字版）</a>
+            <a href="/p/single-instance-program/">单实例程序（防重复启动 &#43; 唤醒原有窗口）全方案总结</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            用简洁的文字逐步拆解 Qt 信号槽的完整执行链路：MOC 生成、运行时连接、索引驱动调用
+            整合互斥体、文件锁、命名信号量、端口监听、命名管道、共享内存六大类实现方式，区分能力、平台、原理、优缺点、适用场景，含 Qt/Boost 框架封装方案和快速选型建议
         </h3>
         
     </div>
@@ -519,7 +515,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published" datetime='2026-06-09T02:57:21&#43;08:00'>2026-06-09</time>
+                <time class="article-time--published" datetime='2026-06-14T01:22:27&#43;08:00'>2026-06-14</time>
             </div>
         
 
@@ -534,7 +530,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 3 分钟
+                    阅读时长: 5 分钟
                 </time>
             </div>
         
@@ -555,12 +551,12 @@
     
     <header class="article-category">
         
-            <a href="/categories/c/c&#43;&#43;/" >
-                C/C&#43;&#43;
+            <a href="/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" >
+                系统编程
             </a>
         
-            <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" >
-                八股文
+            <a href="/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/" >
+                进程间通信
             </a>
         
     </header>
@@ -568,12 +564,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/qt-moc-signals-slots/">Qt MOC 系统与信号槽底层实现原理</a>
+            <a href="/p/ipc-socket/">进程间通信（IPC）Socket 套接字：最通用的 IPC 方式</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            从 MOC 生成的实际代码出发，完整讲解 Qt 信号槽从编译到运行的底层实现机制
+            深入讲解 Unix Domain Socket 核心原理、与网络 Socket 性能对比、流式编程完整示例、传递文件描述符高级技巧、各 IPC 方式选型建议
         </h3>
         
     </div>
@@ -594,7 +590,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published" datetime='2026-06-09T01:20:29&#43;08:00'>2026-06-09</time>
+                <time class="article-time--published" datetime='2026-06-14T01:22:27&#43;08:00'>2026-06-14</time>
             </div>
         
 
@@ -609,7 +605,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 8 分钟
+                    阅读时长: 5 分钟
                 </time>
             </div>
         
@@ -630,12 +626,8 @@
     
     <header class="article-category">
         
-            <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" >
-                八股文
-            </a>
-        
-            <a href="/categories/c/c&#43;&#43;/" >
-                C/C&#43;&#43;
+            <a href="/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" >
+                系统编程
             </a>
         
     </header>
@@ -643,83 +635,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/move-semantics-perfect-forwarding/">移动语义与完美转发</a>
-        </h2>
-    
-        
-    </div>
-
-    
-    
-    
-    
-    <footer class="article-time">
-        
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
-  <circle cx="18" cy="18" r="4" />
-  <path d="M15 3v4" />
-  <path d="M7 3v4" />
-  <path d="M3 11h16" />
-  <path d="M18 16.496v1.504l1 1" />
-</svg>
-                <time class="article-time--published" datetime='2026-06-08T03:00:00&#43;08:00'>2026-06-08</time>
-            </div>
-        
-
-        
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="12" cy="12" r="9" />
-  <polyline points="12 7 12 12 15 15" />
-</svg>
-
-
-
-                <time class="article-time--reading">
-                    阅读时长: 3 分钟
-                </time>
-            </div>
-        
-    </footer>
-    
-
-    
-</div>
-
-</header>
-</article>
-        
-            
-<article class="">
-    <header class="article-header">
-
-    <div class="article-details">
-    
-    <header class="article-category">
-        
-            <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" >
-                八股文
-            </a>
-        
-            <a href="/categories/c/c&#43;&#43;/" >
-                C/C&#43;&#43;
-            </a>
-        
-    </header>
-    
-
-    <div class="article-title-wrapper">
-        <h2 class="article-title">
-            <a href="/p/cpp-auto-interview-qa/">C&#43;&#43; auto 关键字：面试回答与基础参考</a>
+            <a href="/p/linux-signal-guide/">Linux 进程信号完全指南：从原理到实践</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            auto 关键字面试口语回答 &#43; 基础用法、推导规则、陷阱速查
+            全面讲解 Linux 信号机制：核心特点、常见信号表、典型应用场景、signal/sigaction/sigqueue 代码示例、实时信号与附加数据传递、信号安全注意事项与避坑指南
         </h3>
         
     </div>
@@ -740,7 +661,82 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published" datetime='2026-06-08T02:30:00&#43;08:00'>2026-06-08</time>
+                <time class="article-time--published" datetime='2026-06-13T00:00:00&#43;08:00'>2026-06-13</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 5 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+</article>
+        
+            
+<article class="">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" >
+                系统编程
+            </a>
+        
+            <a href="/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/" >
+                进程间通信
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/ipc-shared-memory/">进程间通信（IPC）共享内存：性能之王</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            深入讲解共享内存核心原理、System V 和 POSIX 两大 API 完整代码示例、同步机制、生命周期管理与权限控制，以及与其他 IPC 方式的性能对比
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2026-06-13T00:00:00&#43;08:00'>2026-06-13</time>
             </div>
         
 
@@ -776,12 +772,12 @@
     
     <header class="article-category">
         
-            <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" >
-                八股文
+            <a href="/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" >
+                系统编程
             </a>
         
-            <a href="/categories/c/c&#43;&#43;/" >
-                C/C&#43;&#43;
+            <a href="/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/" >
+                进程间通信
             </a>
         
     </header>
@@ -789,12 +785,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/memory-alignment/">内存对齐</a>
+            <a href="/p/ipc-message-queue/">进程间通信（IPC）消息队列</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            内存对齐的原理、控制方式、面试回答框架与常见陷阱
+            全面讲解 System V 和 POSIX 消息队列：核心概念、完整代码示例（员工绩效数据/传感器批量数据）、系统限制与调优、变长数据传输、异步通知、资源清理，包含各平台对比和最佳实践
         </h3>
         
     </div>
@@ -815,7 +811,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published" datetime='2026-06-08T01:30:00&#43;08:00'>2026-06-08</time>
+                <time class="article-time--published" datetime='2026-06-13T00:00:00&#43;08:00'>2026-06-13</time>
             </div>
         
 
@@ -853,10 +849,16 @@
             </a><a class="page-link "href="/page/3/"
                 aria-label="Page 3">
                 3
+            </a><a class="page-link "href="/page/4/"
+                aria-label="Page 4">
+                4
+            </a><a class="page-link "href="/page/5/"
+                aria-label="Page 5">
+                5
             </a><span class="page-link pagination-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-dots"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
-    </span><a class="page-link "href="/page/4/"aria-label="Page 4">
-        4
+    </span><a class="page-link "href="/page/6/"aria-label="Page 6">
+        6
     </a><a class="page-link "href="/page/2/"aria-label="Next page">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
     </a>

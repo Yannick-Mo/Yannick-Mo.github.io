@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>单实例 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%8D%95%E5%AE%9E%E4%BE%8B/</link>
+        <description>Recent content in 单实例 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Sun, 14 Jun 2026 01:22:27 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E5%8D%95%E5%AE%9E%E4%BE%8B/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>单实例程序（防重复启动 &#43; 唤醒原有窗口）全方案总结</title>
+        <link>https://Yannick-Mo.github.io/p/single-instance-program/</link>
+        <pubDate>Sun, 14 Jun 2026 01:22:27 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/single-instance-program/</guid>
+        <description>&lt;p&gt;整合&lt;strong&gt;互斥体、文件锁、命名信号量、端口监听、命名管道、共享内存&lt;/strong&gt;六大类实现方式，区分&lt;strong&gt;能力、平台、原理、优缺点、适用场景&lt;/strong&gt;，同时统一核心流程：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;通用逻辑：启动时抢占&lt;strong&gt;全局唯一资源&lt;/strong&gt;判断是否已存在实例；二次启动则通过 IPC 发送唤醒指令，激活原窗口并退出；首实例监听指令，收到后恢复/最大化/前置窗口。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;一方案总览表&#34;&gt;一、方案总览表
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;实现方案&lt;/th&gt;
+          &lt;th&gt;核心原理&lt;/th&gt;
+          &lt;th&gt;自带IPC（传唤醒指令）&lt;/th&gt;
+          &lt;th&gt;支持平台&lt;/th&gt;
+          &lt;th&gt;进程崩溃释放&lt;/th&gt;
+          &lt;th&gt;优点&lt;/th&gt;
+          &lt;th&gt;缺点&lt;/th&gt;
+          &lt;th&gt;推荐场景&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;命名互斥体(Mutex)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;全局命名内核对象，创建失败=已存在实例&lt;/td&gt;
+          &lt;td&gt;❌ 仅做标记，需额外IPC&lt;/td&gt;
+          &lt;td&gt;Windows原生；Unix无原生命名互斥&lt;/td&gt;
+          &lt;td&gt;系统自动释放，无残留&lt;/td&gt;
+          &lt;td&gt;稳定、使用简单、Windows生态主流&lt;/td&gt;
+          &lt;td&gt;非Windows需额外适配，不能传消息&lt;/td&gt;
+          &lt;td&gt;纯Windows桌面程序&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;文件锁&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;独占锁定固定文件，加锁失败=已存在实例&lt;/td&gt;
+          &lt;td&gt;❌ 需轮询文件/搭配其他IPC&lt;/td&gt;
+          &lt;td&gt;全平台（Linux:flock / Windows:LockFileEx）&lt;/td&gt;
+          &lt;td&gt;进程退出自动释锁&lt;/td&gt;
+          &lt;td&gt;代码极简、无依赖、跨Unix友好&lt;/td&gt;
+          &lt;td&gt;受文件权限/目录影响，轮询耗资源&lt;/td&gt;
+          &lt;td&gt;Linux/macOS服务/小工具&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;命名信号量(Semaphore)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;全局命名信号量，创建/计数判断实例&lt;/td&gt;
+          &lt;td&gt;❌ 仅状态标记，无数据传输&lt;/td&gt;
+          &lt;td&gt;全平台（API不同）&lt;/td&gt;
+          &lt;td&gt;系统自动释放&lt;/td&gt;
+          &lt;td&gt;内核级同步，性能高、稳定性强&lt;/td&gt;
+          &lt;td&gt;无法传递指令，必须搭配IPC&lt;/td&gt;
+          &lt;td&gt;多进程同步+单实例组合场景&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Socket端口占用&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;绑定固定本地端口，绑定失败=已存在实例&lt;/td&gt;
+          &lt;td&gt;✅ 原生TCP通信，可直接发指令&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;全平台通用&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;端口自动释放&lt;/td&gt;
+          &lt;td&gt;零依赖、一套代码跑全系统，单实例+唤醒一体化&lt;/td&gt;
+          &lt;td&gt;端口可能被其他程序占用&lt;/td&gt;
+          &lt;td&gt;跨平台无依赖程序、通用工具&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;命名管道/FIFO&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Windows命名管道、Linux有名管道，创建失败判定实例&lt;/td&gt;
+          &lt;td&gt;✅ 原生IPC通信&lt;/td&gt;
+          &lt;td&gt;Windows(最优)、Linux/macOS(FIFO)&lt;/td&gt;
+          &lt;td&gt;连接断开自动清理&lt;/td&gt;
+          &lt;td&gt;Windows下高性能、专属桌面IPC&lt;/td&gt;
+          &lt;td&gt;跨平台API差异大，代码需分支&lt;/td&gt;
+          &lt;td&gt;Windows大型桌面软件&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;共享内存(Shared Memory)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;创建/附着共享内存区域，判定实例&lt;/td&gt;
+          &lt;td&gt;✅ 内存存指令，可通信&lt;/td&gt;
+          &lt;td&gt;全平台&lt;/td&gt;
+          &lt;td&gt;部分实现需手动清理&lt;/td&gt;
+          &lt;td&gt;数据传输速度最快，支持大数据交互&lt;/td&gt;
+          &lt;td&gt;单纯轮询有开销，需处理并发&lt;/td&gt;
+          &lt;td&gt;高频IPC+单实例的复杂程序&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;二分方案详细说明含关键要点&#34;&gt;二、分方案详细说明（含关键要点）
+&lt;/h3&gt;&lt;h4 id=&#34;1-命名互斥体windows-经典方案&#34;&gt;1. 命名互斥体（Windows 经典方案）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心API&lt;/strong&gt;：&lt;code&gt;CreateMutex&lt;/code&gt;、&lt;code&gt;GetLastError&lt;/code&gt;、&lt;code&gt;FindWindow&lt;/code&gt;、&lt;code&gt;ShowWindow&lt;/code&gt;、&lt;code&gt;SetForegroundWindow&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;流程&lt;/strong&gt;：
+&lt;ol&gt;
+&lt;li&gt;启动尝试创建&lt;strong&gt;全局命名互斥体&lt;/strong&gt;；创建失败 → 已有实例&lt;/li&gt;
+&lt;li&gt;通过窗口标题/类名查找原窗口句柄，执行恢复、最大化、前置&lt;/li&gt;
+&lt;li&gt;首实例持有互斥体，程序退出自动释放&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;补充&lt;/strong&gt;：标准C++ &lt;code&gt;std::mutex&lt;/code&gt; 仅支持&lt;strong&gt;进程内&lt;/strong&gt;，不能用于跨进程单实例。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-文件锁&#34;&gt;2. 文件锁
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;分类&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Linux/macOS：&lt;code&gt;flock&lt;/code&gt; 排他非阻塞锁&lt;/li&gt;
+&lt;li&gt;Windows：&lt;code&gt;LockFileEx&lt;/code&gt; 文件锁&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;唤醒实现&lt;/strong&gt;：无法直接通信，一般轮询指令文件，或搭配管道/端口传指令&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注意&lt;/strong&gt;：不要使用临时目录外的文件，避免权限不足导致功能失效。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-命名信号量&#34;&gt;3. 命名信号量
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;分类&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Windows：&lt;code&gt;CreateSemaphore&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Linux/macOS：POSIX &lt;code&gt;sem_open&lt;/code&gt; 命名信号量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特点&lt;/strong&gt;：纯同步标记，语义和互斥体接近，&lt;strong&gt;只判状态、不传数据&lt;/strong&gt;；必须额外搭配管道、Socket、共享内存实现窗口唤醒。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-socket-端口监听跨平台首选&#34;&gt;4. Socket 端口监听（跨平台首选）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心&lt;/strong&gt;：绑定 &lt;code&gt;127.0.0.1&lt;/code&gt; 高位闲置端口&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;流程&lt;/strong&gt;：
+&lt;ol&gt;
+&lt;li&gt;首实例绑定端口并监听连接&lt;/li&gt;
+&lt;li&gt;二次启动绑定失败 → 以客户端身份连接端口，发送唤醒指令&lt;/li&gt;
+&lt;li&gt;首实例收到指令，激活窗口&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优势&lt;/strong&gt;：标准Socket接口，Windows/Linux/macOS 代码几乎通用，无第三方依赖。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;5-命名管道--fifo&#34;&gt;5. 命名管道 / FIFO
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Windows 命名管道&lt;/strong&gt;：路径格式 &lt;code&gt;\\.\pipe\xxx&lt;/code&gt;，原生双向IPC，创建管道失败即代表有实例，直接读写管道传递唤醒命令。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Linux/macOS FIFO&lt;/strong&gt;：有名管道文件，用法逻辑一致，但API、创建方式和Windows完全不同。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;定位&lt;/strong&gt;：Windows平台仅次于互斥体的主流方案。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;6-共享内存&#34;&gt;6. 共享内存
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;分类&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Windows：&lt;code&gt;CreateFileMapping&lt;/code&gt; 内存映射文件&lt;/li&gt;
+&lt;li&gt;Linux：&lt;code&gt;shmget/shmat&lt;/code&gt; POSIX共享内存&lt;/li&gt;
+&lt;li&gt;框架封装：Qt &lt;code&gt;QSharedMemory&lt;/code&gt;、Boost 跨进程内存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;流程&lt;/strong&gt;：
+&lt;ol&gt;
+&lt;li&gt;尝试创建共享内存，失败则附着到已有内存&lt;/li&gt;
+&lt;li&gt;二次启动向共享内存写入唤醒标记&lt;/li&gt;
+&lt;li&gt;首实例轮询内存标记，触发窗口激活&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;进阶优化&lt;/strong&gt;：搭配信号量/管道做事件通知，替代轮询，降低资源消耗。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;三框架封装方案补充基于上述底层api的二次封装&#34;&gt;三、框架封装方案（补充：基于上述底层API的二次封装）
+&lt;/h3&gt;&lt;p&gt;针对开发框架，官方已封装好跨平台逻辑，本质仍是以上底层方案：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Qt&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;组合：&lt;code&gt;QSharedMemory&lt;/code&gt;（单实例标记）+ &lt;code&gt;QLocalServer/QLocalSocket&lt;/code&gt;（本地管道IPC唤醒）&lt;/li&gt;
+&lt;li&gt;特点：Qt项目最优解，完全跨平台，无需手写原生API。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Boost&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;boost::interprocess&lt;/code&gt; 提供跨进程互斥、信号量、共享内存，统一各平台API。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;四通用问题--避坑要点&#34;&gt;四、通用问题 &amp;amp; 避坑要点
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;残留问题&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;内核对象（互斥体、信号量、端口、管道）：进程崩溃/退出后&lt;strong&gt;系统自动释放&lt;/strong&gt;，无残留；&lt;/li&gt;
+&lt;li&gt;文件锁、普通文件指令：依赖文件本身，异常退出不会自动删除文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;窗口唤醒失效&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Windows 新版系统会限制后台程序强制置顶，可配合线程输入附加增强；&lt;/li&gt;
+&lt;li&gt;窗口最小化到托盘：普通窗口查找API可能找不到句柄，需单独记录窗口ID。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;冲突规避&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;命名类对象（互斥体、信号量、管道名）、端口号、锁文件路径，必须&lt;strong&gt;全局唯一&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;五快速选型建议&#34;&gt;五、快速选型建议
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;纯 Windows 原生C/C++&lt;/strong&gt;：优先 &lt;strong&gt;命名互斥体&lt;/strong&gt;，其次 &lt;strong&gt;命名管道&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Linux/macOS 程序&lt;/strong&gt;：优先 &lt;strong&gt;文件锁&lt;/strong&gt;，复杂场景搭配 FIFO 管道&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;要求跨平台、零第三方依赖&lt;/strong&gt;：首选 &lt;strong&gt;Socket 端口监听&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Qt 项目&lt;/strong&gt;：直接使用 &lt;code&gt;QSharedMemory + QLocalSocket&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多进程高频通信 + 单实例&lt;/strong&gt;：选用 &lt;strong&gt;共享内存&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;简单后台服务/小工具&lt;/strong&gt;：文件锁、命名信号量（搭配简易IPC）&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

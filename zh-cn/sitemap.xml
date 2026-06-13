@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://Yannick-Mo.github.io/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -25,14 +25,11 @@
                 href="https://Yannick-Mo.github.io/"
                 />
   </url><url>
-    <loc>https://Yannick-Mo.github.io/categories/c/c&#43;&#43;/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/c&#43;&#43;/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+    <loc>https://Yannick-Mo.github.io/tags/c/c&#43;&#43;/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/categories/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -54,20 +51,20 @@
                 href="https://Yannick-Mo.github.io/categories/"
                 />
   </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/moc/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+    <loc>https://Yannick-Mo.github.io/tags/ipc/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/linux/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/post/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
   </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/qt/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/p/qt-signals-slots-simple-text/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+    <loc>https://Yannick-Mo.github.io/tags/socket/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/tags/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -89,6 +86,87 @@
                 href="https://Yannick-Mo.github.io/tags/"
                 />
   </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/uds/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/unix-domain-socket/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/windows/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E5%8D%95%E5%AE%9E%E4%BE%8B/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/single-instance-program/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/ipc-socket/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/linux-signal-guide/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/mmap/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/posix/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/system-v/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/ipc-shared-memory/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/ipc-message-queue/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E5%90%8C%E6%AD%A5/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E4%BF%A1%E5%8F%B7/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/semaphore-notes/</loc>
+    <lastmod>2026-06-13T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/categories/c/c&#43;&#43;/</loc>
+    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/c&#43;&#43;/</loc>
+    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/moc/</loc>
+    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/qt/</loc>
+    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/qt-signals-slots-simple-text/</loc>
+    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
+  </url><url>
     <loc>https://Yannick-Mo.github.io/categories/%E5%85%AB%E8%82%A1%E6%96%87/</loc>
     <lastmod>2026-06-09T02:57:21+08:00</lastmod>
   </url><url>
@@ -101,9 +179,6 @@
     <loc>https://Yannick-Mo.github.io/p/qt-moc-signals-slots/</loc>
     <lastmod>2026-06-09T01:20:29+08:00</lastmod>
   </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/c/c&#43;&#43;/</loc>
-    <lastmod>2026-06-08T03:00:00+08:00</lastmod>
-  </url><url>
     <loc>https://Yannick-Mo.github.io/p/move-semantics-perfect-forwarding/</loc>
     <lastmod>2026-06-08T03:00:00+08:00</lastmod>
   </url><url>
@@ -115,9 +190,6 @@
   </url><url>
     <loc>https://Yannick-Mo.github.io/p/procedural-vs-oop/</loc>
     <lastmod>2026-06-08T01:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/linux/</loc>
-    <lastmod>2026-06-08T00:30:00+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/p/linux-thread-scheduling/</loc>
     <lastmod>2026-06-08T00:30:00+08:00</lastmod>
@@ -162,12 +234,6 @@
     <lastmod>2026-05-30T00:01:50+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/tags/%E7%AE%A1%E9%81%93/</loc>
-    <lastmod>2026-05-30T00:01:50+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</loc>
-    <lastmod>2026-05-30T00:01:50+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2026-05-30T00:01:50+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/tags/ffmpeg/</loc>

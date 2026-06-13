@@ -7,7 +7,23 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
-        <lastBuildDate>Tue, 09 Jun 2026 02:57:21 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 14 Jun 2026 01:22:27 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>进程间通信</title>
+        <link>https://Yannick-Mo.github.io/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</link>
+        <pubDate>Sun, 14 Jun 2026 01:22:27 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>系统编程</title>
+        <link>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</link>
+        <pubDate>Sun, 14 Jun 2026 01:22:27 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>C/C&#43;&#43;</title>
         <link>https://Yannick-Mo.github.io/categories/c/c&#43;&#43;/</link>
         <pubDate>Tue, 09 Jun 2026 02:57:21 +0800</pubDate>
@@ -37,22 +53,6 @@
         <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
         
         <guid>https://Yannick-Mo.github.io/categories/qt/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>进程间通信</title>
-        <link>https://Yannick-Mo.github.io/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</link>
-        <pubDate>Sat, 30 May 2026 00:01:50 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/categories/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>系统编程</title>
-        <link>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</link>
-        <pubDate>Sat, 30 May 2026 00:01:50 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</guid>
         <description></description>
         </item>
         <item>
