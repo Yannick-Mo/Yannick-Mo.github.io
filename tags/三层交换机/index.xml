@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>三层交换机 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E4%B8%89%E5%B1%82%E4%BA%A4%E6%8D%A2%E6%9C%BA/</link>
+        <description>Recent content in 三层交换机 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Sat, 20 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E4%B8%89%E5%B1%82%E4%BA%A4%E6%8D%A2%E6%9C%BA/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>交换机 vs 路由器 vs 三层交换机：为什么三层交换机替代不了路由器？</title>
+        <link>https://Yannick-Mo.github.io/p/switch-vs-router-vs-layer3-switch/</link>
+        <pubDate>Sat, 20 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/switch-vs-router-vs-layer3-switch/</guid>
+        <description>&lt;h3 id=&#34;1-交换机特指二层交换机的核心作用&#34;&gt;1. 交换机（特指二层交换机）的核心作用
+&lt;/h3&gt;&lt;p&gt;它的核心只有一个字：&lt;strong&gt;快&lt;/strong&gt;。具体作用包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;连接终端设备&lt;/strong&gt;：将电脑、打印机、AP（无线接入点）等设备连接在同一个局域网内。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基于MAC地址转发&lt;/strong&gt;：它学习并记住每个端口的MAC地址，数据来了直接精准转发，&lt;strong&gt;不修改数据包&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;扩展物理端口&lt;/strong&gt;：将少量的网络接口扩展为大量接口，满足多设备接入需求。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隔离冲突域&lt;/strong&gt;：确保每个端口上的设备发送数据互不干扰（全双工通信）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;2-路由器传统路由器的核心作用&#34;&gt;2. 路由器（传统路由器）的核心作用
+&lt;/h3&gt;&lt;p&gt;它的核心只有一个字：&lt;strong&gt;连&lt;/strong&gt;。具体作用包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;连接异构网络&lt;/strong&gt;：连接家庭宽带、企业专线、互联网等不同的网络（WAN与LAN）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基于IP地址寻址&lt;/strong&gt;：读取数据包的目标IP，通过查询路由表决定&amp;quot;下一跳&amp;quot;去哪里。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;阻断广播域&lt;/strong&gt;：默认不转发广播包，防止局域网广播风暴蔓延到整个互联网。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实施NAT（网络地址转换）&lt;/strong&gt;：将内网私有IP转换成公网IP，让多台设备共享一个外网IP上网（家庭路由器必备）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提供安全与策略&lt;/strong&gt;：执行防火墙规则、流量限速、VPN（虚拟专用网络）加密等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;3-三层交换机这么强为什么路由器没被淘汰&#34;&gt;3. 三层交换机这么强，为什么路由器没被淘汰？
+&lt;/h3&gt;&lt;p&gt;这是最大的误区。&lt;strong&gt;三层交换机强在&amp;quot;速度&amp;quot;，而路由器强在&amp;quot;深度&amp;quot;和&amp;quot;广度&amp;quot;&lt;/strong&gt;。两者定位截然不同，三层交换机无法在以下四个核心维度上替代路由器：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;① 路由表容量与协议复杂性（广度问题）&lt;/strong&gt;
+三层交换机的硬件芯片（TCAM）容量有限，通常只支持几千到几万条路由条目，且只运行简单的动态路由协议（如OSPF（开放式最短路径优先）、RIP（路由信息协议））。
+而运营商骨干网的路由器需要承载&lt;strong&gt;几十万甚至上百万条&lt;/strong&gt;全球BGP（边界网关协议）路由表，并处理复杂的路由策略（路由过滤、属性操控）。三层交换机的芯片根本装不下这么庞大的表，CPU也跑不动复杂的BGP算法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;② 接口类型与连接能力（物理层面）&lt;/strong&gt;
+三层交换机通常只有&lt;strong&gt;以太网接口（RJ45网口或光口）&lt;/strong&gt;，只能连接网线或光纤。
+而路由器拥有丰富的&lt;strong&gt;广域网（WAN）接口&lt;/strong&gt;，比如&lt;strong&gt;POS接口&lt;/strong&gt;、&lt;strong&gt;CPOS接口&lt;/strong&gt;、&lt;strong&gt;E1/T1接口&lt;/strong&gt;等，可以连接运营商的SDH（同步数字体系）/ATM（异步传输模式）专线、DDN（数字数据网）线路。路由器负责把这些五花八门的物理线路&amp;quot;翻译&amp;quot;成IP数据包，这是交换机做不到的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;③ 应用层高级功能与灵活性（软件层面）&lt;/strong&gt;
+三层交换机为了保持&amp;quot;线速转发&amp;quot;，绝大多数流量走硬件芯片，软件干预能力弱。
+而路由器依托强大的CPU和专属操作系统（如华为VRP、思科IOS），能灵活执行复杂的&lt;strong&gt;QoS（服务质量）&lt;/strong&gt;（深度报文检测、精准流量整形）、&lt;strong&gt;IPSec（互联网协议安全）加密隧道&lt;/strong&gt;、&lt;strong&gt;MPLS（多协议标签交换） VPN（虚拟专用网络）&lt;/strong&gt; 的标签压栈与弹栈。这些运算极耗CPU，若放在交换机上，交换机会直接&amp;quot;卡死&amp;quot;，失去高速转发优势。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;④ 转发机制差异（&amp;ldquo;一次路由多次交换&amp;quot;的软肋）&lt;/strong&gt;
+三层交换机引以为傲的&amp;quot;一次路由，多次交换&amp;quot;依赖&lt;strong&gt;流缓存&lt;/strong&gt;。
+如果网络发生路由动荡（链路频繁抖动），缓存频繁失效，三层交换机就得频繁把流量交给CPU重新查表，此时性能会断崖式下跌。
+路由器采用&lt;strong&gt;逐包转发（Process Switching）&lt;strong&gt;或&lt;/strong&gt;快速交换（Fast Switching）&lt;/strong&gt;，不依赖流缓存，在面对路由剧烈变化时，稳定性远高于三层交换机。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;总结一下它们的分工：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;交换机（含三层交换机）&lt;/strong&gt;：是**&amp;ldquo;园区/数据中心的内部高速地铁&amp;rdquo;**，负责在楼宇、机柜之间把数据以最快速度搬来搬去。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;路由器&lt;/strong&gt;：是**&amp;ldquo;连接城市与国家的跨省高铁/远洋货轮&amp;rdquo;**，负责把数据从一个城市（局域网）运到另一个城市（广域网/互联网）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;三层交换机替代不了路由器&lt;/strong&gt;，因为前者无法连接外网专线，无法承载全球海量路由，也无法做复杂的加密和流量策略。真正的企业组网中，它们是&lt;strong&gt;上下游关系&lt;/strong&gt;——三层交换机负责内部高速骨干，路由器负责连接出口外网，两者缺一不可。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

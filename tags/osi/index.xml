@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>OSI on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/osi/</link>
+        <description>Recent content in OSI on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Sun, 14 Jun 2026 20:57:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/osi/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>网络模型完整笔记：TCP/IP 与 OSI</title>
+        <link>https://Yannick-Mo.github.io/p/network-model-tcp-ip-osi/</link>
+        <pubDate>Sun, 14 Jun 2026 20:57:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/network-model-tcp-ip-osi/</guid>
+        <description>&lt;h3 id=&#34;一osi-七层模型概念框架&#34;&gt;一、OSI 七层模型（概念框架）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;OSI&lt;/strong&gt;（Open Systems Interconnection，开放系统互连）由 ISO 制定，将网络通信分为 7 层。实际网络主要采用 TCP/IP，但 OSI 仍是理解网络分层思想的经典模型。&lt;/p&gt;
+&lt;h4 id=&#34;各层详解从下往上&#34;&gt;各层详解（从下往上）
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;层号&lt;/th&gt;
+          &lt;th&gt;名称&lt;/th&gt;
+          &lt;th&gt;英文&lt;/th&gt;
+          &lt;th&gt;核心功能&lt;/th&gt;
+          &lt;th&gt;常见协议/技术&lt;/th&gt;
+          &lt;th&gt;数据单元&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;1&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;物理层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Physical&lt;/td&gt;
+          &lt;td&gt;传输原始比特流（0/1），定义电压、线缆、接口、速率&lt;/td&gt;
+          &lt;td&gt;双绞线、光纤、同轴电缆、集线器、中继器&lt;/td&gt;
+          &lt;td&gt;比特（bit）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;2&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;数据链路层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Data Link&lt;/td&gt;
+          &lt;td&gt;相邻节点间可靠传输帧，MAC 寻址，差错控制，流量控制&lt;/td&gt;
+          &lt;td&gt;Ethernet、Wi-Fi (802.11)、PPP、交换机、网桥&lt;/td&gt;
+          &lt;td&gt;帧（Frame）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;3&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;网络层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Network&lt;/td&gt;
+          &lt;td&gt;路由选择，逻辑寻址（IP），分组转发&lt;/td&gt;
+          &lt;td&gt;IP (IPv4/IPv6)、ICMP、ARP、RIP、OSPF&lt;/td&gt;
+          &lt;td&gt;包（Packet）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;4&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;传输层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Transport&lt;/td&gt;
+          &lt;td&gt;端到端连接，可靠/不可靠传输，流量控制，分段重组&lt;/td&gt;
+          &lt;td&gt;TCP、UDP、SCTP&lt;/td&gt;
+          &lt;td&gt;段（Segment）/数据报（Datagram）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;5&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;会话层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Session&lt;/td&gt;
+          &lt;td&gt;建立、管理、终止会话，检查点与恢复（断点续传）&lt;/td&gt;
+          &lt;td&gt;NetBIOS、RPC、SQL、认证协议&lt;/td&gt;
+          &lt;td&gt;数据（Data）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;6&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;表示层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Presentation&lt;/td&gt;
+          &lt;td&gt;数据格式转换（ASCII/EBCDIC）、加密解密、压缩解压&lt;/td&gt;
+          &lt;td&gt;JPEG、GIF、MPEG、SSL/TLS（部分）&lt;/td&gt;
+          &lt;td&gt;数据（Data）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;7&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;应用层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Application&lt;/td&gt;
+          &lt;td&gt;直接为应用程序提供网络服务&lt;/td&gt;
+          &lt;td&gt;HTTP、FTP、SMTP、DNS、SSH、Telnet&lt;/td&gt;
+          &lt;td&gt;数据（Data）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;封装单位记忆&lt;/strong&gt;：比特 → 帧 → 包 → 段 → 数据（高层统称报文）&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;二tcpip-四层模型实际应用标准&#34;&gt;二、TCP/IP 四层模型（实际应用标准）
+&lt;/h3&gt;&lt;p&gt;TCP/IP 是互联网事实标准，比 OSI 更简洁。分为以下四层：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;层次&lt;/th&gt;
+          &lt;th&gt;名称&lt;/th&gt;
+          &lt;th&gt;功能&lt;/th&gt;
+          &lt;th&gt;对应 OSI 层&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;4&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;应用层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;用户进程通信，包含会话/表示层功能&lt;/td&gt;
+          &lt;td&gt;OSI 5+6+7&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;3&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;传输层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;端到端可靠/不可靠传输&lt;/td&gt;
+          &lt;td&gt;OSI 4&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;2&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;网络层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;路由与 IP 寻址&lt;/td&gt;
+          &lt;td&gt;OSI 3&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;1&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;网络接口层&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;物理介质访问与帧传输&lt;/td&gt;
+          &lt;td&gt;OSI 1+2&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;各层核心协议&#34;&gt;各层核心协议
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;应用层&lt;/strong&gt;：HTTP/HTTPS、FTP、SMTP/POP3/IMAP、DNS、SSH、DHCP、Telnet&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;传输层&lt;/strong&gt;：TCP（可靠，面向连接）、UDP（不可靠，高效）、SCTP&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络层&lt;/strong&gt;：IP（IPv4/IPv6）、ICMP（ping）、ARP（IP → MAC）、RARP（已淘汰）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络接口层&lt;/strong&gt;：Ethernet、Wi-Fi、PPP、令牌环等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;三数据封装与解封装过程以-tcpip-发送网页请求为例&#34;&gt;三、数据封装与解封装过程（以 TCP/IP 发送网页请求为例）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;发送端&lt;/strong&gt;（从上到下）：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;应用层&lt;/strong&gt;：浏览器生成 HTTP 请求报文（数据）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;传输层&lt;/strong&gt;：加上 TCP 头（源端口、目的端口、序列号等） → TCP 段。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络层&lt;/strong&gt;：加上 IP 头（源 IP、目的 IP） → IP 数据包。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络接口层&lt;/strong&gt;：加上以太网头（源 MAC、目的 MAC）和尾部 FCS → 以太网帧。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;物理层&lt;/strong&gt;：转换为比特流在网线上传输。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;接收端&lt;/strong&gt;（从下到上）：每层剥掉对应头部，将数据上交上层，最终得到 HTTP 请求。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;记忆口诀&lt;/strong&gt;：应用传输网网口，数据段包帧比特走。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;四osi-与-tcpip-对比&#34;&gt;四、OSI 与 TCP/IP 对比
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;对比项&lt;/th&gt;
+          &lt;th&gt;OSI 七层模型&lt;/th&gt;
+          &lt;th&gt;TCP/IP 四层模型&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;层数&lt;/td&gt;
+          &lt;td&gt;7 层&lt;/td&gt;
+          &lt;td&gt;4 层&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;标准化&lt;/td&gt;
+          &lt;td&gt;先有模型，后有协议&lt;/td&gt;
+          &lt;td&gt;先有协议，后有模型&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;会话/表示层&lt;/td&gt;
+          &lt;td&gt;独立存在&lt;/td&gt;
+          &lt;td&gt;合并到应用层&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;网络接口&lt;/td&gt;
+          &lt;td&gt;物理+数据链路分开&lt;/td&gt;
+          &lt;td&gt;合并为网络接口层&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;适用场景&lt;/td&gt;
+          &lt;td&gt;教学、理论分析、标准文档&lt;/td&gt;
+          &lt;td&gt;实际网络、Internet 核心&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;协议依赖性&lt;/td&gt;
+          &lt;td&gt;协议需匹配各层接口&lt;/td&gt;
+          &lt;td&gt;协议栈固化（IP/TCP）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;五常见问题速查&#34;&gt;五、常见问题速查
+&lt;/h3&gt;&lt;h4 id=&#34;1-为什么-osi-没有完全取代-tcpip&#34;&gt;1. 为什么 OSI 没有完全取代 TCP/IP？
+&lt;/h4&gt;&lt;p&gt;OSI 模型复杂，实现成本高；TCP/IP 简单实用，随着 Internet 普及成为事实标准。&lt;/p&gt;
+&lt;h4 id=&#34;2-arp-属于哪一层&#34;&gt;2. ARP 属于哪一层？
+&lt;/h4&gt;&lt;p&gt;逻辑上用于 IP → MAC 转换，通常归为 &lt;strong&gt;网络层&lt;/strong&gt;，但工作在链路层之上；部分教材放在网络接口层。&lt;/p&gt;
+&lt;h4 id=&#34;3-ping-命令使用什么协议&#34;&gt;3. ping 命令使用什么协议？
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;ICMP&lt;/strong&gt;（网络层协议），用于测试连通性。&lt;/p&gt;
+&lt;h4 id=&#34;4-交换机路由器在哪一层&#34;&gt;4. 交换机、路由器在哪一层？
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;交换机：&lt;strong&gt;数据链路层&lt;/strong&gt;（二层交换机）；三层交换机可工作在网络层。&lt;/li&gt;
+&lt;li&gt;路由器：&lt;strong&gt;网络层&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;5-浏览器输入网址后发生了什么分层过程&#34;&gt;5. 浏览器输入网址后发生了什么？（分层过程）
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;应用层：DNS 解析域名得到 IP，构造 HTTP 请求。&lt;/li&gt;
+&lt;li&gt;传输层：TCP 三次握手，将 HTTP 数据封装成 TCP 段。&lt;/li&gt;
+&lt;li&gt;网络层：IP 包路由转发。&lt;/li&gt;
+&lt;li&gt;网络接口层：通过以太网/Wi-Fi 发送帧。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;六记忆小贴士&#34;&gt;六、记忆小贴士
+&lt;/h3&gt;&lt;h4 id=&#34;osi-七层顺序由下往上&#34;&gt;OSI 七层顺序（由下往上）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;口诀&lt;/strong&gt;：物、数、网、传、会、表、应。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;英文单词&lt;/strong&gt;：Please Do Not Throw Sausage Pizza Away（Physical, Data link, Network, Transport, Session, Presentation, Application）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;tcpip-四层顺序由上往下&#34;&gt;TCP/IP 四层顺序（由上往下）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;口诀&lt;/strong&gt;：应、传、网、接（应用层、传输层、网络层、网络接口层）。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

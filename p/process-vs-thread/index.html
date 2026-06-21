@@ -775,7 +775,7 @@
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js" defer></script>
+            </script><script type="text/javascript" src="/ts/main.c432297ce8e65b7951da08373ceabec6f7cc83933801a7002336738bb8bdeabf.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');
@@ -788,7 +788,7 @@
     }());
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" data-turbo-eval="false"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" data-turbo-eval="false"></script>
 <script data-turbo-eval="false">
 (function () {
   function getMermaidTheme() {
@@ -806,7 +806,11 @@
     mermaid.run({ querySelector: ".mermaid" });
   }
 
-  document.addEventListener("DOMContentLoaded", runMermaid);
+  if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", runMermaid);
+  } else {
+    runMermaid();
+  }
   document.addEventListener("turbo:load", runMermaid);
 
   new MutationObserver(function () { runMermaid(); })

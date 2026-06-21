@@ -13,7 +13,56 @@
         <pubDate>Sat, 13 Jun 2026 00:00:00 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/p/ipc-message-queue/</guid>
-        <description>&lt;h3 id=&#34;1-概述什么是ipc消息队列&#34;&gt;1. 概述：什么是IPC消息队列
+        <description>&lt;p&gt;与管道将数据视为&amp;quot;字节流&amp;quot;不同，消息队列（Message Queue）在内核中维护了一个&lt;strong&gt;独立的、按消息块进行管理的队列&lt;/strong&gt;，实现进程间结构化、异步的数据交换。&lt;/p&gt;
+&lt;h3 id=&#34;-核心实现从数据结构到系统调用&#34;&gt;⚙️ 核心实现：从数据结构到系统调用
+&lt;/h3&gt;&lt;p&gt;Linux内核为消息队列实现了一套完整的管理机制。为了让你更直观地理解，下图清晰地展示了消息队列的核心组件与数据流：&lt;/p&gt;
+&lt;pre class=&#34;mermaid&#34;&gt;
+  graph LR
+    S[发送进程] --&amp;gt;|msgsnd| Q[内核消息队列]
+    Q --&amp;gt;|msgrcv| R[接收进程]
+    
+    style S fill:#f9f
+    style Q fill:#cfc
+    style R fill:#ccf
+&lt;/pre&gt;
+
+&lt;h4 id=&#34;1-核心数据结构&#34;&gt;1. 核心数据结构
+&lt;/h4&gt;&lt;p&gt;在内核中，每个消息队列都通过以下核心数据结构来管理：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;msqid_ds&lt;/code&gt; 结构体&lt;/strong&gt;：这是消息队列的&amp;quot;控制中心&amp;quot;，内核为系统上创建的每个消息队列都维护着这样一个实例。它包含了队列的所有关键信息：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msg_perm&lt;/code&gt;&lt;/strong&gt;: 一个 &lt;code&gt;ipc_perm&lt;/code&gt; 结构，用于存储消息队列的访问权限和所有者信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msg_first&lt;/code&gt; 与 &lt;code&gt;msg_last&lt;/code&gt;&lt;/strong&gt;: 用于将队列中的消息组织成一个&lt;strong&gt;链表&lt;/strong&gt;。这构成了消息队列的底层实现。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msg_qnum&lt;/code&gt; 与 &lt;code&gt;msg_qbytes&lt;/code&gt;&lt;/strong&gt;: 分别记录队列中&lt;strong&gt;当前的消息数量&lt;/strong&gt;和允许的&lt;strong&gt;最大字节总数&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msg_stime&lt;/code&gt;, &lt;code&gt;msg_rtime&lt;/code&gt;, &lt;code&gt;msg_ctime&lt;/code&gt;&lt;/strong&gt;: 时间戳，记录队列的最后一次发送、接收和状态变更时间。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;wwait&lt;/code&gt; 与 &lt;code&gt;rwait&lt;/code&gt;&lt;/strong&gt;: &lt;strong&gt;等待队列&lt;/strong&gt;指针。当队列满时，写进程会在此睡眠（&lt;code&gt;wwait&lt;/code&gt;）；当队列空时，读进程会在此睡眠（&lt;code&gt;rwait&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;msg&lt;/code&gt; 结构体&lt;/strong&gt;：每个被发送的消息，在内核中都会被打包成一个 &lt;code&gt;msg&lt;/code&gt; 结构体对象，它至少包含消息类型（&lt;code&gt;mtype&lt;/code&gt;）、消息数据长度和数据本身。这些 &lt;code&gt;msg&lt;/code&gt; 对象通过 &lt;code&gt;msqid_ds&lt;/code&gt; 中的指针链接成队。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-系统调用接口&#34;&gt;2. 系统调用接口
+&lt;/h4&gt;&lt;p&gt;用户空间的程序通过一组标准的系统调用来操作消息队列。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msgget()&lt;/code&gt;&lt;/strong&gt;: 创建或获取一个消息队列，成功时返回一个队列标识符（ID）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msgsnd()&lt;/code&gt;&lt;/strong&gt;: 向指定的消息队列发送一条消息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msgrcv()&lt;/code&gt;&lt;/strong&gt;: 从指定的消息队列中读取一条消息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msgctl()&lt;/code&gt;&lt;/strong&gt;: 对消息队列执行控制操作，如获取属性、设置属性或删除队列。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-独特特点消息队列的优势&#34;&gt;✨ 独特特点：消息队列的优势
+&lt;/h3&gt;&lt;p&gt;相较于管道，消息队列提供了更强大、更灵活的通信能力。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;结构化消息&lt;/strong&gt;：每条消息都自带一个&lt;strong&gt;正整数类型的标签（type）&lt;/strong&gt;。接收方可以根据类型精确读取，无需按FIFO顺序接收。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;异步通信&lt;/strong&gt;：发送方发送后即可返回，接收方在需要时再从队列中取走。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内核级持久化&lt;/strong&gt;：队列独立于进程存在，所有发送端关闭后队列依然保留。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多对多全双工&lt;/strong&gt;：允许多个进程同时读写，实现高效的生产者-消费者模型。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;动态优先级&lt;/strong&gt;：可通过消息类型实现优先级处理，比管道的固定FIFO更灵活。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据拷贝开销&lt;/strong&gt;：每次发送接收均涉及两次数据拷贝。传输少量数据时效率高，传输大量数据时开销显著。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;概述什么是ipc消息队列&#34;&gt;概述：什么是IPC消息队列
 &lt;/h3&gt;&lt;p&gt;消息队列是操作系统内核维护的一个&lt;strong&gt;消息链表&lt;/strong&gt;，允许进程以&amp;quot;消息&amp;quot;为单位进行数据交换。每条消息通常包含&lt;strong&gt;消息类型&lt;/strong&gt;和&lt;strong&gt;消息内容&lt;/strong&gt;，相比无名管道（字节流），消息队列支持&lt;strong&gt;结构化数据传输&lt;/strong&gt;和&lt;strong&gt;按类型过滤接收&lt;/strong&gt;。&lt;/p&gt;
 &lt;h4 id=&#34;核心优势&#34;&gt;核心优势
 &lt;/h4&gt;&lt;ul&gt;

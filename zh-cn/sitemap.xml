@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://Yannick-Mo.github.io/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -25,11 +25,8 @@
                 href="https://Yannick-Mo.github.io/"
                 />
   </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/c/c&#43;&#43;/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
-  </url><url>
     <loc>https://Yannick-Mo.github.io/categories/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -51,20 +48,11 @@
                 href="https://Yannick-Mo.github.io/categories/"
                 />
   </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/ipc/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/linux/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
-  </url><url>
     <loc>https://Yannick-Mo.github.io/post/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/socket/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/tags/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
@@ -85,6 +73,231 @@
                 hreflang="zh-cn"
                 href="https://Yannick-Mo.github.io/tags/"
                 />
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/tcp/</loc>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/tcp/ip/</loc>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/udp/</loc>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/udp-protocol-detailed/</loc>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E4%BC%A0%E8%BE%93%E5%B1%82/</loc>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/categories/%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</loc>
+    <lastmod>2026-06-22T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/c/c&#43;&#43;/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/c&#43;&#43;/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/cpp-socket-programming/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/epoll/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/epoll-notes/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/i/o%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/iocp/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/linux/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/poll/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/poll-notes/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/proactor/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/proactor-pattern/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/reactor/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/reactor-pattern/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/select/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/select-detailed/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/socket/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/tcp-core-mechanisms/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/tcp-vs-udp/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E9%AB%98%E6%80%A7%E8%83%BD/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/listen-socket-vs-client-socket/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E5%86%85%E6%A0%B8/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/socket-and-file-descriptor/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9Cio/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/network-io-two-phases/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E5%BC%82%E6%AD%A5i/o/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/</loc>
+    <lastmod>2026-06-21T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/linux%E5%86%85%E6%A0%B8/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/syn-flood/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/time_wait/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/timewait-optimization-syn-flood/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/switch-vs-router-vs-layer3-switch/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E8%B7%AF%E7%94%B1%E5%99%A8/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E4%B8%89%E5%B1%82%E4%BA%A4%E6%8D%A2%E6%9C%BA/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc>
+    <lastmod>2026-06-20T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/categories/c/c&#43;&#43;/</loc>
+    <lastmod>2026-06-14T21:12:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/make/</loc>
+    <lastmod>2026-06-14T21:12:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/makefile/</loc>
+    <lastmod>2026-06-14T21:12:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/makefile-tutorial/</loc>
+    <lastmod>2026-06-14T21:12:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91/</loc>
+    <lastmod>2026-06-14T21:12:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/</loc>
+    <lastmod>2026-06-14T21:12:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/http/</loc>
+    <lastmod>2026-06-14T20:57:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/ip/</loc>
+    <lastmod>2026-06-14T20:57:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/osi/</loc>
+    <lastmod>2026-06-14T20:57:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2026-06-14T20:57:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/network-model-tcp-ip-osi/</loc>
+    <lastmod>2026-06-14T20:57:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/deque/</loc>
+    <lastmod>2026-06-14T14:22:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/priority_queue/</loc>
+    <lastmod>2026-06-14T14:22:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/queue/</loc>
+    <lastmod>2026-06-14T14:22:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/stl/</loc>
+    <lastmod>2026-06-14T14:22:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/p/stl-queue-containers/</loc>
+    <lastmod>2026-06-14T14:22:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
+    <lastmod>2026-06-14T14:22:00+08:00</lastmod>
+  </url><url>
+    <loc>https://Yannick-Mo.github.io/tags/ipc/</loc>
+    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/tags/uds/</loc>
     <lastmod>2026-06-14T01:22:27+08:00</lastmod>
@@ -111,9 +324,6 @@
     <lastmod>2026-06-14T01:22:27+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2026-06-14T01:22:27+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2026-06-14T01:22:27+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/p/linux-signal-guide/</loc>
@@ -152,12 +362,6 @@
     <loc>https://Yannick-Mo.github.io/p/semaphore-notes/</loc>
     <lastmod>2026-06-13T00:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://Yannick-Mo.github.io/categories/c/c&#43;&#43;/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/c&#43;&#43;/</loc>
-    <lastmod>2026-06-09T02:57:21+08:00</lastmod>
-  </url><url>
     <loc>https://Yannick-Mo.github.io/tags/moc/</loc>
     <lastmod>2026-06-09T02:57:21+08:00</lastmod>
   </url><url>
@@ -194,9 +398,6 @@
     <loc>https://Yannick-Mo.github.io/p/linux-thread-scheduling/</loc>
     <lastmod>2026-06-08T00:30:00+08:00</lastmod>
   </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/</loc>
-    <lastmod>2026-06-08T00:30:00+08:00</lastmod>
-  </url><url>
     <loc>https://Yannick-Mo.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/</loc>
     <lastmod>2026-06-08T00:30:00+08:00</lastmod>
   </url><url>
@@ -220,9 +421,6 @@
   </url><url>
     <loc>https://Yannick-Mo.github.io/p/qt-json/</loc>
     <lastmod>2026-05-30T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Yannick-Mo.github.io/tags/epoll/</loc>
-    <lastmod>2026-05-30T00:01:50+08:00</lastmod>
   </url><url>
     <loc>https://Yannick-Mo.github.io/p/linux-pipe-ipc/</loc>
     <lastmod>2026-05-30T00:01:50+08:00</lastmod>

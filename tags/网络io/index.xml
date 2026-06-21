@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>网络IO on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9Cio/</link>
+        <description>Recent content in 网络IO on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Sun, 21 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9Cio/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>一次网络IO的两个阶段</title>
+        <link>https://Yannick-Mo.github.io/p/network-io-two-phases/</link>
+        <pubDate>Sun, 21 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/network-io-two-phases/</guid>
+        <description>&lt;p&gt;典型的一次网络IO（以&lt;strong&gt;接收数据&lt;/strong&gt;为例），两个阶段的划分和具体流程如下，核心是&amp;quot;内核先就绪数据，应用再处理数据&amp;quot;的递进关系：&lt;/p&gt;
+&lt;h3 id=&#34;阶段一操作系统内核完成数据从网络到内核缓冲区的就绪&#34;&gt;&lt;strong&gt;阶段一：操作系统内核完成&amp;quot;数据从网络到内核缓冲区的就绪&amp;quot;&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;（由内核主导，应用程序无感知）&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;网卡接收数据&lt;/strong&gt;：
+远程发送的数据包通过网络链路到达本地网卡，暂存在网卡的硬件缓冲区（如DMA缓冲区）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内核介入处理&lt;/strong&gt;：
+网卡接收完成后，通过&lt;strong&gt;硬件中断&lt;/strong&gt;通知操作系统内核，内核启动中断处理程序：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;解析数据包的协议头部（如TCP/UDP端口、IP地址等），确认目标进程；&lt;/li&gt;
+&lt;li&gt;将数据包中的有效数据（去除协议头后）从网卡缓冲区&lt;strong&gt;复制到内核缓冲区&lt;/strong&gt;（内核管理的内存区域，如TCP接收队列）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;标记数据就绪&lt;/strong&gt;：
+当内核缓冲区中的数据满足&amp;quot;可被应用程序读取&amp;quot;的条件（如TCP数据按序到达、数据量足够等），内核会标记该IO事件&amp;quot;就绪&amp;quot;（如更新文件描述符的状态）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;核心目标&lt;/strong&gt;：把网络中的原始数据转化为内核可管理、应用程序可访问的&amp;quot;就绪数据&amp;quot;，存放在内核缓冲区。&lt;/p&gt;
+&lt;h3 id=&#34;阶段二应用程序完成数据从内核缓冲区到用户空间的处理&#34;&gt;&lt;strong&gt;阶段二：应用程序完成&amp;quot;数据从内核缓冲区到用户空间的处理&amp;quot;&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;（由应用程序主导，依赖系统调用与内核交互）&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;应用程序发起系统调用&lt;/strong&gt;：
+应用程序通过系统调用（如&lt;code&gt;recv&lt;/code&gt;、&lt;code&gt;read&lt;/code&gt;）向内核请求读取数据，明确要从哪个内核缓冲区（通过文件描述符关联）读取。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;数据从内核到用户空间的复制&lt;/strong&gt;：
+内核收到请求后，将内核缓冲区中&amp;quot;就绪&amp;quot;的数据&lt;strong&gt;复制到应用程序的用户缓冲区&lt;/strong&gt;（应用程序自己管理的内存区域）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;应用程序处理数据&lt;/strong&gt;：
+数据复制完成后，系统调用返回，应用程序从用户缓冲区中读取数据，进行业务逻辑处理（如解析HTTP请求、处理协议字段等）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;核心目标&lt;/strong&gt;：将内核准备好的数据&amp;quot;拿到手&amp;quot;，转化为业务可用的信息。&lt;/p&gt;
+&lt;p&gt;无论接收还是发送，网络IO的两个阶段始终遵循&amp;quot;&lt;strong&gt;内核先完成数据的底层传输/就绪，应用程序再通过系统调用获取/提交数据并处理&lt;/strong&gt;&amp;ldquo;的逻辑，两者是&amp;quot;数据接力&amp;quot;的关系，缺一不可。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

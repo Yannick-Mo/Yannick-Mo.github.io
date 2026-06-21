@@ -13,7 +13,24 @@
         <pubDate>Sat, 30 May 2026 00:01:50 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/p/linux-pipe-ipc/</guid>
-        <description>&lt;p&gt;管道是进程间通信的机制的其中一种，特点：单向字节流、先进先出，通常用于有亲缘关系的进程（如父子进程）。&lt;/p&gt;
+        <description>&lt;h3 id=&#34;实现要点&#34;&gt;实现要点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;内核环形缓冲区&lt;/strong&gt;：管道在内核中由一块内存页组成的环形缓冲区（默认16页，共64KB）承载数据。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心结构&lt;/strong&gt;：每个管道有一个 &lt;code&gt;pipe_inode_info&lt;/code&gt; 结构，管理读/写指针、等待队列以及缓冲区状态。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;文件接口&lt;/strong&gt;：创建管道（&lt;code&gt;pipe()&lt;/code&gt;）会获得两个文件描述符（fd[0]读端，fd[1]写端），读写操作使用普通的 &lt;code&gt;read&lt;/code&gt;/&lt;code&gt;write&lt;/code&gt; 系统调用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;同步机制&lt;/strong&gt;：使用锁和等待队列实现互斥与阻塞——管道空时读进程睡眠，管道满时写进程睡眠，直到条件满足。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;主要特点&#34;&gt;主要特点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;单向流&lt;/strong&gt;：数据只能从写端流向读端，属于半双工通信。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;亲缘进程通信&lt;/strong&gt;：匿名管道通常用于父子或兄弟进程之间（通过 &lt;code&gt;fork&lt;/code&gt; 继承文件描述符）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;字节流&lt;/strong&gt;：无消息边界，数据被视为连续的字节序列。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;阻塞行为&lt;/strong&gt;：默认读写操作可能阻塞（可设为非阻塞），提供天然的流控。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;有限容量&lt;/strong&gt;：缓冲区大小有限，写满会阻塞，读空也会阻塞。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;生命周期&lt;/strong&gt;：所有写端关闭后，读端读取完剩余数据就会收到 EOF。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;管道是进程间通信的机制的其中一种，特点：单向字节流、先进先出，通常用于有亲缘关系的进程（如父子进程）。&lt;/p&gt;
 &lt;h2 id=&#34;1-匿名管道父进程写子进程读&#34;&gt;1. 匿名管道：父进程写，子进程读
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;

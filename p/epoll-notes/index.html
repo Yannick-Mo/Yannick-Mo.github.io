@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="全面讲解Linux epoll I/O多路复用机制：核心API、触发模式、与select/poll对比及完整代码示例">
+<title>epoll 笔记整理</title>
+
+<link rel='canonical' href='https://Yannick-Mo.github.io/p/epoll-notes/'>
+
+<link rel="stylesheet" href="/scss/style.min.22fe0601e48b9f23a7b6d2523f0f78450a0b5b3b25fdd49d655878cc28ca49b7.css"><meta property='og:title' content="epoll 笔记整理">
+<meta property='og:description' content="全面讲解Linux epoll I/O多路复用机制：核心API、触发模式、与select/poll对比及完整代码示例">
+<meta property='og:url' content='https://Yannick-Mo.github.io/p/epoll-notes/'>
+<meta property='og:site_name' content='雅尼克.莫(Yannick.Mo)'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Linux' /><meta property='article:tag' content='epoll' /><meta property='article:tag' content='I/O多路复用' /><meta property='article:tag' content='网络编程' /><meta property='article:tag' content='高性能' /><meta property='article:tag' content='C/C&#43;&#43;' /><meta property='article:published_time' content='2026-06-21T00:00:00&#43;08:00'/><meta property='article:modified_time' content='2026-06-21T00:00:00&#43;08:00'/><meta property='og:image' content='https://Yannick-Mo.github.io/img/avatar.png' />
+<meta name="twitter:title" content="epoll 笔记整理">
+<meta name="twitter:description" content="全面讲解Linux epoll I/O多路复用机制：核心API、触发模式、与select/poll对比及完整代码示例"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://Yannick-Mo.github.io/img/avatar.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+<script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7/dist/turbo.es5-umd.min.js"></script><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/waifu.css">
+<script type="module" src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/waifu-tips.js"></script>
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu14133112665799786173.png" width="300"
+                            height="282" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😁</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">雅尼克.莫(Yannick.Mo)</a></h1>
+            <h2 class="site-description">欢迎来到我的网站</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/1399620506'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1766655316953" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4996" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M419.5 309.304c-17.514-9.487-35.029-18.974-52.543-28.583l-87.209-47.435c-11.798-6.447-16.663-16.299-9.973-28.462 6.69-12.284 17.88-13.136 29.434-6.81 68.113 37.096 136.347 74.072 204.338 111.655 17.393 9.609 48.773 3.892 59.842-12.406a66632.417 66632.417 0 0 0 104.115-151.55c1.216-1.825 2.432-3.65 3.648-5.352 9.852-13.745 21.164-17.393 31.38-9.366 11.799 9.366 9.853 20.434 2.19 31.624a18582.62 18582.62 0 0 0-42.205 61.788c-19.461 28.583-38.922 57.166-60.694 88.911h245.084c22.867 0 26.394 3.649 26.515 26.515 0.244 156.78 0.365 313.44 0.609 470.22 0 22.38-4.014 26.272-26.88 26.394-5.96 0-12.042 0.608-17.88-0.122-21.65-2.432-37.462-0.364-45.003 26.394-6.811 24.083-32.475 36.367-55.585 33.935-26.758-2.798-44.395-18.61-51.206-43.544-4.135-15.082-11.19-17.15-24.812-17.028-94.02 0.608-187.918 0.365-281.938 0.122-10.825 0-17.15 0.973-20.312 14.109-6.811 28.218-30.043 46.098-55.706 46.584-26.637 0.487-49.747-16.907-57.531-46.22-3.284-12.284-8.758-15.081-20.07-14.473-14.595 0.851-29.312 0.365-44.029 0.121-16.055-0.364-23.11-6.932-23.11-22.623 0.122-159.334 0.365-318.791 0.73-478.247 0-16.542 6.69-22.015 25.056-22.015 75.532-0.122 151.064 0 226.474 0h15.812c0.487-1.338 0.973-2.676 1.46-4.136z m417.555 490.29V349.076H188.648v450.516h648.407z m-520.94 37.948h-44.638c3.041 12.77 9.244 21.771 21.164 22.501 13.258 0.973 19.582-8.879 23.474-22.501z m394.445-0.122c4.5 13.623 10.582 23.596 23.961 22.623 12.042-0.851 17.637-10.217 21.286-22.623H710.56z" fill="#1296DB" p-id="4997"></path><path d="M513.399 768.578H252.746c-25.299 0-29.312-4.014-29.312-29.313 0.121-108.98 0.243-217.96 0.486-327.062 0-22.988 4.744-27.732 27.61-27.732h523.008c23.23 0 27.974 4.622 28.096 27.367 0.365 109.588 0.608 219.055 0.73 328.643 0 23.475-4.865 27.975-29.07 28.097H513.4z m250.678-38.557V423.393H262.234V730.02h501.843z" fill="#1296DB" p-id="4998"></path><path d="M515.71 675.653c-6.69 4.743-12.893 10.095-19.948 13.865-23.23 12.285-46.34 11.19-67.747-3.77-23.596-16.542-34.057-40.746-31.989-68.964 0.487-6.082 11.677-15.69 18.123-15.934 6.325-0.243 14.352 8.515 18.974 15.204 3.65 5.352 2.068 13.866 4.622 20.312 4.865 12.285 13.866 23.961 27.367 21.042 9.973-2.067 18.974-12.163 26.393-20.434 3.65-4.135 3.041-12.284 4.014-18.609 1.703-12.041 8.636-19.339 20.434-19.096 10.703 0.244 17.636 6.812 19.096 18.488 0.851 7.42 1.094 16.663 5.473 21.528 7.055 7.906 17.028 17.393 26.15 17.758 8.15 0.244 18.123-9.73 24.57-17.514 4.257-5.109 4.013-14.231 5.351-21.65 2.19-11.798 8.88-18.975 21.042-18.123 12.042 0.973 18.366 8.757 17.88 21.042-1.216 31.015-13.38 56.193-42.084 70.058-26.758 12.893-51.814 7.42-73.708-12.527-1.216-0.852-2.554-1.582-4.013-2.676z m214.068-116.035c0.365 18.366-14.596 28.461-28.461 20.555-37.097-21.163-73.586-43.421-109.954-65.801-9.608-5.96-11.676-15.69-6.081-25.542 5.716-10.096 15.812-12.772 25.177-7.42 37.462 21.65 74.56 43.908 111.413 66.653 4.257 2.798 6.325 9.244 7.906 11.555z m-316.602-70.667c3.406 3.406 12.163 8.15 13.136 13.988 1.095 6.932-2.554 18.974-7.906 21.65-32.232 16.541-65.315 31.38-98.52 46.097-10.095 4.5-21.164 1.095-23.718-9.852-1.703-7.176 1.338-20.677 6.447-23.353 33.204-17.028 67.504-31.745 101.439-47.192 1.46-0.608 3.162-0.486 9.122-1.338z" fill="#1296DB" p-id="4999"></path></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.douyin.com/user/MS4wLjABAAAAaWBHMYjfaJN34aCrci_aWVyr9e-zaNSUhhqmsk3_xMbhRmCBmSmLzPhzv0TowMWH'
+                        target="_blank"
+                        title="douyin"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1766656006310" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10109" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M890.368 431.1552a362.8544 362.8544 0 0 1-210.6368-66.2016c0 94.5152 0 188.9792 1.1776 283.4944 0 12.6464 0.6144 25.2928-0.5632 37.888a307.2 307.2 0 0 1-40.96 131.2256 288.2048 288.2048 0 0 1-79.4624 89.088A256 256 0 0 1 414.72 956.0064a308.7872 308.7872 0 0 1-78.2336-6.6048A282.112 282.112 0 0 1 235.52 905.472c-0.6144-0.6144-1.792-1.2288-1.792-1.8432a272.64 272.64 0 0 1-79.4624-86.6816A281.0368 281.0368 0 0 1 249.344 433.5616 282.112 282.112 0 0 1 434.7392 394.24v35.84c0.6144 15.0528 0 30.1056 0.6144 44.544v76.4416a107.776 107.776 0 0 0-60.16-1.792 155.8528 155.8528 0 0 0-65.024 31.2832 108.4928 108.4928 0 0 0-27.6992 34.304 133.9392 133.9392 0 0 0-13.2608 73.4208 129.1776 129.1776 0 0 0 28.928 66.2528 152.1664 152.1664 0 0 0 38.5024 31.8976 127.6928 127.6928 0 0 0 187.8016-111.36V287.8976c0.6144-74.0352 0-148.0704 0.6144-222.1056h152.8832a171.264 171.264 0 0 0 3.584 39.1168h0.6144a231.1168 231.1168 0 0 0 22.272 62.0032 187.5968 187.5968 0 0 0 67.4304 74.6496c1.792 1.1776 2.9696 3.0208 4.8128 4.1984a212.5824 212.5824 0 0 0 69.7856 28.3136 272.5888 272.5888 0 0 0 43.9296 4.8128z m0 0" fill="#6C6CEA" p-id="10110"></path><path d="M836.7104 336.5376a536.7808 536.7808 0 0 0-4.096-65.8432A221.6448 221.6448 0 0 1 776.6528 245.76c-1.8432-1.1776-3.0208-3.0208-4.8128-4.1984a187.5968 187.5968 0 0 1-67.4304-74.6496 231.1168 231.1168 0 0 1-22.272-62.0032h-0.6144a171.264 171.264 0 0 1-3.584-39.1168h-152.8832c-0.6144 74.0352 0 148.0704-0.6144 222.1056v387.6352a127.6928 127.6928 0 0 1-187.8016 111.36 152.1664 152.1664 0 0 1-38.5024-31.8976 129.1776 129.1776 0 0 1-28.928-66.2528 133.9392 133.9392 0 0 1 13.2608-73.4208 109.2096 109.2096 0 0 1 27.6992-34.304 155.9552 155.9552 0 0 1 64.9728-31.2832 107.9808 107.9808 0 0 1 60.2112 1.792V475.0848c-0.6144-14.4384 0-29.4912-0.6144-44.544V394.24a282.112 282.112 0 0 0-185.3952 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 282.2656 282.2656 0 0 0-1.792 290.0992 273.6128 273.6128 0 0 0 16.1792 24.7296 525.056 525.056 0 0 0 506.88-128.4096c1.4848-8.9088 2.6624-17.8688 3.2768-26.9312 1.1776-12.5952 0.5632-25.2416 0.5632-37.888-1.1776-94.5152-1.1776-188.9792-1.1776-283.4944a363.8272 363.8272 0 0 0 149.2992 61.44 527.872 527.872 0 0 0 7.424-89.856z" fill="#757BF2" p-id="10111"></path><path d="M743.7312 220.16a201.8304 201.8304 0 0 1-39.3216-52.992 231.1168 231.1168 0 0 1-22.272-62.0032h-0.6144a171.264 171.264 0 0 1-3.584-39.1168h-152.8832c-0.6144 74.0352 0 148.0704-0.6144 222.1056v326.7584a526.2336 526.2336 0 0 0 155.2896-174.08V364.9536c8.9088 6.2976 18.176 12.032 27.648 17.4592a521.5232 521.5232 0 0 0 36.352-162.2528zM273.7152 709.4272a125.3376 125.3376 0 0 1-4.5056-20.48 133.9392 133.9392 0 0 1 13.2608-73.4208 109.2096 109.2096 0 0 1 27.6992-34.304 155.9552 155.9552 0 0 1 64.9728-31.2832 107.9808 107.9808 0 0 1 60.2112 1.792V475.0848c-0.6144-14.4384 0-29.4912-0.6144-44.544V394.24a282.112 282.112 0 0 0-185.3952 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 284.3136 284.3136 0 0 0-39.68 174.9504 525.8752 525.8752 0 0 0 103.8336 10.24c18.0736 0.0512 35.7888-0.8704 53.504-2.6112z" fill="#8486F8" p-id="10112"></path><path d="M435.2 458.8032c0-9.3184 0-18.7904-0.3584-28.2624V394.24a282.112 282.112 0 0 0-185.4976 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 288.1536 288.1536 0 0 0-20.48 40.4992A521.8304 521.8304 0 0 0 435.2 458.8032zM639.0272 65.792h-113.9712c-0.6144 74.0352 0 148.0704-0.6144 222.1056v83.2a522.24 522.24 0 0 0 114.5856-305.3056z" fill="#8D92F8" p-id="10113"></path></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yannick-Mo'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页|home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E-about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于 | About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档|Archive</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索|search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>技术链接|Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://Yannick-Mo.github.io/" selected>简体中文</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/en/" >English</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/zh-tw/" >正體中文</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/ja/" >日本語</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#1-epoll-概述">1. epoll 概述</a></li>
+    <li><a href="#2-epoll-实例的本质">2. epoll 实例的本质</a>
+      <ol>
+        <li><a href="#21-内核数据结构">2.1 内核数据结构</a></li>
+        <li><a href="#22-用户空间访问入口">2.2 用户空间访问入口</a></li>
+      </ol>
+    </li>
+    <li><a href="#3-核心-api">3. 核心 API</a>
+      <ol>
+        <li><a href="#31-创建-epoll-实例epoll_create-与-epoll_create1">3.1 创建 epoll 实例：<code>epoll_create</code> 与 <code>epoll_create1</code></a></li>
+        <li><a href="#32-管理监控事件epoll_ctl">3.2 管理监控事件：<code>epoll_ctl</code></a></li>
+        <li><a href="#33-等待事件epoll_wait">3.3 等待事件：<code>epoll_wait</code></a></li>
+      </ol>
+    </li>
+    <li><a href="#4-epoll_event-结构体">4. <code>epoll_event</code> 结构体</a>
+      <ol>
+        <li><a href="#41-events-常见标志">4.1 <code>events</code> 常见标志</a></li>
+        <li><a href="#42-data-联合体">4.2 <code>data</code> 联合体</a></li>
+      </ol>
+    </li>
+    <li><a href="#5-工作流程与触发模式">5. 工作流程与触发模式</a>
+      <ol>
+        <li><a href="#51-整体工作流程">5.1 整体工作流程</a></li>
+        <li><a href="#52-水平触发lt与边缘触发et">5.2 水平触发（LT）与边缘触发（ET）</a></li>
+      </ol>
+    </li>
+    <li><a href="#6-epoll-fd-的深层理解它到底是什么文件描述符">6. epoll FD 的深层理解：它到底是什么文件描述符？</a></li>
+    <li><a href="#7-与-selectpoll-的对比">7. 与 select/poll 的对比</a></li>
+    <li><a href="#8-完整示例简单-epoll-tcp-服务器">8. 完整示例：简单 epoll TCP 服务器</a></li>
+    <li><a href="#9-核心优势总结">9. 核心优势总结</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%BD%91%E7%BB%9C/" >
+                网络
+            </a>
+        
+            <a href="/categories/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" >
+                系统编程
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/epoll-notes/">epoll 笔记整理</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            全面讲解Linux epoll I/O多路复用机制：核心API、触发模式、与select/poll对比及完整代码示例
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2026-06-21T00:00:00&#43;08:00'>2026-06-21</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 7 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="epoll-笔记整理">epoll 笔记整理
+</h1><h2 id="1-epoll-概述">1. epoll 概述
+</h2><p><code>epoll</code> 是 Linux 内核提供的一种高性能 I/O 多路复用机制，用于同时监控大量文件描述符（FD）上的 I/O 事件（可读、可写、异常等）。它通过 <strong>事件驱动</strong> 的方式高效处理并发连接，特别适合高并发网络服务器（如 Nginx、Redis 等）。</p>
+<hr>
+<h2 id="2-epoll-实例的本质">2. epoll 实例的本质
+</h2><h3 id="21-内核数据结构">2.1 内核数据结构
+</h3><p>一个 epoll 实例在内核中主要由两部分组成：</p>
+<ul>
+<li><strong>红黑树</strong>：存储所有被监控的 FD 及其关注的事件掩码（如 <code>EPOLLIN</code>、<code>EPOLLOUT</code>）。</li>
+<li><strong>就绪链表</strong>：当某个 FD 上有事件就绪时，内核将其从红黑树移至该链表。</li>
+</ul>
+<h3 id="22-用户空间访问入口">2.2 用户空间访问入口
+</h3><p>用户通过 <code>epoll_create</code> / <code>epoll_create1</code> 创建的 <strong>epoll FD</strong> 是访问该内核实例的唯一接口。这个 FD 不对应任何磁盘文件，而是指向内核中的 epoll 对象。</p>
+<hr>
+<h2 id="3-核心-api">3. 核心 API
+</h2><h3 id="31-创建-epoll-实例epoll_create-与-epoll_create1">3.1 创建 epoll 实例：<code>epoll_create</code> 与 <code>epoll_create1</code>
+</h3><ul>
+<li>
+<p><strong><code>epoll_create(size)</code></strong></p>
+<ul>
+<li>已被视为过时接口。</li>
+<li>参数 <code>size</code> 目前已被内核忽略，但历史原因需要传入一个大于 0 的值。</li>
+<li>返回的文件描述符<strong>默认不带有 <code>O_CLOEXEC</code></strong> 标志（即 <code>fork</code> 后子进程会继承该 FD）。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>epoll_create1(flags)</code></strong></p>
+<ul>
+<li>是 <code>epoll_create</code> 的现代化版本。</li>
+<li>接受一个 <code>flags</code> 参数，目前只支持 <code>EPOLL_CLOEXEC</code>。</li>
+<li>可以<strong>原子地</strong>为返回的 epoll FD 设置 close-on-exec 标志，避免多线程或 <code>fork() + exec()</code> 场景下的竞态条件。</li>
+<li>当 <code>flags == 0</code> 时，行为与 <code>epoll_create</code> 完全一致。</li>
+</ul>
+</li>
+</ul>
+<p><strong>推荐做法</strong>：现代 Linux 编程中应优先使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">epfd</span> <span class="o">=</span> <span class="nf">epoll_create1</span><span class="p">(</span><span class="n">EPOLL_CLOEXEC</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>以避免描述符泄露和竞态风险，同时代码更简洁安全。
+如果出于某些原因需要兼容旧行为，可使用 <code>epoll_create1(0)</code>，但其返回的 FD 不带 <code>O_CLOEXEC</code>，如需该标志只能在之后通过 <code>fcntl(epfd, F_SETFD, FD_CLOEXEC)</code> 手动设置。</p>
+<p><strong>错误处理</strong>：当 <code>flags</code> 为非 0 且非 <code>EPOLL_CLOEXEC</code> 时，<code>epoll_create1</code> 返回 -1，并置 <code>errno = EINVAL</code>。</p>
+<h3 id="32-管理监控事件epoll_ctl">3.2 管理监控事件：<code>epoll_ctl</code>
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_ctl</span><span class="p">(</span><span class="kt">int</span> <span class="n">epfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">op</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">event</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>功能</strong>：向 epoll 实例添加、修改或删除被监控的 FD。</li>
+<li><strong>参数</strong>：
+<ul>
+<li><code>epfd</code>：由 <code>epoll_create1</code> 返回的 epoll FD。</li>
+<li><code>op</code>：
+<ul>
+<li><code>EPOLL_CTL_ADD</code>：注册新的 FD。</li>
+<li><code>EPOLL_CTL_MOD</code>：修改已注册 FD 的事件掩码。</li>
+<li><code>EPOLL_CTL_DEL</code>：移除已注册的 FD。</li>
+</ul>
+</li>
+<li><code>fd</code>：要监控的目标文件描述符（如 socket、管道等）。</li>
+<li><code>event</code>：指向 <code>struct epoll_event</code> 的指针，指定关注的事件和关联的用户数据。</li>
+</ul>
+</li>
+</ul>
+<h3 id="33-等待事件epoll_wait">3.3 等待事件：<code>epoll_wait</code>
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_wait</span><span class="p">(</span><span class="kt">int</span> <span class="n">epfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">events</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxevents</span><span class="p">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>功能</strong>：等待已监控的 FD 上发生就绪事件，返回就绪事件列表。</li>
+<li><strong>参数</strong>：
+<ul>
+<li><code>events</code>：输出数组，存放已就绪的 <code>epoll_event</code> 结构体。</li>
+<li><code>maxevents</code>：数组容量。</li>
+<li><code>timeout</code>：超时毫秒数；-1 表示无限阻塞，0 表示立即返回（非阻塞）。</li>
+</ul>
+</li>
+<li><strong>返回值</strong>：就绪事件数量，出错返回 -1。</li>
+</ul>
+<p><strong>高效的关键</strong>：<code>epoll_wait</code> 仅从内核就绪链表中取出事件，时间复杂度 <strong>O(1)</strong>，与监控的 FD 总数无关。</p>
+<hr>
+<h2 id="4-epoll_event-结构体">4. <code>epoll_event</code> 结构体
+</h2><p><code>epoll_event</code> 用于描述一个 I/O 事件，是 <code>epoll_ctl</code> 和 <code>epoll_wait</code> 操作的核心数据结构。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">epoll_event</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span>     <span class="n">events</span><span class="p">;</span>      <span class="c1">// 事件掩码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">epoll_data_t</span> <span class="n">data</span><span class="p">;</span>        <span class="c1">// 用户数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">union</span> <span class="n">epoll_data</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span>    <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>      <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span> <span class="n">u32</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint64_t</span> <span class="n">u64</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="kt">epoll_data_t</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="41-events-常见标志">4.1 <code>events</code> 常见标志
+</h3><ul>
+<li><strong>基本事件</strong>
+<ul>
+<li><code>EPOLLIN</code>：FD 可读（包括对端正常关闭）。</li>
+<li><code>EPOLLOUT</code>：FD 可写。</li>
+<li><code>EPOLLRDHUP</code>：对端关闭连接或半关闭写端（需内核版本支持）。</li>
+<li><code>EPOLLPRI</code>：有紧急数据可读（带外数据）。</li>
+</ul>
+</li>
+<li><strong>异常/挂断类（内核自动监听，无须显式注册）</strong>
+<ul>
+<li><code>EPOLLERR</code>：发生错误。</li>
+<li><code>EPOLLHUP</code>：挂断（如管道写端关闭）。</li>
+</ul>
+</li>
+<li><strong>控制行为类</strong>
+<ul>
+<li><code>EPOLLET</code>：启用边缘触发（Edge Triggered）模式，默认是水平触发。</li>
+<li><code>EPOLLONESHOT</code>：一次性监听，事件触发后自动取消监控，若要继续监控需再次 <code>EPOLL_CTL_MOD</code>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-data-联合体">4.2 <code>data</code> 联合体
+</h3><p>可用于存储与事件关联的上下文信息，四种选择：</p>
+<ul>
+<li><code>fd</code>：直接存储所监控的文件描述符（最常用）。</li>
+<li><code>ptr</code>：指向用户自定义结构体，可携带更多上下文（如连接状态、缓冲区等）。</li>
+<li><code>u32</code> / <code>u64</code>：存储整数 ID 或索引。</li>
+</ul>
+<p>在 <code>epoll_wait</code> 返回时，可以从就绪的 <code>events[i].data</code> 中取回注册时保存的信息，快速定位是哪个 FD 或连接产生的就绪事件。</p>
+<hr>
+<h2 id="5-工作流程与触发模式">5. 工作流程与触发模式
+</h2><h3 id="51-整体工作流程">5.1 整体工作流程
+</h3><ol>
+<li><strong>注册阶段</strong>
+用户调用 <code>epoll_ctl(EPOLL_CTL_ADD)</code> 将目标 FD（如 TCP 监听 socket 或连接 socket）添加到 epoll 实例的红黑树中。内核同时为每个 FD 注册一个回调函数。</li>
+<li><strong>就绪通知</strong>
+当 FD 上发生所关注的事件（如数据到达），内核通过回调将该 FD 加入就绪链表。</li>
+<li><strong>事件检索</strong>
+用户调用 <code>epoll_wait</code> 直接从就绪链表读取就绪的 FD，避免遍历所有监控的 FD。</li>
+<li><strong>重新注册/修改</strong>
+根据模式（特别是 <code>EPOLLONESHOT</code> 或 ET 模式的需要），应用程序可在处理后重新修改事件掩码。</li>
+</ol>
+<h3 id="52-水平触发lt与边缘触发et">5.2 水平触发（LT）与边缘触发（ET）
+</h3><ul>
+<li><strong>水平触发（默认）</strong>
+<ul>
+<li>只要 FD 仍处于就绪状态（例如接收缓冲区还有未读完的数据），每次 <code>epoll_wait</code> 都会持续通知该事件。</li>
+<li>编程简单，不易遗漏事件，但不处理会重复通知，可能引发&quot;惊群&quot;问题（单连接多唤醒）。</li>
+</ul>
+</li>
+<li><strong>边缘触发（EPOLLET）</strong>
+<ul>
+<li>仅在 FD 状态从&quot;未就绪&quot;变为&quot;就绪&quot;的瞬间通知一次。例如接收缓冲区从空变为有数据时，只通知一次。</li>
+<li>要求应用程序一次性将数据读完（通常需要循环 <code>read</code> 直到返回 <code>EAGAIN</code>），否则剩余数据不会再触发新事件。</li>
+<li>必须配合<strong>非阻塞 I/O</strong> 使用，避免因某次 <code>read/write</code> 阻塞导致整个事件循环停顿。</li>
+</ul>
+</li>
+</ul>
+<p>选择建议：大多数场景使用默认的 LT 即可，逻辑简单；追求极致性能且能严格控制非阻塞逻辑时，可选用 ET 模式。</p>
+<hr>
+<h2 id="6-epoll-fd-的深层理解它到底是什么文件描述符">6. epoll FD 的深层理解：它到底是什么文件描述符？
+</h2><ul>
+<li><strong>它是一个文件描述符，但不指向磁盘文件</strong>。</li>
+<li>在 <code>/proc/&lt;pid&gt;/fd/</code> 下查看，会看到类似 <code>3 -&gt; anon_inode:[eventpoll]</code> 的符号链接，表明它是一个匿名 inode，对应内核中的 epoll 对象。</li>
+<li>该 FD 可像普通 FD 一样被 <code>close()</code> 关闭，进程退出时内核会自动回收 epoll 实例。</li>
+<li>它的&quot;操作&quot;不是 <code>read/write</code>，而是通过 <code>epoll_ctl</code>、<code>epoll_wait</code> 等专用接口来完成。</li>
+</ul>
+<p><strong>对比普通文件 FD</strong>：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>epoll FD</th>
+          <th>普通文件 FD (如 <code>open()</code>)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>对应实体</td>
+          <td>内核 epoll 实例（事件管理器）</td>
+          <td>磁盘文件、设备等</td>
+      </tr>
+      <tr>
+          <td>文件系统可见性</td>
+          <td>仅 <code>/proc</code> 下可见（匿名 inode）</td>
+          <td>正常文件系统路径可见</td>
+      </tr>
+      <tr>
+          <td>主要操作</td>
+          <td><code>epoll_ctl</code> / <code>epoll_wait</code></td>
+          <td><code>read</code> / <code>write</code> / <code>lseek</code> 等</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="7-与-selectpoll-的对比">7. 与 select/poll 的对比
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>select</strong></th>
+          <th><strong>poll</strong></th>
+          <th><strong>epoll</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>FD 数量限制</td>
+          <td>通常 1024 (<code>FD_SETSIZE</code>)</td>
+          <td>无硬性限制（受内存影响）</td>
+          <td>无硬性限制（受内存影响）</td>
+      </tr>
+      <tr>
+          <td>时间复杂度</td>
+          <td>O(n) （每次轮询所有 FD）</td>
+          <td>O(n)</td>
+          <td><strong>O(1)</strong> （仅处理就绪链表）</td>
+      </tr>
+      <tr>
+          <td>内存拷贝</td>
+          <td>每次调用需将整个 FD 集合从用户态拷贝到内核态</td>
+          <td>同 select</td>
+          <td>只需一次注册，采用 mmap 减少拷贝</td>
+      </tr>
+      <tr>
+          <td>通知机制</td>
+          <td>遍历所有 FD 找就绪</td>
+          <td>遍历所有 FD 找就绪</td>
+          <td>回调驱动，内核仅返回就绪 FD</td>
+      </tr>
+      <tr>
+          <td>工作模式</td>
+          <td>仅支持 LT 语义</td>
+          <td>仅支持 LT 语义</td>
+          <td>支持 <strong>LT 和 ET</strong> 两种模式</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>结论：在需要管理数万并发连接的场景，epoll 的性能远超 select/poll，是 Linux 下高性能网络编程的标准方案。</p>
+<hr>
+<h2 id="8-完整示例简单-epoll-tcp-服务器">8. 完整示例：简单 epoll TCP 服务器
+</h2><p>下面示例展示了 epoll 的典型用法：创建监听 socket、将其加入 epoll、接受连接并回显数据。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/epoll.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define MAX_EVENTS 10
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define BUFFER_SIZE 1024
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">listen_fd</span> <span class="o">=</span> <span class="nf">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">listen_fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;socket&#34;</span><span class="p">);</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">server_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">server_addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">server_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server_addr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server_addr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">INADDR_ANY</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server_addr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="nf">htons</span><span class="p">(</span><span class="mi">8080</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">bind</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">server_addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">server_addr</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;bind&#34;</span><span class="p">);</span> <span class="nf">close</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">);</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">listen</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span> <span class="n">SOMAXCONN</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;listen&#34;</span><span class="p">);</span> <span class="nf">close</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">);</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 创建 epoll 实例（推荐 EPOLL_CLOEXEC）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">epoll_fd</span> <span class="o">=</span> <span class="nf">epoll_create1</span><span class="p">(</span><span class="n">EPOLL_CLOEXEC</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">epoll_fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;epoll_create1&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">close</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 注册监听 socket，关注读事件（新连接）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">struct</span> <span class="n">epoll_event</span> <span class="n">ev</span><span class="p">,</span> <span class="n">events</span><span class="p">[</span><span class="n">MAX_EVENTS</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ev</span><span class="p">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">EPOLLIN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ev</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">listen_fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">epoll_ctl</span><span class="p">(</span><span class="n">epoll_fd</span><span class="p">,</span> <span class="n">EPOLL_CTL_ADD</span><span class="p">,</span> <span class="n">listen_fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;epoll_ctl: listen_fd&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">close</span><span class="p">(</span><span class="n">epoll_fd</span><span class="p">);</span> <span class="nf">close</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 事件循环
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">nfds</span> <span class="o">=</span> <span class="nf">epoll_wait</span><span class="p">(</span><span class="n">epoll_fd</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">MAX_EVENTS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">nfds</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;epoll_wait&#34;</span><span class="p">);</span> <span class="k">continue</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nfds</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">data</span><span class="p">.</span><span class="n">fd</span> <span class="o">==</span> <span class="n">listen_fd</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 新连接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">client_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">socklen_t</span> <span class="n">len</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">client_addr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">conn_fd</span> <span class="o">=</span> <span class="nf">accept</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">client_addr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">conn_fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;accept&#34;</span><span class="p">);</span> <span class="k">continue</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// 将新连接加入 epoll（边缘触发示例，也可用默认 LT）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">ev</span><span class="p">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">EPOLLIN</span> <span class="o">|</span> <span class="n">EPOLLET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">ev</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">conn_fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nf">epoll_ctl</span><span class="p">(</span><span class="n">epoll_fd</span><span class="p">,</span> <span class="n">EPOLL_CTL_ADD</span><span class="p">,</span> <span class="n">conn_fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;epoll_ctl: conn_fd&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="nf">close</span><span class="p">(</span><span class="n">conn_fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 客户端数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="n">BUFFER_SIZE</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">conn_fd</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">data</span><span class="p">.</span><span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="nf">read</span><span class="p">(</span><span class="n">conn_fd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">BUFFER_SIZE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nf">close</span><span class="p">(</span><span class="n">conn_fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">// epoll 会自动移除已关闭的 FD（具体取决于内核版本，亦可显式 epoll_ctl DEL）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nf">write</span><span class="p">(</span><span class="n">conn_fd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span> <span class="c1">// 简单回显
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">close</span><span class="p">(</span><span class="n">epoll_fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">close</span><span class="p">(</span><span class="n">listen_fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="9-核心优势总结">9. 核心优势总结
+</h2><ol>
+<li><strong>事件驱动</strong>：只关注就绪 FD，无遍历开销。</li>
+<li><strong>零拷贝</strong>：利用 mmap 减少用户态与内核态的数据复制。</li>
+<li><strong>无 FD 数量硬限制</strong>：仅受系统内存约束，可支撑海量并发连接。</li>
+<li><strong>支持 ET 与 LT</strong>：可灵活选择性能或编程便利性。</li>
+<li><strong>API 设计安全</strong>：<code>epoll_create1(EPOLL_CLOEXEC)</code> 原子地设置 close-on-exec，避免竞态泄露。</li>
+</ol>
+<p>epoll 的高效设计和简洁接口使其成为 Linux 高并发网络编程的首选方案。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/linux/">Linux</a>
+        
+            <a href="/tags/epoll/">Epoll</a>
+        
+            <a href="/tags/i/o%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">I/O多路复用</a>
+        
+            <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+        
+            <a href="/tags/%E9%AB%98%E6%80%A7%E8%83%BD/">高性能</a>
+        
+            <a href="/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>根据CC BY-NC-SA 4.0许可授权</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const elementsToRender = [".main-article", ".widget--toc"];
+
+        elementsToRender.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                renderMathInElement(element, {
+                    delimiters: [
+                        { left: "$$", right: "$$", display: true },
+                        { left: "$", right: "$", display: false },
+                        { left: "\\(", right: "\\)", display: false },
+                        { left: "\\[", right: "\\]", display: true }
+                    ],
+                    ignoredClasses: ["gist"]
+                });
+            }
+        });
+    });
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/poll-notes/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">poll 笔记：pollfd 结构与 I/O 多路复用</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/select-detailed/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">select 详解：I/O多路复用的经典模型</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/reactor-pattern/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Reactor模式详解：事件驱动的I/O处理架构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/socket-and-file-descriptor/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">套接字和文件描述符的关系</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/listen-socket-vs-client-socket/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">监听套接字与客户端套接字：TCP服务器的角色分工</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script
+    src="https://giscus.app/client.js"
+    data-repo="Yannick-Mo/Yannick-Mo.github.io"
+    data-repo-id="R_kgDOQuw_0w"
+    data-category="Q&amp;A"
+    data-category-id="DIC_kwDOQuw_084C0QIk"
+    data-mapping="pathname"
+    data-strict="false"
+    data-reactions-enabled="true"
+    data-emit-metadata="true"
+    data-input-position="top"
+    data-theme="light"
+    data-lang="zh-CN"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async
+></script>
+<script>
+    function setGiscusTheme(theme) {
+        let giscus = document.querySelector("iframe.giscus-frame");
+        if (giscus) {
+            giscus.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: theme,
+                        },
+                    },
+                },
+                "https://giscus.app"
+            );
+        }
+    }
+
+    (function () {
+        addEventListener("message", (e) => {
+            if (event.origin !== "https://giscus.app") return;
+            handler();
+        });
+        window.addEventListener("onColorSchemeChange", handler);
+
+        function handler() {
+            if (document.documentElement.dataset.scheme === "light") {
+                setGiscusTheme('light');
+            } else {
+                setGiscusTheme('dark_dimmed');
+            }
+        }
+    })();
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2025 - 
+        
+        2026 雅尼克.莫(Yannick.Mo)
+    </section>
+    
+    <section class="powerby">
+        
+            少年，你不是可以逆风翻盘吗？
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+    
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.c432297ce8e65b7951da08373ceabec6f7cc83933801a7002336738bb8bdeabf.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function () {
+  function getMermaidTheme() {
+    const scheme = document.documentElement.getAttribute('data-scheme');
+    return scheme === 'dark' ? 'dark' : 'default';
+  }
+
+  function runMermaid() {
+    if (!window.mermaid) return;
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: getMermaidTheme(),
+      themeVariables: { fontFamily: "JetBrains Mono" }
+    });
+    mermaid.run({ querySelector: ".mermaid" });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", runMermaid);
+  } else {
+    runMermaid();
+  }
+  document.addEventListener("turbo:load", runMermaid);
+
+  new MutationObserver(function () { runMermaid(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-scheme'] });
+})();
+</script>
+
+
+
+
+<style>
+     
+    body {
+        background: url(https://Yannick-Mo.github.io/background/bg.png) no-repeat center top;
+        background-size: cover;
+        background-attachment: fixed;
+        background-color: #ffffff;
+        position: relative;
+    }
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.50);
+        z-index: -1;
+    }
+    [data-scheme="dark"] body {
+        background-color: #1a1a1a;
+    }
+    [data-scheme="dark"] body::before {
+        background-color: rgba(26, 26, 26, 0.8);
+    }
+
+     
+    .left-sidebar {
+        padding-bottom: calc(var(--main-top-padding) + 100px) !important;
+    }
+
+     
+    .site-avatar .site-logo {
+        transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    .site-avatar:hover .site-logo {
+        transform: rotate(360deg);
+    }
+
+     
+    #TableOfContents > ul ul,
+    #TableOfContents > ul ol,
+    #TableOfContents > ol ul,
+    #TableOfContents > ol ol {
+        display: none;
+    }
+    #TableOfContents > ul .open,
+    #TableOfContents > ol .open {
+        display: block;
+    }
+
+     
+    #backTopBtn {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 20px;
+        z-index: 99;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        background-image: url(https://Yannick-Mo.github.io/icons/backTop.svg);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+	border: none;
+        background-color: transparent;
+    }
+    #backTopBtn:hover {
+        opacity: 1;
+    }
+
+     
+    .highlight {
+        max-height: 400px;
+        overflow: hidden;
+        position: relative;
+        transition: max-height 0.3s ease-in-out;
+    }
+    .code-show {
+        max-height: 9999px !important;
+    }
+    .code-more-box {
+        width: 100%;
+        padding-top: 78px;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), to(#fff));
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+    [data-scheme="dark"] .code-more-box {
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(#1a1a1a));
+    }
+    .code-more-btn {
+        display: block;
+        margin: auto;
+        width: 44px;
+        height: 22px;
+        background: #f0f0f5;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+        padding-top: 6px;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+    }
+    .code-more-btn:hover {
+        opacity: 1;
+    }
+    [data-scheme="dark"] .code-more-btn {
+        background: #333;
+    }
+    .code-more-img {
+        cursor: pointer !important;
+        display: block;
+        margin: auto;
+        width: 22px;
+        height: 16px;
+        transition: transform 0.2s ease;
+    }
+    .code-more-img-fold {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script data-turbo-eval="false">
+    const codeMoreIconUrl = "https://Yannick-Mo.github.io/icons/codeMore.svg";
+    const backTopIconUrl = "https://Yannick-Mo.github.io/icons/backTop.svg";
+
+    
+    (function() {
+        window.addEventListener('scroll', function() {
+            document.querySelectorAll(".open").forEach(el => el.classList.remove("open"));
+            let li = document.querySelector(".active-class");
+            if (!li) return;
+            if (li.children.length > 1) li.children[1].classList.add("open");
+            let ul = li.parentElement;
+            do {
+                ul.classList.add("open");
+                ul = ul.parentElement?.parentElement;
+            } while (ul && (ul.localName === 'ul' || ul.localName === 'ol'));
+        });
+
+        window.addEventListener('scroll', function() {
+            let btn = document.getElementById("backTopBtn");
+            if (!btn) return;
+            btn.style.display = (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) ? "block" : "none";
+        });
+    })();
+
+    
+    function initScrollTop() {
+        if (document.getElementById("backTopBtn")) return;
+        let sidebar = document.querySelector(".right-sidebar");
+        if (!sidebar) return;
+        let btn = document.createElement("div");
+        btn.id = "backTopBtn";
+        btn.onclick = function() { window.scrollTo({ top: 0, behavior: "smooth" }); };
+        btn.style.backgroundImage = "url(" + backTopIconUrl + ")";
+        sidebar.appendChild(btn);
+    }
+
+    
+    function initCodeMoreBox() {
+        document.querySelectorAll(".highlight").forEach(codeBlock => {
+            if (codeBlock.querySelector(".code-more-box")) return;
+            if (codeBlock.scrollHeight <= codeBlock.clientHeight) return;
+            let box = document.createElement('div');
+            box.classList.add('code-more-box');
+            let btn = document.createElement('span');
+            btn.classList.add('code-more-btn');
+            let img = document.createElement('img');
+            img.classList.add('code-more-img');
+            img.src = codeMoreIconUrl;
+            btn.addEventListener('click', function() {
+                codeBlock.classList.toggle('code-show');
+                img.classList.toggle('code-more-img-fold', codeBlock.classList.contains('code-show'));
+                window.dispatchEvent(new Event('resize'));
+            });
+            btn.appendChild(img);
+            box.appendChild(btn);
+            codeBlock.appendChild(box);
+        });
+    }
+
+    
+    let sakuraIsLoaded = false;
+    function initSakura() {
+        if (sakuraIsLoaded) return;
+        const sakuraScript = document.createElement('script');
+        sakuraScript.src = "https://Yannick-Mo.github.io/background/sakura.js";
+        sakuraScript.onload = function() { sakuraIsLoaded = true; };
+        document.body.appendChild(sakuraScript);
+    }
+
+    
+    function initPage() {
+        initScrollTop();
+        initCodeMoreBox();
+        initSakura();
+    }
+    document.addEventListener('DOMContentLoaded', initPage);
+    document.addEventListener('turbo:load', initPage);
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<div id="global-player" data-turbo-permanent></div>
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function() {
+    if (window.globalPlayer) return;
+    var songs = [
+        {
+            name: "起风了",
+            artist: "买辣椒也用券",
+            url: "\/audio\/qifengle.mp3",
+            cover: "\/img\/qifengle.png"
+        },
+        {
+            name: "凉城",
+            artist: "任然",
+            url: "\/audio\/liangcheng.mp3",
+            cover: "\/img\/liangcheng.png"
+        },
+        {
+            name: "不如就等风来",
+            artist: "林宝馨",
+            url: "\/audio\/burujiudengfenglai.mp3",
+            cover: "\/img\/burujiudengfenglai.png"
+        },
+        {
+            name: "Catch My Breath",
+            artist: "Kelly Clarkson",
+            url: "\/audio\/catch-my-breath.mp3",
+            cover: "\/img\/catch-my-breath.png"
+        },
+        {
+            name: "离开我的依赖",
+            artist: "王艳薇",
+            url: "\/audio\/li-kai-wo-de-yi-lai.mp3",
+            cover: "\/img\/li-kai-wo-de-yi-lai.png"
+        },
+        {
+            name: "Shots",
+            artist: "Imagine Dragons",
+            url: "\/audio\/shots.mp3",
+            cover: "\/img\/shots.png"
+        },
+        {
+            name: "失控",
+            artist: "井迪儿",
+            url: "\/audio\/shi-kong.mp3",
+            cover: "\/img\/shi-kong.png"
+        },
+        {
+            name: "晚风",
+            artist: "Lker林柯",
+            url: "\/audio\/wan-feng.mp3",
+            cover: "\/img\/wan-feng.png"
+        },
+        {
+            name: "海阔天空",
+            artist: "Beyond",
+            url: "\/audio\/hai-kuo-tian-kong.mp3",
+            cover: "\/img\/hai-kuo-tian-kong.png"
+        },
+        {
+            name: "爱错",
+            artist: "王力宏",
+            url: "\/audio\/ai-cuo.mp3",
+            cover: "\/img\/ai-cuo.png"
+        },
+        {
+            name: "夜空中最亮的星",
+            artist: "逃跑计划",
+            url: "\/audio\/ye-kong-zui-liang-de-xing.mp3",
+            cover: "\/img\/ye-kong-zui-liang-de-xing.png"
+        },
+        {
+            name: "晴天",
+            artist: "周杰伦",
+            url: "\/audio\/qing-tian.mp3",
+            cover: "\/img\/qing-tian.png"
+        },
+        {
+            name: "稻香",
+            artist: "周杰伦",
+            url: "\/audio\/dao-xiang.mp3",
+            cover: "\/img\/dao-xiang.png"
+        },
+        {
+            name: "花海",
+            artist: "周杰伦",
+            url: "\/audio\/hua-hai.mp3",
+            cover: "\/img\/hua-hai.png"
+        },
+        {
+            name: "七里香",
+            artist: "周杰伦",
+            url: "\/audio\/qi-li-xiang.mp3",
+            cover: "\/img\/qi-li-xiang.png"
+        },
+        {
+            name: "红色高跟鞋",
+            artist: "蔡健雅",
+            url: "\/audio\/hong-se-gao-gen-xie.mp3",
+            cover: "\/img\/hong-se-gao-gen-xie.png"
+        },
+    ];
+    if (songs.length > 0) {
+        window.globalPlayer = new APlayer({
+            container: document.getElementById('global-player'),
+            fixed: true,
+            mini: true,
+            autoplay: false,
+            loop: 'all',
+            order: 'list',
+            preload: 'auto',
+            volume: 0.3,
+            audio: songs
+        });
+    }
+})();
+</script><script data-turbo-eval="false">
+(function() {
+    var config = {
+        waifuPath: '/waifu-tips.json',
+        cubism2Path: 'https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/live2d.min.js',
+        tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
+        showToggleAfterQuit: true,
+        logLevel: 'warn',
+        drag: false,
+    };
+
+    function initWaifu() {
+        if (document.getElementById('waifu')) return;
+        if (window.initWidget) {
+            window.initWidget(config);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', initWaifu);
+    document.addEventListener('turbo:load', initWaifu);
+})();
+</script>
+<style>
+#waifu { left: auto !important; right: 65px !important; }
+#waifu-toggle { left: auto !important; right: 0 !important; justify-content: flex-start !important; margin-left: 0 !important; margin-right: -100px !important; transition: margin-right 1s !important; }
+#waifu-toggle.waifu-toggle-active { display: flex !important; margin-right: -50px !important; }
+#waifu-toggle.waifu-toggle-active:hover { margin-right: -30px !important; }
+#waifu-tips { left: auto !important; right: calc(100% + (10px + 300px * (var(--ws, 1) - 1))) !important; margin: calc(-30px + 400px * (1 - var(--ws, 1))) 0 !important; }
+</style>
+<script data-turbo-eval="false">
+(function() {
+    var KEY = 'waifu-scale';
+    function apply(s) {
+        var m = document.getElementById('live2d');
+        if (m) m.style.transform = 'scale(' + s + ')';
+        var t = document.getElementById('waifu-tips');
+        if (t) t.style.setProperty('--ws', s);
+    }
+    function init() {
+        var tool = document.getElementById('waifu-tool');
+        if (!tool || document.getElementById('waifu-tool-zoomin')) return;
+        var saved = parseFloat(localStorage.getItem(KEY)) || 1;
+        apply(saved);
+        function mk(id, text, title, delta) {
+            var btn = document.createElement('span');
+            btn.id = id;
+            btn.textContent = text;
+            btn.title = title;
+            btn.style.cssText = 'cursor:pointer;color:#7b8c9d;font-size:20px;font-weight:bold;line-height:25px;text-align:center;transition:color .3s;user-select:none;';
+            btn.addEventListener('mouseenter', function() { this.style.color = '#0684bd'; });
+            btn.addEventListener('mouseleave', function() { this.style.color = '#7b8c9d'; });
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var cur = parseFloat(localStorage.getItem(KEY)) || 1;
+                var nxt = Math.round(Math.min(Math.max(cur + delta, 0.3), 3) * 10) / 10;
+                localStorage.setItem(KEY, nxt);
+                apply(nxt);
+            });
+            return btn;
+        }
+        tool.insertBefore(mk('waifu-tool-zoomout', '−', '缩小', -0.1), tool.firstChild);
+        tool.insertBefore(mk('waifu-tool-zoomin', '+', '放大', 0.1), tool.firstChild);
+    }
+    var obs = new MutationObserver(function() { init(); });
+    obs.observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('turbo:load', function() { setTimeout(init, 300); });
+    setTimeout(init, 800);
+})();
+</script><script src="/waifu-games/menu.js" data-turbo-eval="false"></script><div id="ambient-widget" data-turbo-permanent>
+    <button id="ambient-toggle" title="氛围音">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+    </button>
+    <div id="ambient-panel" class="hidden">
+        <button data-sound="rain">🌧️ 雨声</button>
+        <button data-sound="coffee" class="active">☕ 咖啡店</button>
+        <button data-sound="fire">🔥 壁炉</button>
+    </div>
+</div>
+<style>
+#ambient-widget {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+#ambient-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card-background);
+    color: var(--card-text-color-main);
+    box-shadow: var(--shadow-l2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+#ambient-toggle:hover { transform: scale(1.1); }
+#ambient-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 12px;
+    background: var(--card-background);
+    box-shadow: var(--shadow-l2);
+    transition: all 0.2s;
+}
+#ambient-panel.hidden { display: none; }
+#ambient-panel button {
+    border: none;
+    background: transparent;
+    color: var(--card-text-color-main);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: left;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+#ambient-panel button:hover { background: var(--card-separator-color); }
+#ambient-panel button.active {
+    background: var(--accent-color);
+    color: #fff;
+}
+[data-scheme="dark"] #ambient-toggle,
+[data-scheme="dark"] #ambient-panel {
+    background: #2d2d2d;
+}
+</style>
+<script data-turbo-eval="false">
+(function() {
+    if (window._ambientInited) return;
+    window._ambientInited = true;
+
+    var ctx, sources = {}, gains = {}, currentSound = 'coffee', isPlaying = false;
+
+    function createNoiseBuffer() {
+        var buf = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
+        var d = buf.getChannelData(0);
+        for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+        return buf;
+    }
+
+    function startRain() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1200;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.25;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.rain = src; gains.rain = gain;
+    }
+
+    function startCoffee() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 200;
+        filter.Q.value = 0.5;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.15;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.coffee = src; gains.coffee = gain;
+    }
+
+    function startFire() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var lp = ctx.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = 400;
+        var hp = ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 60;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.2;
+        src.connect(lp);
+        lp.connect(hp);
+        hp.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.fire = src; gains.fire = gain;
+
+        var crackle = setInterval(function() {
+            if (gains.fire) {
+                gains.fire.gain.value = 0.3 + Math.random() * 0.15;
+                setTimeout(function() { if (gains.fire) gains.fire.gain.value = 0.2; }, 80);
+            }
+        }, 300);
+        sources._crackle = crackle;
+    }
+
+    var starters = { rain: startRain, coffee: startCoffee, fire: startFire };
+
+    function stopAll() {
+        Object.keys(sources).forEach(function(k) {
+            if (k === '_crackle') { clearInterval(sources[k]); return; }
+            try { sources[k].stop(); } catch(e) {}
+        });
+        sources = {};
+        gains = {};
+        if (window.globalPlayer) { try { window.globalPlayer.pause(); } catch(e) {} }
+    }
+
+    function play(name) {
+        if (!ctx) {
+            ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+        stopAll();
+        if (starters[name]) starters[name]();
+        currentSound = name;
+        isPlaying = true;
+    }
+
+    function stop() {
+        stopAll();
+        isPlaying = false;
+    }
+
+    var btn = document.getElementById('ambient-toggle');
+    var panel = document.getElementById('ambient-panel');
+    var soundBtns = panel.querySelectorAll('button[data-sound]');
+
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        panel.classList.toggle('hidden');
+    });
+
+    soundBtns.forEach(function(b) {
+        b.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var sound = this.dataset.sound;
+            soundBtns.forEach(function(x) { x.classList.remove('active'); });
+            if (isPlaying && currentSound === sound) {
+                stop();
+            } else {
+                this.classList.add('active');
+                play(sound);
+            }
+            panel.classList.add('hidden');
+        });
+    });
+
+    document.addEventListener('click', function() { panel.classList.add('hidden'); });
+})();
+</script>
+<button id="fireworks-btn" title="烟花模式" data-turbo-permanent>🎆</button>
+
+<link rel="stylesheet" href="/fireworks/style.css" data-turbo-track="reload">
+<script src="/fireworks/fireworks-bundle.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function() {
+  
+  var btn = document.getElementById('fireworks-btn');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      if (!window.FireworksMode) return;
+      if (window._fwRunning) return;
+      window.FireworksMode.start();
+    });
+  }
+
+  
+  var navCount = 0;
+  document.addEventListener('turbo:load', function() {
+    navCount++;
+    if (navCount === 1) return; 
+
+    var toggle = document.getElementById('dark-mode-toggle');
+    if (toggle && !toggle.dataset.fwFixed) {
+      toggle.dataset.fwFixed = '1';
+      toggle.addEventListener('click', function() {
+        var el = document.documentElement;
+        el.dataset.scheme = el.dataset.scheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('StackColorScheme', el.dataset.scheme);
+      });
+    }
+  });
+})();
+</script>
+    </body>
+</html>
