@@ -7,7 +7,143 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
-        <lastBuildDate>Mon, 22 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 23 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>HTTP</title>
+        <link>https://Yannick-Mo.github.io/tags/http/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/http/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>HTTP/1.1</title>
+        <link>https://Yannick-Mo.github.io/tags/http/1.1/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/http/1.1/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>HTTP/2</title>
+        <link>https://Yannick-Mo.github.io/tags/http/2/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/http/2/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>HTTP/3</title>
+        <link>https://Yannick-Mo.github.io/tags/http/3/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/http/3/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>HTTPS</title>
+        <link>https://Yannick-Mo.github.io/tags/https/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/https/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>QUIC</title>
+        <link>https://Yannick-Mo.github.io/tags/quic/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/quic/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>SSL</title>
+        <link>https://Yannick-Mo.github.io/tags/ssl/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/ssl/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>TLS</title>
+        <link>https://Yannick-Mo.github.io/tags/tls/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/tls/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>UDP</title>
+        <link>https://Yannick-Mo.github.io/tags/udp/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/udp/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>加密</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%8A%A0%E5%AF%86/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%8A%A0%E5%AF%86/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>可靠传输</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>网络协议</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>应用层</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%BA%94%E7%94%A8%E5%B1%82/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%BA%94%E7%94%A8%E5%B1%82/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>IPv4</title>
+        <link>https://Yannick-Mo.github.io/tags/ipv4/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/ipv4/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>IP协议</title>
+        <link>https://Yannick-Mo.github.io/tags/ip%E5%8D%8F%E8%AE%AE/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/ip%E5%8D%8F%E8%AE%AE/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>MAC帧</title>
+        <link>https://Yannick-Mo.github.io/tags/mac%E5%B8%A7/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/mac%E5%B8%A7/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>SO_REUSEADDR</title>
+        <link>https://Yannick-Mo.github.io/tags/so_reuseaddr/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/so_reuseaddr/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>TCP</title>
         <link>https://Yannick-Mo.github.io/tags/tcp/</link>
         <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
@@ -24,11 +160,11 @@
         <description></description>
         </item>
         <item>
-        <title>UDP</title>
-        <link>https://Yannick-Mo.github.io/tags/udp/</link>
+        <title>TIME_WAIT</title>
+        <link>https://Yannick-Mo.github.io/tags/time_wait/</link>
         <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
         
-        <guid>https://Yannick-Mo.github.io/tags/udp/</guid>
+        <guid>https://Yannick-Mo.github.io/tags/time_wait/</guid>
         <description></description>
         </item>
         <item>
@@ -40,11 +176,43 @@
         <description></description>
         </item>
         <item>
-        <title>网络协议</title>
-        <link>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</link>
+        <title>端口复用</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/</link>
         <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
         
-        <guid>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</guid>
+        <guid>https://Yannick-Mo.github.io/tags/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>服务器重启</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%87%8D%E5%90%AF/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%87%8D%E5%90%AF/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>数据链路层</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>网络层</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%B1%82/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>以太网</title>
+        <link>https://Yannick-Mo.github.io/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91/</guid>
         <description></description>
         </item>
         <item>
@@ -152,14 +320,6 @@
         <description></description>
         </item>
         <item>
-        <title>可靠传输</title>
-        <link>https://Yannick-Mo.github.io/tags/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/</link>
-        <pubDate>Sun, 21 Jun 2026 00:00:00 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/</guid>
-        <description></description>
-        </item>
-        <item>
         <title>流量控制</title>
         <link>https://Yannick-Mo.github.io/tags/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/</link>
         <pubDate>Sun, 21 Jun 2026 00:00:00 +0800</pubDate>
@@ -264,14 +424,6 @@
         <description></description>
         </item>
         <item>
-        <title>TIME_WAIT</title>
-        <link>https://Yannick-Mo.github.io/tags/time_wait/</link>
-        <pubDate>Sat, 20 Jun 2026 00:00:00 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/time_wait/</guid>
-        <description></description>
-        </item>
-        <item>
         <title>交换机</title>
         <link>https://Yannick-Mo.github.io/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/</link>
         <pubDate>Sat, 20 Jun 2026 00:00:00 +0800</pubDate>
@@ -349,14 +501,6 @@
         <pubDate>Sun, 14 Jun 2026 21:12:00 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>HTTP</title>
-        <link>https://Yannick-Mo.github.io/tags/http/</link>
-        <pubDate>Sun, 14 Jun 2026 20:57:00 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/http/</guid>
         <description></description>
         </item>
         <item>

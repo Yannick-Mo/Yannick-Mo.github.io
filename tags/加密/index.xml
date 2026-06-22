@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>加密 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%8A%A0%E5%AF%86/</link>
+        <description>Recent content in 加密 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Tue, 23 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E5%8A%A0%E5%AF%86/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>HTTP与HTTPS全景解析：从报文结构到加密原理</title>
+        <link>https://Yannick-Mo.github.io/p/http-https-comprehensive/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/http-https-comprehensive/</guid>
+        <description>&lt;h3 id=&#34;互联网的基石http协议全景解析&#34;&gt;互联网的基石：HTTP协议全景解析
+&lt;/h3&gt;&lt;p&gt;HTTP（超文本传输协议）是互联网应用层的核心协议，是Web世界数据交换的通用语言。它采用经典的&lt;strong&gt;客户端-服务器模型&lt;/strong&gt;和&lt;strong&gt;请求-响应机制&lt;/strong&gt;，其设计简洁高效，使得Web服务器能够轻松应对海量并发请求。无论是浏览网页、观看视频还是调用API接口，其背后都是HTTP协议在默默支撑。&lt;/p&gt;
+&lt;h4 id=&#34;-http报文结构&#34;&gt;📝 HTTP报文结构
+&lt;/h4&gt;&lt;p&gt;所有的HTTP通信都通过报文（Message）进行，无论是客户端发出的请求还是服务器返回的响应，都遵循统一的 &lt;strong&gt;&amp;ldquo;起始行 + 头部字段 + 空行 + 可选消息体&amp;rdquo;&lt;/strong&gt; 的三段式结构，这种统一性为协议的解析和处理带来了极大的便利。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;起始行 (Start Line)&lt;/strong&gt;：描述报文的基本信息，是报文的第一行。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;请求行 (Request Line)&lt;/strong&gt;：在请求报文中，它包含&lt;strong&gt;方法&lt;/strong&gt; (如 &lt;code&gt;GET&lt;/code&gt;、&lt;code&gt;POST&lt;/code&gt;)、&lt;strong&gt;请求URI&lt;/strong&gt; 和&lt;strong&gt;协议版本&lt;/strong&gt; (如 &lt;code&gt;HTTP/1.1&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态行 (Status Line)&lt;/strong&gt;：在响应报文中，它包含&lt;strong&gt;协议版本&lt;/strong&gt;、&lt;strong&gt;状态码&lt;/strong&gt; (如 &lt;code&gt;200&lt;/code&gt;) 和&lt;strong&gt;原因短语&lt;/strong&gt; (如 &lt;code&gt;OK&lt;/code&gt;)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;头部字段 (Header Fields)&lt;/strong&gt;：紧跟在起始行之后的一系列键值对，用于传递元数据，控制传输行为，是HTTP协议的&amp;quot;控制面板&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空行 (Blank Line)&lt;/strong&gt;：一个独立的空行 (&lt;code&gt;\r\n&lt;/code&gt;)，用于分隔头部和消息体，是报文结构的边界标识。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;消息体 (Message Body)&lt;/strong&gt;：可选的，承载实际的业务数据，如HTML文档、JSON数据或文件内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;-http头部字段详解&#34;&gt;🏷️ HTTP头部字段详解
+&lt;/h4&gt;&lt;p&gt;头部字段是HTTP的&amp;quot;控制面板&amp;quot;，通过键值对传递元数据，影响着请求和响应的每一个环节。根据其作用范围和上下文，可将其分为四类：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 通用头部 (General Headers)&lt;/strong&gt;
+适用于请求和响应，关于消息本身或连接的管理信息，不涉及消息体内容。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Cache-Control&lt;/code&gt;: 控制缓存行为，如&lt;code&gt;no-cache&lt;/code&gt;、&lt;code&gt;max-age&lt;/code&gt;等指令。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Connection&lt;/code&gt;: 管理网络连接，如&lt;code&gt;keep-alive&lt;/code&gt;保持长连接以减少TCP握手开销，或&lt;code&gt;close&lt;/code&gt;短连接。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Date&lt;/code&gt;: 表示报文创建的日期和时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. 请求头部 (Request Headers)&lt;/strong&gt;
+提供请求的附加信息或客户端自身信息，帮助服务器更好地理解和处理请求。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Host&lt;/code&gt;: &lt;strong&gt;必选&lt;/strong&gt;头部，指定目标服务器的主机名和端口号，是虚拟主机技术的关键。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;User-Agent&lt;/code&gt;: 标识客户端类型、操作系统及版本等信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept&lt;/code&gt;: 告知服务器客户端能够处理的媒体类型（MIME类型）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Language&lt;/code&gt;: 指明客户端偏好的自然语言（如&lt;code&gt;zh-CN&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Encoding&lt;/code&gt;: 告知服务器客户端支持的内容编码方式（如&lt;code&gt;gzip&lt;/code&gt;、&lt;code&gt;br&lt;/code&gt;），用于压缩优化。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Authorization&lt;/code&gt;: 携带身份认证凭证（如&lt;code&gt;Bearer token&lt;/code&gt;、&lt;code&gt;Basic&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Cookie&lt;/code&gt;: 携带服务器之前设置的Cookie，用于会话保持和状态管理。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Referer&lt;/code&gt;: 表示当前请求的来源页面URL，常用于防盗链和统计分析。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3. 响应头部 (Response Headers)&lt;/strong&gt;
+提供关于响应的额外信息或服务器自身信息，帮助客户端更好地处理收到的数据。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Server&lt;/code&gt;: 标识服务器软件信息（如&lt;code&gt;nginx&lt;/code&gt;、&lt;code&gt;Apache&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Location&lt;/code&gt;: 配合&lt;code&gt;3xx&lt;/code&gt;重定向状态码，指明新的资源地址，引导客户端跳转。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Set-Cookie&lt;/code&gt;: 服务器向客户端设置Cookie，用于状态持久化。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WWW-Authenticate&lt;/code&gt;: 配合&lt;code&gt;401&lt;/code&gt;状态码，告知客户端所需的认证方式和参数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 实体头部 (Entity Headers)&lt;/strong&gt;
+描述消息体（实体）的属性信息，无论请求还是响应，只要包含消息体，就可能用到这些头部。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Content-Type&lt;/code&gt;: 指明消息体的媒体类型（如&lt;code&gt;text/html&lt;/code&gt;、&lt;code&gt;application/json&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Length&lt;/code&gt;: 指明消息体的大小（字节数），用于界定消息体边界。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Encoding&lt;/code&gt;: 指明消息体的压缩或编码方式（如&lt;code&gt;gzip&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Language&lt;/code&gt;: 指明消息体适用的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Last-Modified&lt;/code&gt;: 资源最后修改时间，用于缓存验证和条件请求。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ETag&lt;/code&gt;: 资源的唯一标识符（实体标签），用于缓存验证，比&lt;code&gt;Last-Modified&lt;/code&gt;更精确。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;-http协议实现原理&#34;&gt;⚙️ HTTP协议实现原理
+&lt;/h4&gt;&lt;p&gt;HTTP协议的具体实现，本质上就是客户端与服务器之间遵循其规范进行网络通信的完整过程，它清晰地描绘了数据从发起请求到接收响应的流转路径。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;建立连接&lt;/strong&gt;：客户端（如浏览器）与服务器通过&lt;strong&gt;TCP/IP协议&lt;/strong&gt;三次握手建立一个可靠的网络连接。在现代HTTP/1.1版本中，默认使用&lt;strong&gt;持久连接&lt;/strong&gt;（&lt;code&gt;Connection: keep-alive&lt;/code&gt;），允许在一个TCP连接上发送多个请求与响应，从而显著减少重复建立连接的开销。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送请求&lt;/strong&gt;：客户端根据业务需求，构建一个符合HTTP规范的请求报文，其中包含起始行（方法、URI、版本）、必要的头部字段以及可选的请求体数据，然后通过已建立的TCP连接将其发送给服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;处理请求并返回响应&lt;/strong&gt;：服务器接收并解析客户端发来的请求报文，根据请求行中的方法、URI以及头部信息执行相应的业务逻辑（如读取数据库、访问文件系统、执行应用程序代码），然后构建一个包含状态行（状态码、原因短语）、响应头部以及可选响应体数据的HTTP响应报文，将其发回客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;关闭连接或复用&lt;/strong&gt;：根据&lt;code&gt;Connection&lt;/code&gt;头部以及服务器的策略，决定是立即关闭TCP连接（短连接），还是将连接放入连接池中以供后续请求复用（长连接）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端解析响应&lt;/strong&gt;：客户端接收服务器返回的响应报文，首先解析状态行判断请求是否成功，然后读取响应头部以获取元数据信息（如内容类型、缓存策略），最后根据&lt;code&gt;Content-Type&lt;/code&gt;等头部信息对消息体进行相应处理（如渲染HTML页面、解析JSON数据、保存下载的文件）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;-http协议的演进&#34;&gt;🚀 HTTP协议的演进
+&lt;/h4&gt;&lt;p&gt;自诞生以来，HTTP协议经历了数次重大升级，每一次迭代都旨在解决前代的性能瓶颈，以应对日益复杂的Web应用和海量的数据传输需求。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;版本&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心特点&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;主要提升与意义&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.0&lt;/strong&gt; (1996)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基础版本，每次请求/响应后即&lt;strong&gt;关闭TCP连接&lt;/strong&gt;，简单但效率较低。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;确立了HTTP的基本模型，为Web发展奠定了基础。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.1&lt;/strong&gt; (1999)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;引入了&lt;strong&gt;持久连接&lt;/strong&gt;（长连接）、&lt;strong&gt;管道化&lt;/strong&gt;（允许连续发送请求而无需等待响应）、&lt;strong&gt;分块传输编码&lt;/strong&gt;等关键特性。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;极大地提升了连接效率，成为目前互联网上最广泛使用的版本。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/2&lt;/strong&gt; (2015)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;革命性升级，采用&lt;strong&gt;二进制分帧&lt;/strong&gt;替代文本传输、&lt;strong&gt;多路复用&lt;/strong&gt;（在一个连接上并行交错处理请求与响应）、&lt;strong&gt;头部压缩&lt;/strong&gt;等。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;有效解决了HTTP/1.1的队头阻塞问题，大幅提升了页面加载速度。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/3&lt;/strong&gt; (2018)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;将传输层从TCP替换为基于UDP的&lt;strong&gt;QUIC协议&lt;/strong&gt;，集成TLS加密，连接建立更快。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;从根本上解决了TCP协议带来的队头阻塞问题，尤其在弱网环境下性能提升显著。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;-http与https的核心区别&#34;&gt;🔍 HTTP与HTTPS的核心区别
+&lt;/h4&gt;&lt;p&gt;HTTP和HTTPS最根本的区别在于&lt;strong&gt;安全性&lt;/strong&gt;，这一本质差异导致它们在协议基础、传输方式、默认端口等多个维度上表现迥异。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;对比维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;HTTP&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;HTTPS&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;协议基础&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;应用层协议，直接基于TCP传输数据。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;在HTTP与TCP之间增加了一个&lt;strong&gt;SSL/TLS安全层&lt;/strong&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;数据传输&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;明文传输&lt;/strong&gt;，数据在整个传输过程中可被窃听、篡改和伪装。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;加密传输&lt;/strong&gt;，通过混合加密机制保证数据的机密性和完整性。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;默认端口&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;80&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;443&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;身份验证&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无，客户端无法确认连接的是否是真正的目标服务器。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;有，通过权威CA签发的&lt;strong&gt;数字证书&lt;/strong&gt;验证服务器身份，防止中间人攻击。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;资源消耗&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;较低，无需加解密计算。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;较高，TLS握手及数据加解密会占用一定的CPU和内存资源。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;使用场景&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;适合浏览新闻、博客等无需交互或传输非敏感信息的场景。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;适用于登录、支付、电子商务、在线办公等一切涉及敏感信息的操作。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;-https连接与tls握手全过程&#34;&gt;🤝 HTTPS连接与TLS握手全过程
+&lt;/h4&gt;&lt;p&gt;HTTPS连接建立是一个分步走的精密过程，它在HTTP的基础上增加了安全层，确保通信的机密性、完整性和真实性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;步骤一：建立TCP连接&lt;/strong&gt;
+与HTTP相同，客户端（浏览器）首先与服务器通过&lt;strong&gt;TCP三次握手&lt;/strong&gt;建立一个可靠的底层网络连接。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;步骤二：TLS/SSL握手（核心安全环节）&lt;/strong&gt;
+TCP连接建立后，HTTPS并不会立即发送HTTP业务数据，而是必须先进行TLS/SSL握手，以协商双方安全通信所需的各项参数。这个握手过程是HTTPS安全性的基石，主要包含以下关键步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端问候 (Client Hello)&lt;/strong&gt;：客户端向服务器发起握手请求，告知自己支持的TLS版本、加密套件列表，并生成一个&lt;strong&gt;客户端随机数 (Client Random)&lt;/strong&gt; 随消息一同发送。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;服务器回应 (Server Hello)&lt;/strong&gt;：服务器从客户端列表中选择双方都支持的TLS版本和加密套件，生成一个&lt;strong&gt;服务器随机数 (Server Random)&lt;/strong&gt;，并将自己的&lt;strong&gt;数字证书&lt;/strong&gt;（包含服务器公钥、域名、有效期等信息）一同发回给客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端验证证书&lt;/strong&gt;：客户端（浏览器）收到证书后，会对服务器证书的合法性进行严格验证：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;证书是否由受信任的CA（证书颁发机构）签发？（即验证证书链）&lt;/li&gt;
+&lt;li&gt;证书是否在有效期内？&lt;/li&gt;
+&lt;li&gt;证书上的域名与正在访问的网站域名是否一致？
+如果验证失败，浏览器会发出&amp;quot;不安全&amp;quot;的警告；验证通过，则继续下一步。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;密钥交换&lt;/strong&gt;：这是整个握手的核心环节。验证通过后，客户端会生成一个&lt;strong&gt;预主密钥 (Pre-Master Secret)&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;加密传输&lt;/strong&gt;：客户端使用从证书中获取的&lt;strong&gt;服务器公钥&lt;/strong&gt;加密这个预主密钥，然后发送给服务器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;服务器解密&lt;/strong&gt;：服务器收到后，使用自己独有的&lt;strong&gt;私钥&lt;/strong&gt;解密，获得预主密钥。
+至此，客户端和服务器都拥有了&lt;code&gt;客户端随机数&lt;/code&gt;、&lt;code&gt;服务器随机数&lt;/code&gt;和&lt;code&gt;预主密钥&lt;/code&gt;这三个关键材料，它们会通过一个双方协商好的固定算法，&lt;strong&gt;各自独立计算出完全相同的&amp;quot;会话密钥&amp;quot; (Session Key)&lt;/strong&gt;。这个会话密钥将用于后续所有数据的加密通信。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;握手确认与完成&lt;/strong&gt;：双方互相发送一个&amp;quot;完成&amp;quot;消息（Finished），并用新生成的会话密钥加密一段测试数据来验证一切正常。至此，TLS握手成功完成，安全通道已建立。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;步骤三：开始加密通信&lt;/strong&gt;
+握手完成后，客户端和服务器开始使用协商好的&lt;strong&gt;会话密钥&lt;/strong&gt;进行&lt;strong&gt;对称加密&lt;/strong&gt;通信。所有HTTP请求和响应的业务数据都会被加密，同时携带基于哈希算法生成的消息认证码（MAC）来保证数据的完整性和真实性，有效防止数据在传输过程中被篡改。&lt;/p&gt;
+&lt;h4 id=&#34;-https加密原理解析&#34;&gt;🔐 HTTPS加密原理解析
+&lt;/h4&gt;&lt;p&gt;HTTPS的安全性并非依赖单一技术，而是巧妙地组合了多种加密算法和机制，各取所长，共同构建了一个坚不可摧的安全体系。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;对称加密&lt;/strong&gt;：使用&lt;strong&gt;同一个密钥&lt;/strong&gt;（即会话密钥）进行加密和解密。其特点是&lt;strong&gt;速度快、效率高&lt;/strong&gt;，非常适合加密大量的传输数据。HTTPS在握手完成后的&lt;strong&gt;数据传输阶段&lt;/strong&gt;使用对称加密，确保了数据高效处理。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;非对称加密&lt;/strong&gt;：使用一对数学相关的密钥：&lt;strong&gt;公钥&lt;/strong&gt;（可公开）和&lt;strong&gt;私钥&lt;/strong&gt;（必须保密）。公钥加密的数据只能用对应的私钥解密，反之亦然。其安全性高，但&lt;strong&gt;速度慢&lt;/strong&gt;，计算开销大。HTTPS在&lt;strong&gt;握手阶段的密钥交换过程&lt;/strong&gt;中使用非对称加密，安全地传输预主密钥，解决了对称加密密钥分发困难的难题。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;数字证书与CA&lt;/strong&gt;：数字证书由权威的第三方CA机构（如DigiCert、Let&amp;rsquo;s Encrypt）签发，相当于服务器的&amp;quot;&lt;strong&gt;网络身份证&lt;/strong&gt;&amp;quot;。它将服务器的身份信息（如域名、组织）与其公钥进行绑定，并由CA使用自己的私钥对其进行数字签名，确保证书内容的真实性和不可篡改性，从而有效防止&lt;strong&gt;中间人攻击&lt;/strong&gt;——即攻击者无法伪造一个受信任的证书来冒充目标服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;哈希算法与消息认证码（MAC）&lt;/strong&gt;：哈希算法（如SHA-256）能将任意长度的数据转换为固定长度的&amp;quot;指纹&amp;quot;（摘要），且不可逆。HTTPS使用基于哈希算法的&lt;strong&gt;消息认证码（MAC）&lt;/strong&gt;，将数据与密钥混合后计算哈希值，从而同时保证数据的完整性（未被篡改）和真实性（来自合法发送方），是加密传输的重要补充。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-总结&#34;&gt;💎 总结
+&lt;/h3&gt;&lt;p&gt;总而言之，HTTPS并非一个全新的协议，而是在HTTP的基础上，叠加了&lt;strong&gt;TLS/SSL安全层&lt;/strong&gt;。通过&lt;strong&gt;TLS/SSL握手&lt;/strong&gt;这个关键环节，它巧妙地结合了&lt;strong&gt;非对称加密&lt;/strong&gt;（安全高效地交换密钥）和&lt;strong&gt;对称加密&lt;/strong&gt;（快速加密海量业务数据），并借助权威的&lt;strong&gt;数字证书&lt;/strong&gt;体系完成了服务器身份验证，最终为数据传输建立了一个既安全又高效的加密通信通道，为现代互联网的安全运行提供了根本保障。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

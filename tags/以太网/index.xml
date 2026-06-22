@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>以太网 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91/</link>
+        <description>Recent content in 以太网 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Mon, 22 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MAC帧详解：数据链路层的核心协议数据单元</title>
+        <link>https://Yannick-Mo.github.io/p/mac-frame-detailed/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/mac-frame-detailed/</guid>
+        <description>&lt;p&gt;MAC帧（Media Access Control Frame）是&lt;strong&gt;数据链路层&lt;/strong&gt;的核心协议数据单元。可以把它理解为在局域网（如以太网）中传输数据的一个&amp;quot;数据包&amp;quot;。&lt;/p&gt;
+&lt;p&gt;简单来说，它的主要工作是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;封装数据&lt;/strong&gt;：将来自网络层（如IP数据报）的数据，封装成帧。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;标识地址&lt;/strong&gt;：在帧头中加入发送方和接收方的&lt;strong&gt;MAC地址&lt;/strong&gt;（即物理地址），确保数据能送到正确的设备。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;检错&lt;/strong&gt;：在帧尾加入校验信息，用于检测数据在传输过程中是否出错。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;-mac帧的大小&#34;&gt;📏 MAC帧的大小
+&lt;/h3&gt;&lt;p&gt;一个标准以太网MAC帧的大小是固定的&lt;strong&gt;64字节到1518字节&lt;/strong&gt;之间。这个范围由以下几个部分构成：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;组成部分&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;大小（字节）&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;帧头&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;14&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;包含&lt;strong&gt;目的MAC地址&lt;/strong&gt;(6)、&lt;strong&gt;源MAC地址&lt;/strong&gt;(6)和&lt;strong&gt;类型/长度字段&lt;/strong&gt;(2)。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;数据部分&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;46 ~ 1500&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;承载的网络层数据（如IP数据报）。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;帧尾 (FCS)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;4&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;帧校验序列，用于错误检测。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;最小帧长 64 字节&lt;/strong&gt;：这是为了确保CSMA/CD（载波监听多点接入/碰撞检测）协议能正常工作，有效检测到网络冲突。如果数据部分不足46字节，会自动填充（PAD）到46字节。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;最大帧长 1518 字节&lt;/strong&gt;：这是最常见的标准。它确保了单个设备不会占用信道太久，保障了网络的公平性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关于MTU&lt;/strong&gt;：经常听到的&lt;strong&gt;MTU（最大传输单元）为1500字节&lt;/strong&gt;，指的是&lt;strong&gt;数据部分&lt;/strong&gt;的最大长度，不包括14字节的帧头和4字节的帧尾。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-补充说明&#34;&gt;💡 补充说明
+&lt;/h3&gt;&lt;p&gt;以上讨论的是最常见的&lt;strong&gt;标准以太网MAC帧&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;扩展帧&lt;/strong&gt;：如果启用了&lt;strong&gt;VLAN（虚拟局域网）&lt;/strong&gt;，会在帧头插入一个4字节的802.1Q标签，此时最大帧长会变成&lt;strong&gt;1522字节&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;巨型帧&lt;/strong&gt;：在一些特殊环境中，为了提升性能，会使用支持更大数据部分的&lt;strong&gt;巨型帧（Jumbo Frame）&lt;/strong&gt;，其大小可达9000字节或更高，但这并非IEEE标准。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

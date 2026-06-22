@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>网络层 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
+        <description>Recent content in 网络层 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Mon, 22 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%B1%82/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>IP协议详解：网际协议的核心原理</title>
+        <link>https://Yannick-Mo.github.io/p/ip-protocol-detailed/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/ip-protocol-detailed/</guid>
+        <description>&lt;h2 id=&#34;一ip协议概述&#34;&gt;一、IP协议概述
+&lt;/h2&gt;&lt;p&gt;IP（Internet Protocol，网际协议）是TCP/IP协议族的核心协议，位于网络层。它的核心职责是&lt;strong&gt;负责在网络之间转发数据报&lt;/strong&gt;，使连接到互联网的所有计算机能够相互通信。&lt;/p&gt;
+&lt;p&gt;IP协议为上层协议提供&lt;strong&gt;无状态、无连接、不可靠&lt;/strong&gt;的服务：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;无状态&lt;/strong&gt;：每个IP数据报的发送、传输和接收相互独立，没有上下文关系。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无连接&lt;/strong&gt;：通信双方不需要预先建立连接，每次发送数据都需明确指定目的IP地址。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不可靠&lt;/strong&gt;：IP协议不保证数据报一定能到达目的地，只承诺&amp;quot;尽最大努力&amp;quot;（best effort）转发。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二ipv4协议头结构&#34;&gt;二、IPv4协议头结构
+&lt;/h2&gt;&lt;p&gt;IPv4头部固定长度为&lt;strong&gt;20字节&lt;/strong&gt;，加上可选的Options字段后最长可达&lt;strong&gt;60字节&lt;/strong&gt;。以下是各字段详解：&lt;/p&gt;
+&lt;h3 id=&#34;1-4位版本号version&#34;&gt;1. 4位版本号（Version）
+&lt;/h3&gt;&lt;p&gt;指定IP协议的版本，IPv4值为4，IPv6值为6。&lt;/p&gt;
+&lt;h3 id=&#34;2-4位首部长度header-length&#34;&gt;2. 4位首部长度（Header Length）
+&lt;/h3&gt;&lt;p&gt;以4字节为单位，表示IP头部的长度。4位最大值为15，因此头部最长60字节（15×4）。固定长度为20字节（对应值为5）。&lt;/p&gt;
+&lt;h3 id=&#34;3-8位服务类型type-of-service-tos&#34;&gt;3. 8位服务类型（Type of Service, TOS）
+&lt;/h3&gt;&lt;p&gt;包含4位TOS字段（最小延时、最大吞吐量、最高可靠性、最小成本），这四者相互排斥，只能选择其一。例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;SSH/Telnet等登录程序需要&lt;strong&gt;最小延时&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;FTP文件传输需要&lt;strong&gt;最大吞吐量&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-16位总长度total-length&#34;&gt;4. 16位总长度（Total Length）
+&lt;/h3&gt;&lt;p&gt;整个IP数据报（头部+载荷）的长度，单位字节，最大65535字节。&lt;/p&gt;
+&lt;h3 id=&#34;5-16位标识identification&#34;&gt;5. 16位标识（Identification）
+&lt;/h3&gt;&lt;p&gt;唯一标识主机发送的报文。当IP数据报被分片时，所有分片具有相同的标识值，用于接收端重组。&lt;/p&gt;
+&lt;h3 id=&#34;6-3位标志flags&#34;&gt;6. 3位标志（Flags）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;第1位：保留&lt;/li&gt;
+&lt;li&gt;第2位（DF）：禁止分片，为1时若报文超过MTU则丢弃&lt;/li&gt;
+&lt;li&gt;第3位（MF）：更多分片，为1表示后续还有分片&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;7-13位片偏移fragment-offset&#34;&gt;7. 13位片偏移（Fragment Offset）
+&lt;/h3&gt;&lt;p&gt;表示当前分片在原始报文中的位置，以8字节为单位。接收端根据此字段将各分片按正确顺序重组。&lt;/p&gt;
+&lt;h3 id=&#34;8-8位生存时间time-to-live-ttl&#34;&gt;8. 8位生存时间（Time to Live, TTL）
+&lt;/h3&gt;&lt;p&gt;表示数据报经过的最大路由器跳数，&lt;strong&gt;单位是次数而非时间&lt;/strong&gt;。每经过一个路由器TTL减1，减到0时丢弃该数据报，防止路由死循环。典型初始值为32或64。&lt;/p&gt;
+&lt;h3 id=&#34;9-8位协议protocol&#34;&gt;9. 8位协议（Protocol）
+&lt;/h3&gt;&lt;p&gt;标识上层协议类型：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1：ICMP&lt;/li&gt;
+&lt;li&gt;6：TCP&lt;/li&gt;
+&lt;li&gt;17：UDP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;10-16位首部校验和header-checksum&#34;&gt;10. 16位首部校验和（Header Checksum）
+&lt;/h3&gt;&lt;p&gt;仅校验IP头部，不校验载荷部分（TCP/UDP各自带有校验和）。&lt;/p&gt;
+&lt;h3 id=&#34;11-32位源ip地址source-address&#34;&gt;11. 32位源IP地址（Source Address）
+&lt;/h3&gt;&lt;p&gt;发送端的IP地址。&lt;/p&gt;
+&lt;h3 id=&#34;12-32位目的ip地址destination-address&#34;&gt;12. 32位目的IP地址（Destination Address）
+&lt;/h3&gt;&lt;p&gt;接收端的IP地址。&lt;/p&gt;
+&lt;h3 id=&#34;13-选项options可选&#34;&gt;13. 选项（Options，可选）
+&lt;/h3&gt;&lt;p&gt;可变长度，用于支持IP的扩展功能。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三ip协议工作原理&#34;&gt;三、IP协议工作原理
+&lt;/h2&gt;&lt;h3 id=&#34;1-数据报封装与传输&#34;&gt;1. 数据报封装与传输
+&lt;/h3&gt;&lt;p&gt;上层协议（如TCP、UDP）的数据被封装成IP数据报，添加IP头部后交付给数据链路层传输。IP数据报包含源IP地址和目的IP地址。&lt;/p&gt;
+&lt;h3 id=&#34;2-路由与转发&#34;&gt;2. 路由与转发
+&lt;/h3&gt;&lt;p&gt;路由器根据数据报中的&lt;strong&gt;目的IP地址&lt;/strong&gt;查找路由表，决定下一跳地址。数据报可能经过多个路由器的逐跳转发，最终到达目的地。&lt;/p&gt;
+&lt;h3 id=&#34;3-分片与重组&#34;&gt;3. 分片与重组
+&lt;/h3&gt;&lt;p&gt;当IP数据报长度超过数据链路层的&lt;strong&gt;最大传输单元（MTU）&lt;/strong&gt; 时（如以太网MTU为1500字节），IP协议会自动将数据报拆分为多个较小的分片进行传输。接收端根据&lt;strong&gt;标识、标志和片偏移&lt;/strong&gt;三个字段将所有分片重组成原始数据报。&lt;/p&gt;
+&lt;h3 id=&#34;4-地址管理&#34;&gt;4. 地址管理
+&lt;/h3&gt;&lt;p&gt;IP地址由&lt;strong&gt;网络号+主机号&lt;/strong&gt;两部分组成：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;网络号&lt;/strong&gt;：标识所在的网段&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;主机号&lt;/strong&gt;：标识网段内的具体设备&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为解决IPv4地址（32位，约42亿个）不够用的问题，主要采用以下方案：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;动态分配（DHCP）&lt;/strong&gt;：设备上网时分配IP，下线时回收&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NAT（网络地址转换）&lt;/strong&gt;：私有IP（如10.&lt;em&gt;、172.16-31.&lt;/em&gt;、192.168.*）通过NAT转换为公网IP访问互联网&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四总结&#34;&gt;四、总结
+&lt;/h2&gt;&lt;p&gt;IP协议是互联网的&amp;quot;邮政系统&amp;quot;——它不关心内容是否完整到达（可靠性由TCP等上层协议保证），也不预先建立连接，只负责将每个&amp;quot;数据报包裹&amp;quot;从源地址送达目的地址。正是这种&lt;strong&gt;简单、高效&lt;/strong&gt;的设计，使得IP协议成为连接全球不同网络的基石。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

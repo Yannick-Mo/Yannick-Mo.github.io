@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>端口复用 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/</link>
+        <description>Recent content in 端口复用 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Mon, 22 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>TCP TIME_WAIT、端口复用与服务器重启问题</title>
+        <link>https://Yannick-Mo.github.io/p/tcp-timewait-port-reuse-server-restart/</link>
+        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/tcp-timewait-port-reuse-server-restart/</guid>
+        <description>&lt;h2 id=&#34;1-tcp-四次挥手与-time_wait-状态&#34;&gt;1. TCP 四次挥手与 TIME_WAIT 状态
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：在 TCP 连接正常关闭（四次挥手）时，&lt;strong&gt;主动发起关闭请求（发送第一个 FIN）的一方&lt;/strong&gt;，在收到被动方最后的 ACK 后，必须进入 &lt;code&gt;TIME_WAIT&lt;/code&gt; 状态。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;持续时间&lt;/strong&gt;：&lt;strong&gt;2MSL&lt;/strong&gt;（Maximum Segment Lifetime，最大报文生存时间）。在 Linux 系统中通常固定为 &lt;strong&gt;60 秒&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;存在的两大核心原因&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;保证最后的 ACK 能被重传&lt;/strong&gt;：如果主动方发送的最后一个 ACK 丢失，被动方会超时重传 FIN，主动方必须留在 &lt;code&gt;TIME_WAIT&lt;/code&gt; 才能响应这个重传，避免被动方收到 RST 而报错。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;让旧数据包消散&lt;/strong&gt;：防止本次连接中延迟到达的旧数据包，被后续复用相同 IP 和端口的新连接错误接收，造成数据污染。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特殊情况（崩溃 vs 正常退出）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;正常关闭&lt;/strong&gt;（如 &lt;code&gt;exit&lt;/code&gt;、&lt;code&gt;Ctrl+C&lt;/code&gt;）：走完整四次挥手 → &lt;strong&gt;会进入&lt;/strong&gt; &lt;code&gt;TIME_WAIT&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;异常崩溃&lt;/strong&gt;（如 &lt;code&gt;kill -9&lt;/code&gt;、段错误）：操作系统直接发送 &lt;code&gt;RST&lt;/code&gt; 包强制重置 → &lt;strong&gt;不会进入&lt;/strong&gt; &lt;code&gt;TIME_WAIT&lt;/code&gt;，端口立即释放。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2-端口复用选项so_reuseaddr-与-so_reuseport&#34;&gt;2. 端口复用选项（&lt;code&gt;SO_REUSEADDR&lt;/code&gt; 与 &lt;code&gt;SO_REUSEPORT&lt;/code&gt;）
+&lt;/h2&gt;&lt;p&gt;针对 &lt;code&gt;setsockopt&lt;/code&gt; 系统调用，通常的设置代码如下（注意 &lt;code&gt;opt&lt;/code&gt; 必须初始化为 1）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;opt&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;setsockopt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;server_fd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SOL_SOCKET&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SO_REUSEADDR&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SO_REUSEPORT&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;opt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;sizeof&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;opt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nf&#34;&gt;perror&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;setsockopt&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nf&#34;&gt;exit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;EXIT_FAILURE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;so_reuseaddr&#34;&gt;&lt;code&gt;SO_REUSEADDR&lt;/code&gt;
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心作用&lt;/strong&gt;：允许重用处于 &lt;code&gt;TIME_WAIT&lt;/code&gt; 状态的端口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;主要场景&lt;/strong&gt;：解决服务器正常重启时因 &lt;code&gt;TIME_WAIT&lt;/code&gt; 导致的 &lt;code&gt;bind()&lt;/code&gt; 失败（&lt;code&gt;EADDRINUSE&lt;/code&gt; 错误）。&lt;strong&gt;生产环境服务器通常必须开启&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;so_reuseportlinux-39-支持&#34;&gt;&lt;code&gt;SO_REUSEPORT&lt;/code&gt;（Linux 3.9+ 支持）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心作用&lt;/strong&gt;：允许多个进程（或线程）绑定到&lt;strong&gt;完全相同&lt;/strong&gt;的 IP 和端口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;主要场景&lt;/strong&gt;：实现多进程/多线程的负载均衡，由内核在多个监听套接字间分发连接请求，提高并发能力。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-注意事项&#34;&gt;⚠️ 注意事项
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;兼容性&lt;/strong&gt;：较老的内核（如 RHEL 6）不支持 &lt;code&gt;SO_REUSEPORT&lt;/code&gt;，直接组合使用会导致 &lt;code&gt;setsockopt&lt;/code&gt; 失败。建议通过 &lt;code&gt;#ifdef SO_REUSEPORT&lt;/code&gt; 宏定义做降级处理（仅启用 &lt;code&gt;SO_REUSEADDR&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全风险&lt;/strong&gt;：滥用 &lt;code&gt;SO_REUSEPORT&lt;/code&gt; 可能导致非预期的进程抢占端口，需配合 UID 权限控制。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;3-服务器崩溃重启面临的核心问题&#34;&gt;3. 服务器崩溃重启面临的核心问题
+&lt;/h2&gt;&lt;p&gt;如果不正确处理上述选项，或只关注端口占用，重启时还会遇到以下连锁反应：&lt;/p&gt;
+&lt;h3 id=&#34;31-直接后果端口占用导致启动失败&#34;&gt;3.1 直接后果：端口占用导致启动失败
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;现象&lt;/strong&gt;：正常关闭后 60 秒内重启，&lt;code&gt;bind()&lt;/code&gt; 报错 &lt;code&gt;Address already in use&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：服务器进程退出，监听端口无服务，客户端收到 &lt;code&gt;RST&lt;/code&gt; 或连接超时，完全连不上。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;32-数据层面丢失与不一致最严重&#34;&gt;3.2 数据层面：丢失与不一致（最严重）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;内存数据丢失&lt;/strong&gt;：崩溃时，尚未刷入磁盘的内存数据（如缓存、队列）永久丢失。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不一致&lt;/strong&gt;：若事务未完成（如 A 扣款成功，B 加款失败），重启后数据处于中间态。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：引入&lt;strong&gt;预写式日志（WAL）&lt;/strong&gt;、两阶段提交（2PC）等机制。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;33-资源层面残留僵尸资源&#34;&gt;3.3 资源层面：残留&amp;quot;僵尸&amp;quot;资源
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;文件锁残留&lt;/strong&gt;：进程持有的 &lt;code&gt;.lock&lt;/code&gt; 文件未释放，新进程误以为资源被占。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;共享内存/信号量残留&lt;/strong&gt;：IPC 资源未清理，导致新进程初始化失败。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;孤儿进程&lt;/strong&gt;：父进程崩溃，子进程变为僵尸进程（由 PID 1 收养）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：手动使用 &lt;code&gt;lsof&lt;/code&gt;、&lt;code&gt;ipcs&lt;/code&gt; 检查清理；应用设计健壮的锁超时机制。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;34-连接层面连接池全部失效&#34;&gt;3.4 连接层面：连接池全部失效
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;死连接&lt;/strong&gt;：应用连接池中缓存的旧连接实际已断开，若不检查直接使用，业务会报错。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;连接风暴&lt;/strong&gt;：大量新实例同时重建连接，瞬间打满数据库/中间件的连接数上限。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：开启连接池的 &lt;code&gt;testOnBorrow&lt;/code&gt; 有效性检查；重启后主动清空连接池。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;35-分布式层面引起雪崩效应&#34;&gt;3.5 分布式层面：引起&amp;quot;雪崩&amp;quot;效应
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;注册中心不同步&lt;/strong&gt;：重启后未及时注册或注册了旧 IP，导致上游服务发现失败。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;脑裂&lt;/strong&gt;：网络分区时部分节点重启，形成独立小集群，数据冲突。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缓存雪崩&lt;/strong&gt;：大量服务重启，请求穿透至数据库，导致数据库宕机。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：配置注册中心的&lt;strong&gt;持久化节点&lt;/strong&gt;；服务启动时&lt;strong&gt;延迟加载&lt;/strong&gt;并逐步接入流量；配置&lt;strong&gt;超时、重试和熔断器&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;4-最佳实践总结&#34;&gt;4. 最佳实践总结
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;必开端口复用&lt;/strong&gt;：除非有特殊安全需求，否则服务器必须启用 &lt;code&gt;SO_REUSEADDR&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优雅启停&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;停止时：捕获 &lt;code&gt;SIGTERM&lt;/code&gt; 信号，完成内存刷盘、资源清理后再退出。&lt;/li&gt;
+&lt;li&gt;启动时：进行依赖健康检查，再对外暴露服务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;连接有效性检查&lt;/strong&gt;：在从连接池获取连接时，强制校验连接是否存活（如执行 &lt;code&gt;SELECT 1&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;限流与降级&lt;/strong&gt;：崩溃重启后，系统处于&amp;quot;预热&amp;quot;状态，应配合限流策略，防止流量瞬间冲垮。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;混沌工程演练&lt;/strong&gt;：定期模拟服务器崩溃，验证重启流程的健壮性和监控告警的有效性。&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

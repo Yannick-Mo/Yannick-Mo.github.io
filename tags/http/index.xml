@@ -7,7 +7,745 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
-        <lastBuildDate>Sun, 14 Jun 2026 20:57:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/http/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 23 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/http/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>HTTP协议详解：报文结构、头部字段与演进历史</title>
+        <link>https://Yannick-Mo.github.io/p/http-protocol-detailed/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/http-protocol-detailed/</guid>
+        <description>&lt;p&gt;HTTP（超文本传输协议）是互联网应用层的核心协议。它采用经典的&lt;strong&gt;客户端-服务器模型&lt;/strong&gt;和&lt;strong&gt;请求-响应机制&lt;/strong&gt;，其设计简洁高效，使得Web服务器能处理海量请求。&lt;/p&gt;
+&lt;h3 id=&#34;-http报文结构&#34;&gt;📝 HTTP报文结构
+&lt;/h3&gt;&lt;p&gt;所有的HTTP通信都通过报文（Message）进行，无论是请求还是响应，都遵循统一的 &lt;strong&gt;&amp;ldquo;起始行 + 头部字段 + 空行 + 可选消息体&amp;rdquo;&lt;/strong&gt; 的三段式结构。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;起始行 (Start Line)&lt;/strong&gt;：描述报文的基本信息。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;请求行 (Request Line)&lt;/strong&gt;：包含&lt;strong&gt;方法&lt;/strong&gt; (如 &lt;code&gt;GET&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt;)、&lt;strong&gt;请求URI&lt;/strong&gt; 和&lt;strong&gt;协议版本&lt;/strong&gt; (如 &lt;code&gt;HTTP/1.1&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态行 (Status Line)&lt;/strong&gt;：包含&lt;strong&gt;协议版本&lt;/strong&gt;、&lt;strong&gt;状态码&lt;/strong&gt; (如 &lt;code&gt;200&lt;/code&gt;) 和&lt;strong&gt;原因短语&lt;/strong&gt; (如 &lt;code&gt;OK&lt;/code&gt;)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;头部字段 (Header Fields)&lt;/strong&gt;：一系列键值对，用于传递元数据，控制传输行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空行 (Blank Line)&lt;/strong&gt;：一个独立的空行 (&lt;code&gt;\r\n&lt;/code&gt;)，用于分隔头部和消息体。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;消息体 (Message Body)&lt;/strong&gt;：可选的，承载实际业务数据，如HTML、JSON或文件内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-http头部字段详解&#34;&gt;🏷️ HTTP头部字段详解
+&lt;/h3&gt;&lt;p&gt;头部字段是HTTP的&amp;quot;控制面板&amp;quot;，通过键值对传递元数据。根据作用范围，可分为四类：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 通用头部 (General Headers)&lt;/strong&gt;
+适用于请求和响应，关于消息本身或连接。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Cache-Control&lt;/code&gt;: 控制缓存行为。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Connection&lt;/code&gt;: 管理网络连接，如&lt;code&gt;keep-alive&lt;/code&gt;保持长连接，或&lt;code&gt;close&lt;/code&gt;短连接。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Date&lt;/code&gt;: 表示报文创建的日期和时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. 请求头部 (Request Headers)&lt;/strong&gt;
+提供请求的附加信息或客户端自身信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Host&lt;/code&gt;: &lt;strong&gt;必选&lt;/strong&gt;，指定目标服务器的主机名和端口号。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;User-Agent&lt;/code&gt;: 标识客户端类型、操作系统等信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept&lt;/code&gt;: 告知服务器客户端能处理的媒体类型。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Language&lt;/code&gt;: 指明客户端偏好的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Encoding&lt;/code&gt;: 告知服务器客户端支持的内容编码方式（如&lt;code&gt;gzip&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Authorization&lt;/code&gt;: 携带身份认证凭证（如&lt;code&gt;Bearer token&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Cookie&lt;/code&gt;: 携带服务器之前设置的Cookie，用于会话保持。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Referer&lt;/code&gt;: 表示当前请求的来源页面URL。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3. 响应头部 (Response Headers)&lt;/strong&gt;
+提供关于响应的额外信息或服务器自身信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Server&lt;/code&gt;: 标识服务器软件信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Location&lt;/code&gt;: 配合&lt;code&gt;3xx&lt;/code&gt;重定向状态码，指明新的资源地址。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Set-Cookie&lt;/code&gt;: 服务器向客户端设置Cookie。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WWW-Authenticate&lt;/code&gt;: 配合&lt;code&gt;401&lt;/code&gt;状态码，告知客户端所需的认证方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 实体头部 (Entity Headers)&lt;/strong&gt;
+描述消息体（实体）的属性。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Content-Type&lt;/code&gt;: 指明消息体的媒体类型。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Length&lt;/code&gt;: 指明消息体的大小（字节数）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Encoding&lt;/code&gt;: 指明消息体的压缩或编码方式。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Language&lt;/code&gt;: 指明消息体适用的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Last-Modified&lt;/code&gt;: 资源最后修改时间，用于缓存验证。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ETag&lt;/code&gt;: 资源的唯一标识符，用于缓存验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-http协议实现原理&#34;&gt;⚙️ HTTP协议实现原理
+&lt;/h3&gt;&lt;p&gt;HTTP协议的具体实现，本质上就是遵循其规范进行网络通信的过程。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;建立连接&lt;/strong&gt;：客户端（如浏览器）与服务器通过&lt;strong&gt;TCP/IP协议&lt;/strong&gt;三次握手建立连接。现代HTTP/1.1默认使用&lt;strong&gt;持久连接&lt;/strong&gt; (&lt;code&gt;Connection: keep-alive&lt;/code&gt;)，允许在一个TCP连接上发送多个请求/响应，以减少开销。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送请求&lt;/strong&gt;：客户端构建一个符合规范的HTTP请求报文，通过TCP连接发送给服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;处理请求并返回响应&lt;/strong&gt;：服务器接收并解析请求报文，根据方法、URI和头部执行相应操作（如读取数据库、生成HTML），然后构建一个包含状态码和响应头的HTTP响应报文发回客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;关闭连接或复用&lt;/strong&gt;：根据&lt;code&gt;Connection&lt;/code&gt;头部，服务器决定是立即关闭连接（短连接）还是保持连接以供后续请求复用（长连接）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端解析响应&lt;/strong&gt;：客户端接收响应报文，解析状态码和头部，并根据&lt;code&gt;Content-Type&lt;/code&gt;等头部信息处理消息体（如渲染网页、保存文件）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;-http协议的演进&#34;&gt;🚀 HTTP协议的演进
+&lt;/h3&gt;&lt;p&gt;自诞生以来，HTTP协议经历了数次重大升级，以应对日益复杂的Web应用。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;版本&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心特点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.0&lt;/strong&gt; (1996)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基础版本，每次请求/响应后即&lt;strong&gt;关闭TCP连接&lt;/strong&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.1&lt;/strong&gt; (1999)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;引入了&lt;strong&gt;持久连接&lt;/strong&gt;、&lt;strong&gt;管道化&lt;/strong&gt;（允许连续发送请求）、&lt;strong&gt;分块传输编码&lt;/strong&gt;等关键特性，是目前最广泛使用的版本。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/2&lt;/strong&gt; (2015)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;革命性升级，采用&lt;strong&gt;二进制分帧&lt;/strong&gt;、&lt;strong&gt;多路复用&lt;/strong&gt;（在一个连接上并行处理请求）、&lt;strong&gt;头部压缩&lt;/strong&gt;等，大幅提升性能。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/3&lt;/strong&gt; (2018)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基于&lt;strong&gt;QUIC协议&lt;/strong&gt;（使用UDP），解决了HTTP/2的&amp;quot;队头阻塞&amp;quot;问题，连接建立更快。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+        </item>
+        <item>
+        <title>HTTP协议详解：报文结构、头部字段与演进历史</title>
+        <link>https://Yannick-Mo.github.io/p/http-protocol-detailed/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/http-protocol-detailed/</guid>
+        <description>&lt;p&gt;HTTP（超文本传输协议）是互联网应用层的核心协议。它采用经典的&lt;strong&gt;客户端-服务器模型&lt;/strong&gt;和&lt;strong&gt;请求-响应机制&lt;/strong&gt;，其设计简洁高效，使得Web服务器能处理海量请求。&lt;/p&gt;
+&lt;h3 id=&#34;-http报文结构&#34;&gt;📝 HTTP报文结构
+&lt;/h3&gt;&lt;p&gt;所有的HTTP通信都通过报文（Message）进行，无论是请求还是响应，都遵循统一的 &lt;strong&gt;&amp;ldquo;起始行 + 头部字段 + 空行 + 可选消息体&amp;rdquo;&lt;/strong&gt; 的三段式结构。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;起始行 (Start Line)&lt;/strong&gt;：描述报文的基本信息。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;请求行 (Request Line)&lt;/strong&gt;：包含&lt;strong&gt;方法&lt;/strong&gt; (如 &lt;code&gt;GET&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt;)、&lt;strong&gt;请求URI&lt;/strong&gt; 和&lt;strong&gt;协议版本&lt;/strong&gt; (如 &lt;code&gt;HTTP/1.1&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态行 (Status Line)&lt;/strong&gt;：包含&lt;strong&gt;协议版本&lt;/strong&gt;、&lt;strong&gt;状态码&lt;/strong&gt; (如 &lt;code&gt;200&lt;/code&gt;) 和&lt;strong&gt;原因短语&lt;/strong&gt; (如 &lt;code&gt;OK&lt;/code&gt;)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;头部字段 (Header Fields)&lt;/strong&gt;：一系列键值对，用于传递元数据，控制传输行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空行 (Blank Line)&lt;/strong&gt;：一个独立的空行 (&lt;code&gt;\r\n&lt;/code&gt;)，用于分隔头部和消息体。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;消息体 (Message Body)&lt;/strong&gt;：可选的，承载实际业务数据，如HTML、JSON或文件内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-http头部字段详解&#34;&gt;🏷️ HTTP头部字段详解
+&lt;/h3&gt;&lt;p&gt;头部字段是HTTP的&amp;quot;控制面板&amp;quot;，通过键值对传递元数据。根据作用范围，可分为四类：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 通用头部 (General Headers)&lt;/strong&gt;
+适用于请求和响应，关于消息本身或连接。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Cache-Control&lt;/code&gt;: 控制缓存行为。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Connection&lt;/code&gt;: 管理网络连接，如&lt;code&gt;keep-alive&lt;/code&gt;保持长连接，或&lt;code&gt;close&lt;/code&gt;短连接。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Date&lt;/code&gt;: 表示报文创建的日期和时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. 请求头部 (Request Headers)&lt;/strong&gt;
+提供请求的附加信息或客户端自身信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Host&lt;/code&gt;: &lt;strong&gt;必选&lt;/strong&gt;，指定目标服务器的主机名和端口号。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;User-Agent&lt;/code&gt;: 标识客户端类型、操作系统等信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept&lt;/code&gt;: 告知服务器客户端能处理的媒体类型。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Language&lt;/code&gt;: 指明客户端偏好的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Encoding&lt;/code&gt;: 告知服务器客户端支持的内容编码方式（如&lt;code&gt;gzip&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Authorization&lt;/code&gt;: 携带身份认证凭证（如&lt;code&gt;Bearer token&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Cookie&lt;/code&gt;: 携带服务器之前设置的Cookie，用于会话保持。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Referer&lt;/code&gt;: 表示当前请求的来源页面URL。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3. 响应头部 (Response Headers)&lt;/strong&gt;
+提供关于响应的额外信息或服务器自身信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Server&lt;/code&gt;: 标识服务器软件信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Location&lt;/code&gt;: 配合&lt;code&gt;3xx&lt;/code&gt;重定向状态码，指明新的资源地址。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Set-Cookie&lt;/code&gt;: 服务器向客户端设置Cookie。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WWW-Authenticate&lt;/code&gt;: 配合&lt;code&gt;401&lt;/code&gt;状态码，告知客户端所需的认证方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 实体头部 (Entity Headers)&lt;/strong&gt;
+描述消息体（实体）的属性。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Content-Type&lt;/code&gt;: 指明消息体的媒体类型。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Length&lt;/code&gt;: 指明消息体的大小（字节数）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Encoding&lt;/code&gt;: 指明消息体的压缩或编码方式。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Language&lt;/code&gt;: 指明消息体适用的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Last-Modified&lt;/code&gt;: 资源最后修改时间，用于缓存验证。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ETag&lt;/code&gt;: 资源的唯一标识符，用于缓存验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-http协议实现原理&#34;&gt;⚙️ HTTP协议实现原理
+&lt;/h3&gt;&lt;p&gt;HTTP协议的具体实现，本质上就是遵循其规范进行网络通信的过程。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;建立连接&lt;/strong&gt;：客户端（如浏览器）与服务器通过&lt;strong&gt;TCP/IP协议&lt;/strong&gt;三次握手建立连接。现代HTTP/1.1默认使用&lt;strong&gt;持久连接&lt;/strong&gt; (&lt;code&gt;Connection: keep-alive&lt;/code&gt;)，允许在一个TCP连接上发送多个请求/响应，以减少开销。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送请求&lt;/strong&gt;：客户端构建一个符合规范的HTTP请求报文，通过TCP连接发送给服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;处理请求并返回响应&lt;/strong&gt;：服务器接收并解析请求报文，根据方法、URI和头部执行相应操作（如读取数据库、生成HTML），然后构建一个包含状态码和响应头的HTTP响应报文发回客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;关闭连接或复用&lt;/strong&gt;：根据&lt;code&gt;Connection&lt;/code&gt;头部，服务器决定是立即关闭连接（短连接）还是保持连接以供后续请求复用（长连接）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端解析响应&lt;/strong&gt;：客户端接收响应报文，解析状态码和头部，并根据&lt;code&gt;Content-Type&lt;/code&gt;等头部信息处理消息体（如渲染网页、保存文件）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;-http协议的演进&#34;&gt;🚀 HTTP协议的演进
+&lt;/h3&gt;&lt;p&gt;自诞生以来，HTTP协议经历了数次重大升级，以应对日益复杂的Web应用。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;版本&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心特点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.0&lt;/strong&gt; (1996)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基础版本，每次请求/响应后即&lt;strong&gt;关闭TCP连接&lt;/strong&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.1&lt;/strong&gt; (1999)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;引入了&lt;strong&gt;持久连接&lt;/strong&gt;、&lt;strong&gt;管道化&lt;/strong&gt;（允许连续发送请求）、&lt;strong&gt;分块传输编码&lt;/strong&gt;等关键特性，是目前最广泛使用的版本。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/2&lt;/strong&gt; (2015)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;革命性升级，采用&lt;strong&gt;二进制分帧&lt;/strong&gt;、&lt;strong&gt;多路复用&lt;/strong&gt;（在一个连接上并行处理请求）、&lt;strong&gt;头部压缩&lt;/strong&gt;等，大幅提升性能。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/3&lt;/strong&gt; (2018)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基于&lt;strong&gt;QUIC协议&lt;/strong&gt;（使用UDP），解决了HTTP/2的&amp;quot;队头阻塞&amp;quot;问题，连接建立更快。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+        </item>
+        <item>
+        <title>HTTP协议详解：报文结构、头部字段与演进历史</title>
+        <link>https://Yannick-Mo.github.io/p/http-protocol-detailed/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/http-protocol-detailed/</guid>
+        <description>&lt;p&gt;HTTP（超文本传输协议）是互联网应用层的核心协议。它采用经典的&lt;strong&gt;客户端-服务器模型&lt;/strong&gt;和&lt;strong&gt;请求-响应机制&lt;/strong&gt;，其设计简洁高效，使得Web服务器能处理海量请求。&lt;/p&gt;
+&lt;h3 id=&#34;-http报文结构&#34;&gt;📝 HTTP报文结构
+&lt;/h3&gt;&lt;p&gt;所有的HTTP通信都通过报文（Message）进行，无论是请求还是响应，都遵循统一的 &lt;strong&gt;&amp;ldquo;起始行 + 头部字段 + 空行 + 可选消息体&amp;rdquo;&lt;/strong&gt; 的三段式结构。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;起始行 (Start Line)&lt;/strong&gt;：描述报文的基本信息。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;请求行 (Request Line)&lt;/strong&gt;：包含&lt;strong&gt;方法&lt;/strong&gt; (如 &lt;code&gt;GET&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt;)、&lt;strong&gt;请求URI&lt;/strong&gt; 和&lt;strong&gt;协议版本&lt;/strong&gt; (如 &lt;code&gt;HTTP/1.1&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态行 (Status Line)&lt;/strong&gt;：包含&lt;strong&gt;协议版本&lt;/strong&gt;、&lt;strong&gt;状态码&lt;/strong&gt; (如 &lt;code&gt;200&lt;/code&gt;) 和&lt;strong&gt;原因短语&lt;/strong&gt; (如 &lt;code&gt;OK&lt;/code&gt;)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;头部字段 (Header Fields)&lt;/strong&gt;：一系列键值对，用于传递元数据，控制传输行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空行 (Blank Line)&lt;/strong&gt;：一个独立的空行 (&lt;code&gt;\r\n&lt;/code&gt;)，用于分隔头部和消息体。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;消息体 (Message Body)&lt;/strong&gt;：可选的，承载实际业务数据，如HTML、JSON或文件内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-http头部字段详解&#34;&gt;🏷️ HTTP头部字段详解
+&lt;/h3&gt;&lt;p&gt;头部字段是HTTP的&amp;quot;控制面板&amp;quot;，通过键值对传递元数据。根据作用范围，可分为四类：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 通用头部 (General Headers)&lt;/strong&gt;
+适用于请求和响应，关于消息本身或连接。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Cache-Control&lt;/code&gt;: 控制缓存行为。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Connection&lt;/code&gt;: 管理网络连接，如&lt;code&gt;keep-alive&lt;/code&gt;保持长连接，或&lt;code&gt;close&lt;/code&gt;短连接。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Date&lt;/code&gt;: 表示报文创建的日期和时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. 请求头部 (Request Headers)&lt;/strong&gt;
+提供请求的附加信息或客户端自身信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Host&lt;/code&gt;: &lt;strong&gt;必选&lt;/strong&gt;，指定目标服务器的主机名和端口号。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;User-Agent&lt;/code&gt;: 标识客户端类型、操作系统等信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept&lt;/code&gt;: 告知服务器客户端能处理的媒体类型。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Language&lt;/code&gt;: 指明客户端偏好的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Encoding&lt;/code&gt;: 告知服务器客户端支持的内容编码方式（如&lt;code&gt;gzip&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Authorization&lt;/code&gt;: 携带身份认证凭证（如&lt;code&gt;Bearer token&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Cookie&lt;/code&gt;: 携带服务器之前设置的Cookie，用于会话保持。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Referer&lt;/code&gt;: 表示当前请求的来源页面URL。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3. 响应头部 (Response Headers)&lt;/strong&gt;
+提供关于响应的额外信息或服务器自身信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Server&lt;/code&gt;: 标识服务器软件信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Location&lt;/code&gt;: 配合&lt;code&gt;3xx&lt;/code&gt;重定向状态码，指明新的资源地址。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Set-Cookie&lt;/code&gt;: 服务器向客户端设置Cookie。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WWW-Authenticate&lt;/code&gt;: 配合&lt;code&gt;401&lt;/code&gt;状态码，告知客户端所需的认证方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 实体头部 (Entity Headers)&lt;/strong&gt;
+描述消息体（实体）的属性。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Content-Type&lt;/code&gt;: 指明消息体的媒体类型。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Length&lt;/code&gt;: 指明消息体的大小（字节数）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Encoding&lt;/code&gt;: 指明消息体的压缩或编码方式。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Language&lt;/code&gt;: 指明消息体适用的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Last-Modified&lt;/code&gt;: 资源最后修改时间，用于缓存验证。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ETag&lt;/code&gt;: 资源的唯一标识符，用于缓存验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-http协议实现原理&#34;&gt;⚙️ HTTP协议实现原理
+&lt;/h3&gt;&lt;p&gt;HTTP协议的具体实现，本质上就是遵循其规范进行网络通信的过程。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;建立连接&lt;/strong&gt;：客户端（如浏览器）与服务器通过&lt;strong&gt;TCP/IP协议&lt;/strong&gt;三次握手建立连接。现代HTTP/1.1默认使用&lt;strong&gt;持久连接&lt;/strong&gt; (&lt;code&gt;Connection: keep-alive&lt;/code&gt;)，允许在一个TCP连接上发送多个请求/响应，以减少开销。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送请求&lt;/strong&gt;：客户端构建一个符合规范的HTTP请求报文，通过TCP连接发送给服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;处理请求并返回响应&lt;/strong&gt;：服务器接收并解析请求报文，根据方法、URI和头部执行相应操作（如读取数据库、生成HTML），然后构建一个包含状态码和响应头的HTTP响应报文发回客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;关闭连接或复用&lt;/strong&gt;：根据&lt;code&gt;Connection&lt;/code&gt;头部，服务器决定是立即关闭连接（短连接）还是保持连接以供后续请求复用（长连接）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端解析响应&lt;/strong&gt;：客户端接收响应报文，解析状态码和头部，并根据&lt;code&gt;Content-Type&lt;/code&gt;等头部信息处理消息体（如渲染网页、保存文件）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;-http协议的演进&#34;&gt;🚀 HTTP协议的演进
+&lt;/h3&gt;&lt;p&gt;自诞生以来，HTTP协议经历了数次重大升级，以应对日益复杂的Web应用。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;版本&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心特点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.0&lt;/strong&gt; (1996)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基础版本，每次请求/响应后即&lt;strong&gt;关闭TCP连接&lt;/strong&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.1&lt;/strong&gt; (1999)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;引入了&lt;strong&gt;持久连接&lt;/strong&gt;、&lt;strong&gt;管道化&lt;/strong&gt;（允许连续发送请求）、&lt;strong&gt;分块传输编码&lt;/strong&gt;等关键特性，是目前最广泛使用的版本。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/2&lt;/strong&gt; (2015)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;革命性升级，采用&lt;strong&gt;二进制分帧&lt;/strong&gt;、&lt;strong&gt;多路复用&lt;/strong&gt;（在一个连接上并行处理请求）、&lt;strong&gt;头部压缩&lt;/strong&gt;等，大幅提升性能。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/3&lt;/strong&gt; (2018)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基于&lt;strong&gt;QUIC协议&lt;/strong&gt;（使用UDP），解决了HTTP/2的&amp;quot;队头阻塞&amp;quot;问题，连接建立更快。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+        </item>
+        <item>
+        <title>HTTP协议详解：报文结构、头部字段与演进历史</title>
+        <link>https://Yannick-Mo.github.io/p/http-protocol-detailed/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/http-protocol-detailed/</guid>
+        <description>&lt;p&gt;HTTP（超文本传输协议）是互联网应用层的核心协议。它采用经典的&lt;strong&gt;客户端-服务器模型&lt;/strong&gt;和&lt;strong&gt;请求-响应机制&lt;/strong&gt;，其设计简洁高效，使得Web服务器能处理海量请求。&lt;/p&gt;
+&lt;h3 id=&#34;-http报文结构&#34;&gt;📝 HTTP报文结构
+&lt;/h3&gt;&lt;p&gt;所有的HTTP通信都通过报文（Message）进行，无论是请求还是响应，都遵循统一的 &lt;strong&gt;&amp;ldquo;起始行 + 头部字段 + 空行 + 可选消息体&amp;rdquo;&lt;/strong&gt; 的三段式结构。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;起始行 (Start Line)&lt;/strong&gt;：描述报文的基本信息。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;请求行 (Request Line)&lt;/strong&gt;：包含&lt;strong&gt;方法&lt;/strong&gt; (如 &lt;code&gt;GET&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt;)、&lt;strong&gt;请求URI&lt;/strong&gt; 和&lt;strong&gt;协议版本&lt;/strong&gt; (如 &lt;code&gt;HTTP/1.1&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态行 (Status Line)&lt;/strong&gt;：包含&lt;strong&gt;协议版本&lt;/strong&gt;、&lt;strong&gt;状态码&lt;/strong&gt; (如 &lt;code&gt;200&lt;/code&gt;) 和&lt;strong&gt;原因短语&lt;/strong&gt; (如 &lt;code&gt;OK&lt;/code&gt;)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;头部字段 (Header Fields)&lt;/strong&gt;：一系列键值对，用于传递元数据，控制传输行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空行 (Blank Line)&lt;/strong&gt;：一个独立的空行 (&lt;code&gt;\r\n&lt;/code&gt;)，用于分隔头部和消息体。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;消息体 (Message Body)&lt;/strong&gt;：可选的，承载实际业务数据，如HTML、JSON或文件内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-http头部字段详解&#34;&gt;🏷️ HTTP头部字段详解
+&lt;/h3&gt;&lt;p&gt;头部字段是HTTP的&amp;quot;控制面板&amp;quot;，通过键值对传递元数据。根据作用范围，可分为四类：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 通用头部 (General Headers)&lt;/strong&gt;
+适用于请求和响应，关于消息本身或连接。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Cache-Control&lt;/code&gt;: 控制缓存行为。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Connection&lt;/code&gt;: 管理网络连接，如&lt;code&gt;keep-alive&lt;/code&gt;保持长连接，或&lt;code&gt;close&lt;/code&gt;短连接。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Date&lt;/code&gt;: 表示报文创建的日期和时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. 请求头部 (Request Headers)&lt;/strong&gt;
+提供请求的附加信息或客户端自身信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Host&lt;/code&gt;: &lt;strong&gt;必选&lt;/strong&gt;，指定目标服务器的主机名和端口号。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;User-Agent&lt;/code&gt;: 标识客户端类型、操作系统等信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept&lt;/code&gt;: 告知服务器客户端能处理的媒体类型。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Language&lt;/code&gt;: 指明客户端偏好的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Encoding&lt;/code&gt;: 告知服务器客户端支持的内容编码方式（如&lt;code&gt;gzip&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Authorization&lt;/code&gt;: 携带身份认证凭证（如&lt;code&gt;Bearer token&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Cookie&lt;/code&gt;: 携带服务器之前设置的Cookie，用于会话保持。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Referer&lt;/code&gt;: 表示当前请求的来源页面URL。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3. 响应头部 (Response Headers)&lt;/strong&gt;
+提供关于响应的额外信息或服务器自身信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Server&lt;/code&gt;: 标识服务器软件信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Location&lt;/code&gt;: 配合&lt;code&gt;3xx&lt;/code&gt;重定向状态码，指明新的资源地址。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Set-Cookie&lt;/code&gt;: 服务器向客户端设置Cookie。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WWW-Authenticate&lt;/code&gt;: 配合&lt;code&gt;401&lt;/code&gt;状态码，告知客户端所需的认证方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 实体头部 (Entity Headers)&lt;/strong&gt;
+描述消息体（实体）的属性。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Content-Type&lt;/code&gt;: 指明消息体的媒体类型。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Length&lt;/code&gt;: 指明消息体的大小（字节数）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Encoding&lt;/code&gt;: 指明消息体的压缩或编码方式。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Language&lt;/code&gt;: 指明消息体适用的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Last-Modified&lt;/code&gt;: 资源最后修改时间，用于缓存验证。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ETag&lt;/code&gt;: 资源的唯一标识符，用于缓存验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-http协议实现原理&#34;&gt;⚙️ HTTP协议实现原理
+&lt;/h3&gt;&lt;p&gt;HTTP协议的具体实现，本质上就是遵循其规范进行网络通信的过程。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;建立连接&lt;/strong&gt;：客户端（如浏览器）与服务器通过&lt;strong&gt;TCP/IP协议&lt;/strong&gt;三次握手建立连接。现代HTTP/1.1默认使用&lt;strong&gt;持久连接&lt;/strong&gt; (&lt;code&gt;Connection: keep-alive&lt;/code&gt;)，允许在一个TCP连接上发送多个请求/响应，以减少开销。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送请求&lt;/strong&gt;：客户端构建一个符合规范的HTTP请求报文，通过TCP连接发送给服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;处理请求并返回响应&lt;/strong&gt;：服务器接收并解析请求报文，根据方法、URI和头部执行相应操作（如读取数据库、生成HTML），然后构建一个包含状态码和响应头的HTTP响应报文发回客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;关闭连接或复用&lt;/strong&gt;：根据&lt;code&gt;Connection&lt;/code&gt;头部，服务器决定是立即关闭连接（短连接）还是保持连接以供后续请求复用（长连接）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端解析响应&lt;/strong&gt;：客户端接收响应报文，解析状态码和头部，并根据&lt;code&gt;Content-Type&lt;/code&gt;等头部信息处理消息体（如渲染网页、保存文件）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;-http协议的演进&#34;&gt;🚀 HTTP协议的演进
+&lt;/h3&gt;&lt;p&gt;自诞生以来，HTTP协议经历了数次重大升级，以应对日益复杂的Web应用。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;版本&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心特点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.0&lt;/strong&gt; (1996)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基础版本，每次请求/响应后即&lt;strong&gt;关闭TCP连接&lt;/strong&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.1&lt;/strong&gt; (1999)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;引入了&lt;strong&gt;持久连接&lt;/strong&gt;、&lt;strong&gt;管道化&lt;/strong&gt;（允许连续发送请求）、&lt;strong&gt;分块传输编码&lt;/strong&gt;等关键特性，是目前最广泛使用的版本。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/2&lt;/strong&gt; (2015)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;革命性升级，采用&lt;strong&gt;二进制分帧&lt;/strong&gt;、&lt;strong&gt;多路复用&lt;/strong&gt;（在一个连接上并行处理请求）、&lt;strong&gt;头部压缩&lt;/strong&gt;等，大幅提升性能。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/3&lt;/strong&gt; (2018)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基于&lt;strong&gt;QUIC协议&lt;/strong&gt;（使用UDP），解决了HTTP/2的&amp;quot;队头阻塞&amp;quot;问题，连接建立更快。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+        </item>
+        <item>
+        <title>HTTP与HTTPS全景解析：从报文结构到加密原理</title>
+        <link>https://Yannick-Mo.github.io/p/http-https-comprehensive/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/http-https-comprehensive/</guid>
+        <description>&lt;h3 id=&#34;互联网的基石http协议全景解析&#34;&gt;互联网的基石：HTTP协议全景解析
+&lt;/h3&gt;&lt;p&gt;HTTP（超文本传输协议）是互联网应用层的核心协议，是Web世界数据交换的通用语言。它采用经典的&lt;strong&gt;客户端-服务器模型&lt;/strong&gt;和&lt;strong&gt;请求-响应机制&lt;/strong&gt;，其设计简洁高效，使得Web服务器能够轻松应对海量并发请求。无论是浏览网页、观看视频还是调用API接口，其背后都是HTTP协议在默默支撑。&lt;/p&gt;
+&lt;h4 id=&#34;-http报文结构&#34;&gt;📝 HTTP报文结构
+&lt;/h4&gt;&lt;p&gt;所有的HTTP通信都通过报文（Message）进行，无论是客户端发出的请求还是服务器返回的响应，都遵循统一的 &lt;strong&gt;&amp;ldquo;起始行 + 头部字段 + 空行 + 可选消息体&amp;rdquo;&lt;/strong&gt; 的三段式结构，这种统一性为协议的解析和处理带来了极大的便利。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;起始行 (Start Line)&lt;/strong&gt;：描述报文的基本信息，是报文的第一行。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;请求行 (Request Line)&lt;/strong&gt;：在请求报文中，它包含&lt;strong&gt;方法&lt;/strong&gt; (如 &lt;code&gt;GET&lt;/code&gt;、&lt;code&gt;POST&lt;/code&gt;)、&lt;strong&gt;请求URI&lt;/strong&gt; 和&lt;strong&gt;协议版本&lt;/strong&gt; (如 &lt;code&gt;HTTP/1.1&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态行 (Status Line)&lt;/strong&gt;：在响应报文中，它包含&lt;strong&gt;协议版本&lt;/strong&gt;、&lt;strong&gt;状态码&lt;/strong&gt; (如 &lt;code&gt;200&lt;/code&gt;) 和&lt;strong&gt;原因短语&lt;/strong&gt; (如 &lt;code&gt;OK&lt;/code&gt;)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;头部字段 (Header Fields)&lt;/strong&gt;：紧跟在起始行之后的一系列键值对，用于传递元数据，控制传输行为，是HTTP协议的&amp;quot;控制面板&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空行 (Blank Line)&lt;/strong&gt;：一个独立的空行 (&lt;code&gt;\r\n&lt;/code&gt;)，用于分隔头部和消息体，是报文结构的边界标识。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;消息体 (Message Body)&lt;/strong&gt;：可选的，承载实际的业务数据，如HTML文档、JSON数据或文件内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;-http头部字段详解&#34;&gt;🏷️ HTTP头部字段详解
+&lt;/h4&gt;&lt;p&gt;头部字段是HTTP的&amp;quot;控制面板&amp;quot;，通过键值对传递元数据，影响着请求和响应的每一个环节。根据其作用范围和上下文，可将其分为四类：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 通用头部 (General Headers)&lt;/strong&gt;
+适用于请求和响应，关于消息本身或连接的管理信息，不涉及消息体内容。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Cache-Control&lt;/code&gt;: 控制缓存行为，如&lt;code&gt;no-cache&lt;/code&gt;、&lt;code&gt;max-age&lt;/code&gt;等指令。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Connection&lt;/code&gt;: 管理网络连接，如&lt;code&gt;keep-alive&lt;/code&gt;保持长连接以减少TCP握手开销，或&lt;code&gt;close&lt;/code&gt;短连接。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Date&lt;/code&gt;: 表示报文创建的日期和时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. 请求头部 (Request Headers)&lt;/strong&gt;
+提供请求的附加信息或客户端自身信息，帮助服务器更好地理解和处理请求。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Host&lt;/code&gt;: &lt;strong&gt;必选&lt;/strong&gt;头部，指定目标服务器的主机名和端口号，是虚拟主机技术的关键。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;User-Agent&lt;/code&gt;: 标识客户端类型、操作系统及版本等信息。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept&lt;/code&gt;: 告知服务器客户端能够处理的媒体类型（MIME类型）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Language&lt;/code&gt;: 指明客户端偏好的自然语言（如&lt;code&gt;zh-CN&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept-Encoding&lt;/code&gt;: 告知服务器客户端支持的内容编码方式（如&lt;code&gt;gzip&lt;/code&gt;、&lt;code&gt;br&lt;/code&gt;），用于压缩优化。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Authorization&lt;/code&gt;: 携带身份认证凭证（如&lt;code&gt;Bearer token&lt;/code&gt;、&lt;code&gt;Basic&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Cookie&lt;/code&gt;: 携带服务器之前设置的Cookie，用于会话保持和状态管理。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Referer&lt;/code&gt;: 表示当前请求的来源页面URL，常用于防盗链和统计分析。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3. 响应头部 (Response Headers)&lt;/strong&gt;
+提供关于响应的额外信息或服务器自身信息，帮助客户端更好地处理收到的数据。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Server&lt;/code&gt;: 标识服务器软件信息（如&lt;code&gt;nginx&lt;/code&gt;、&lt;code&gt;Apache&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Location&lt;/code&gt;: 配合&lt;code&gt;3xx&lt;/code&gt;重定向状态码，指明新的资源地址，引导客户端跳转。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Set-Cookie&lt;/code&gt;: 服务器向客户端设置Cookie，用于状态持久化。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WWW-Authenticate&lt;/code&gt;: 配合&lt;code&gt;401&lt;/code&gt;状态码，告知客户端所需的认证方式和参数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 实体头部 (Entity Headers)&lt;/strong&gt;
+描述消息体（实体）的属性信息，无论请求还是响应，只要包含消息体，就可能用到这些头部。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Content-Type&lt;/code&gt;: 指明消息体的媒体类型（如&lt;code&gt;text/html&lt;/code&gt;、&lt;code&gt;application/json&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Length&lt;/code&gt;: 指明消息体的大小（字节数），用于界定消息体边界。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Encoding&lt;/code&gt;: 指明消息体的压缩或编码方式（如&lt;code&gt;gzip&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Content-Language&lt;/code&gt;: 指明消息体适用的自然语言。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Last-Modified&lt;/code&gt;: 资源最后修改时间，用于缓存验证和条件请求。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ETag&lt;/code&gt;: 资源的唯一标识符（实体标签），用于缓存验证，比&lt;code&gt;Last-Modified&lt;/code&gt;更精确。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;-http协议实现原理&#34;&gt;⚙️ HTTP协议实现原理
+&lt;/h4&gt;&lt;p&gt;HTTP协议的具体实现，本质上就是客户端与服务器之间遵循其规范进行网络通信的完整过程，它清晰地描绘了数据从发起请求到接收响应的流转路径。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;建立连接&lt;/strong&gt;：客户端（如浏览器）与服务器通过&lt;strong&gt;TCP/IP协议&lt;/strong&gt;三次握手建立一个可靠的网络连接。在现代HTTP/1.1版本中，默认使用&lt;strong&gt;持久连接&lt;/strong&gt;（&lt;code&gt;Connection: keep-alive&lt;/code&gt;），允许在一个TCP连接上发送多个请求与响应，从而显著减少重复建立连接的开销。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送请求&lt;/strong&gt;：客户端根据业务需求，构建一个符合HTTP规范的请求报文，其中包含起始行（方法、URI、版本）、必要的头部字段以及可选的请求体数据，然后通过已建立的TCP连接将其发送给服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;处理请求并返回响应&lt;/strong&gt;：服务器接收并解析客户端发来的请求报文，根据请求行中的方法、URI以及头部信息执行相应的业务逻辑（如读取数据库、访问文件系统、执行应用程序代码），然后构建一个包含状态行（状态码、原因短语）、响应头部以及可选响应体数据的HTTP响应报文，将其发回客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;关闭连接或复用&lt;/strong&gt;：根据&lt;code&gt;Connection&lt;/code&gt;头部以及服务器的策略，决定是立即关闭TCP连接（短连接），还是将连接放入连接池中以供后续请求复用（长连接）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端解析响应&lt;/strong&gt;：客户端接收服务器返回的响应报文，首先解析状态行判断请求是否成功，然后读取响应头部以获取元数据信息（如内容类型、缓存策略），最后根据&lt;code&gt;Content-Type&lt;/code&gt;等头部信息对消息体进行相应处理（如渲染HTML页面、解析JSON数据、保存下载的文件）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;-http协议的演进&#34;&gt;🚀 HTTP协议的演进
+&lt;/h4&gt;&lt;p&gt;自诞生以来，HTTP协议经历了数次重大升级，每一次迭代都旨在解决前代的性能瓶颈，以应对日益复杂的Web应用和海量的数据传输需求。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;版本&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心特点&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;主要提升与意义&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.0&lt;/strong&gt; (1996)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;基础版本，每次请求/响应后即&lt;strong&gt;关闭TCP连接&lt;/strong&gt;，简单但效率较低。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;确立了HTTP的基本模型，为Web发展奠定了基础。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/1.1&lt;/strong&gt; (1999)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;引入了&lt;strong&gt;持久连接&lt;/strong&gt;（长连接）、&lt;strong&gt;管道化&lt;/strong&gt;（允许连续发送请求而无需等待响应）、&lt;strong&gt;分块传输编码&lt;/strong&gt;等关键特性。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;极大地提升了连接效率，成为目前互联网上最广泛使用的版本。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/2&lt;/strong&gt; (2015)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;革命性升级，采用&lt;strong&gt;二进制分帧&lt;/strong&gt;替代文本传输、&lt;strong&gt;多路复用&lt;/strong&gt;（在一个连接上并行交错处理请求与响应）、&lt;strong&gt;头部压缩&lt;/strong&gt;等。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;有效解决了HTTP/1.1的队头阻塞问题，大幅提升了页面加载速度。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP/3&lt;/strong&gt; (2018)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;将传输层从TCP替换为基于UDP的&lt;strong&gt;QUIC协议&lt;/strong&gt;，集成TLS加密，连接建立更快。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;从根本上解决了TCP协议带来的队头阻塞问题，尤其在弱网环境下性能提升显著。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;-http与https的核心区别&#34;&gt;🔍 HTTP与HTTPS的核心区别
+&lt;/h4&gt;&lt;p&gt;HTTP和HTTPS最根本的区别在于&lt;strong&gt;安全性&lt;/strong&gt;，这一本质差异导致它们在协议基础、传输方式、默认端口等多个维度上表现迥异。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;对比维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;HTTP&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;HTTPS&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;协议基础&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;应用层协议，直接基于TCP传输数据。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;在HTTP与TCP之间增加了一个&lt;strong&gt;SSL/TLS安全层&lt;/strong&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;数据传输&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;明文传输&lt;/strong&gt;，数据在整个传输过程中可被窃听、篡改和伪装。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;加密传输&lt;/strong&gt;，通过混合加密机制保证数据的机密性和完整性。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;默认端口&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;80&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;443&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;身份验证&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无，客户端无法确认连接的是否是真正的目标服务器。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;有，通过权威CA签发的&lt;strong&gt;数字证书&lt;/strong&gt;验证服务器身份，防止中间人攻击。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;资源消耗&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;较低，无需加解密计算。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;较高，TLS握手及数据加解密会占用一定的CPU和内存资源。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;使用场景&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;适合浏览新闻、博客等无需交互或传输非敏感信息的场景。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;适用于登录、支付、电子商务、在线办公等一切涉及敏感信息的操作。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;-https连接与tls握手全过程&#34;&gt;🤝 HTTPS连接与TLS握手全过程
+&lt;/h4&gt;&lt;p&gt;HTTPS连接建立是一个分步走的精密过程，它在HTTP的基础上增加了安全层，确保通信的机密性、完整性和真实性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;步骤一：建立TCP连接&lt;/strong&gt;
+与HTTP相同，客户端（浏览器）首先与服务器通过&lt;strong&gt;TCP三次握手&lt;/strong&gt;建立一个可靠的底层网络连接。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;步骤二：TLS/SSL握手（核心安全环节）&lt;/strong&gt;
+TCP连接建立后，HTTPS并不会立即发送HTTP业务数据，而是必须先进行TLS/SSL握手，以协商双方安全通信所需的各项参数。这个握手过程是HTTPS安全性的基石，主要包含以下关键步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端问候 (Client Hello)&lt;/strong&gt;：客户端向服务器发起握手请求，告知自己支持的TLS版本、加密套件列表，并生成一个&lt;strong&gt;客户端随机数 (Client Random)&lt;/strong&gt; 随消息一同发送。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;服务器回应 (Server Hello)&lt;/strong&gt;：服务器从客户端列表中选择双方都支持的TLS版本和加密套件，生成一个&lt;strong&gt;服务器随机数 (Server Random)&lt;/strong&gt;，并将自己的&lt;strong&gt;数字证书&lt;/strong&gt;（包含服务器公钥、域名、有效期等信息）一同发回给客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;客户端验证证书&lt;/strong&gt;：客户端（浏览器）收到证书后，会对服务器证书的合法性进行严格验证：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;证书是否由受信任的CA（证书颁发机构）签发？（即验证证书链）&lt;/li&gt;
+&lt;li&gt;证书是否在有效期内？&lt;/li&gt;
+&lt;li&gt;证书上的域名与正在访问的网站域名是否一致？
+如果验证失败，浏览器会发出&amp;quot;不安全&amp;quot;的警告；验证通过，则继续下一步。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;密钥交换&lt;/strong&gt;：这是整个握手的核心环节。验证通过后，客户端会生成一个&lt;strong&gt;预主密钥 (Pre-Master Secret)&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;加密传输&lt;/strong&gt;：客户端使用从证书中获取的&lt;strong&gt;服务器公钥&lt;/strong&gt;加密这个预主密钥，然后发送给服务器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;服务器解密&lt;/strong&gt;：服务器收到后，使用自己独有的&lt;strong&gt;私钥&lt;/strong&gt;解密，获得预主密钥。
+至此，客户端和服务器都拥有了&lt;code&gt;客户端随机数&lt;/code&gt;、&lt;code&gt;服务器随机数&lt;/code&gt;和&lt;code&gt;预主密钥&lt;/code&gt;这三个关键材料，它们会通过一个双方协商好的固定算法，&lt;strong&gt;各自独立计算出完全相同的&amp;quot;会话密钥&amp;quot; (Session Key)&lt;/strong&gt;。这个会话密钥将用于后续所有数据的加密通信。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;握手确认与完成&lt;/strong&gt;：双方互相发送一个&amp;quot;完成&amp;quot;消息（Finished），并用新生成的会话密钥加密一段测试数据来验证一切正常。至此，TLS握手成功完成，安全通道已建立。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;步骤三：开始加密通信&lt;/strong&gt;
+握手完成后，客户端和服务器开始使用协商好的&lt;strong&gt;会话密钥&lt;/strong&gt;进行&lt;strong&gt;对称加密&lt;/strong&gt;通信。所有HTTP请求和响应的业务数据都会被加密，同时携带基于哈希算法生成的消息认证码（MAC）来保证数据的完整性和真实性，有效防止数据在传输过程中被篡改。&lt;/p&gt;
+&lt;h4 id=&#34;-https加密原理解析&#34;&gt;🔐 HTTPS加密原理解析
+&lt;/h4&gt;&lt;p&gt;HTTPS的安全性并非依赖单一技术，而是巧妙地组合了多种加密算法和机制，各取所长，共同构建了一个坚不可摧的安全体系。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;对称加密&lt;/strong&gt;：使用&lt;strong&gt;同一个密钥&lt;/strong&gt;（即会话密钥）进行加密和解密。其特点是&lt;strong&gt;速度快、效率高&lt;/strong&gt;，非常适合加密大量的传输数据。HTTPS在握手完成后的&lt;strong&gt;数据传输阶段&lt;/strong&gt;使用对称加密，确保了数据高效处理。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;非对称加密&lt;/strong&gt;：使用一对数学相关的密钥：&lt;strong&gt;公钥&lt;/strong&gt;（可公开）和&lt;strong&gt;私钥&lt;/strong&gt;（必须保密）。公钥加密的数据只能用对应的私钥解密，反之亦然。其安全性高，但&lt;strong&gt;速度慢&lt;/strong&gt;，计算开销大。HTTPS在&lt;strong&gt;握手阶段的密钥交换过程&lt;/strong&gt;中使用非对称加密，安全地传输预主密钥，解决了对称加密密钥分发困难的难题。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;数字证书与CA&lt;/strong&gt;：数字证书由权威的第三方CA机构（如DigiCert、Let&amp;rsquo;s Encrypt）签发，相当于服务器的&amp;quot;&lt;strong&gt;网络身份证&lt;/strong&gt;&amp;quot;。它将服务器的身份信息（如域名、组织）与其公钥进行绑定，并由CA使用自己的私钥对其进行数字签名，确保证书内容的真实性和不可篡改性，从而有效防止&lt;strong&gt;中间人攻击&lt;/strong&gt;——即攻击者无法伪造一个受信任的证书来冒充目标服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;哈希算法与消息认证码（MAC）&lt;/strong&gt;：哈希算法（如SHA-256）能将任意长度的数据转换为固定长度的&amp;quot;指纹&amp;quot;（摘要），且不可逆。HTTPS使用基于哈希算法的&lt;strong&gt;消息认证码（MAC）&lt;/strong&gt;，将数据与密钥混合后计算哈希值，从而同时保证数据的完整性（未被篡改）和真实性（来自合法发送方），是加密传输的重要补充。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-总结&#34;&gt;💎 总结
+&lt;/h3&gt;&lt;p&gt;总而言之，HTTPS并非一个全新的协议，而是在HTTP的基础上，叠加了&lt;strong&gt;TLS/SSL安全层&lt;/strong&gt;。通过&lt;strong&gt;TLS/SSL握手&lt;/strong&gt;这个关键环节，它巧妙地结合了&lt;strong&gt;非对称加密&lt;/strong&gt;（安全高效地交换密钥）和&lt;strong&gt;对称加密&lt;/strong&gt;（快速加密海量业务数据），并借助权威的&lt;strong&gt;数字证书&lt;/strong&gt;体系完成了服务器身份验证，最终为数据传输建立了一个既安全又高效的加密通信通道，为现代互联网的安全运行提供了根本保障。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>可靠UDP与QUIC详解：从实现原理到高级特性</title>
+        <link>https://Yannick-Mo.github.io/p/reliable-udp-quic-detailed/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/reliable-udp-quic-detailed/</guid>
+        <description>&lt;h3 id=&#34;第一部分如何实现一个可靠的udp&#34;&gt;第一部分：如何实现一个可靠的UDP
+&lt;/h3&gt;&lt;p&gt;一个生产环境可用的可靠UDP协议，至少需要包含以下核心模块。&lt;/p&gt;
+&lt;h4 id=&#34;1-定义应用层协议头&#34;&gt;1. 定义应用层协议头
+&lt;/h4&gt;&lt;p&gt;首先，需要在UDP数据包的开头定义一个自定义的协议头，用于传输控制信息。一个典型的头部可能包含：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Magic Number（魔术字）&lt;/strong&gt;：用于快速验证数据包是否属于本协议。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Version（版本号）&lt;/strong&gt;：便于未来协议升级。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Packet Type（包类型）&lt;/strong&gt;：区分数据包（&lt;code&gt;DATA&lt;/code&gt;）、确认包（&lt;code&gt;ACK&lt;/code&gt;）等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sequence Number（Seq，序列号）&lt;/strong&gt;：&lt;strong&gt;核心字段&lt;/strong&gt;。每个数据包的唯一递增编号，用于排序和去重。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Acknowledgment Number（Ack，确认号）&lt;/strong&gt;：告知发送方已成功接收到哪个序号的数据。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Timestamp（时间戳）&lt;/strong&gt;：用于精确计算往返时间（RTT）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Window Size（窗口大小）&lt;/strong&gt;：接收方通过此字段告知发送方自己的可用缓冲区大小，实现流量控制。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-发送端逻辑&#34;&gt;2. 发送端逻辑
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据包化与发送&lt;/strong&gt;：上层数据会被拆分成多个小于MTU（通常设为1200字节）的数据片，并为每个数据片分配一个&lt;code&gt;Seq&lt;/code&gt;，然后发送。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;发送缓冲区&lt;/strong&gt;：所有已发送但未收到确认（ACK）的数据包，都必须保存在发送缓冲区中，以备后续重传。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收与处理ACK&lt;/strong&gt;：收到ACK包后，解析其中的&lt;code&gt;Ack&lt;/code&gt;号，将发送缓冲区中所有序号小于等于该&lt;code&gt;Ack&lt;/code&gt;号的包标记为已确认并移除。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;超时重传管理&lt;/strong&gt;：为每个发送的数据包启动一个定时器。如果在&lt;strong&gt;重传超时时间（RTO）&lt;/strong&gt; 内未收到ACK，则触发重传。RTO的值需要根据网络状况（如RTT）动态计算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-接收端逻辑&#34;&gt;3. 接收端逻辑
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;接收与ACK回复&lt;/strong&gt;：收到一个数据包后，立即回复一个ACK包，其中&lt;code&gt;Ack&lt;/code&gt;号设置为当前收到的&lt;code&gt;Seq&lt;/code&gt;号。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收缓冲区与排序&lt;/strong&gt;：由于UDP包可能乱序到达，接收到的数据包不能立即交给上层，而应先放入接收缓冲区。根据&lt;code&gt;Seq&lt;/code&gt;号进行排序，等待前面的包到齐。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;去重与交付&lt;/strong&gt;：如果收到的&lt;code&gt;Seq&lt;/code&gt;号已经存在于接收缓冲区，则直接丢弃，实现去重。当接收缓冲区中连续的、序号完整的数据包形成后，便可将其按序交付给上层应用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-流量控制与拥塞控制进阶但很重要&#34;&gt;4. 流量控制与拥塞控制（进阶，但很重要）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;流量控制&lt;/strong&gt;：防止发送方发送数据过快，导致接收方缓冲区溢出。接收方在回复ACK时，会附带自己的&lt;strong&gt;接收窗口（rwnd）&lt;/strong&gt; 大小，发送方据此调整发送速率。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;拥塞控制&lt;/strong&gt;：防止网络本身过载。发送方维护一个&lt;strong&gt;拥塞窗口（cwnd）&lt;/strong&gt;，并实现经典的拥塞控制算法，如&lt;strong&gt;慢启动、拥塞避免、快重传和快恢复&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;5-连接管理可选但必要&#34;&gt;5. 连接管理（可选但必要）
+&lt;/h4&gt;&lt;p&gt;对于复杂的应用，需要模拟TCP的连接管理：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;三次握手&lt;/strong&gt;：建立连接，交换初始Seq号和参数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;四次挥手&lt;/strong&gt;：优雅地关闭连接，确保所有数据都被确认。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第二部分精简版一句话回答&#34;&gt;第二部分：精简版（&amp;ldquo;一句话&amp;quot;回答）
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;问：如何基于UDP实现可靠传输？&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&amp;ldquo;在应用层模仿TCP的核心机制。主要做这几件事：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;自定义协议头&lt;/strong&gt;：为每个UDP包添加&lt;strong&gt;序列号（Seq）&lt;/strong&gt; 和&lt;strong&gt;确认号（Ack）&lt;/strong&gt;，这是实现可靠性的基础。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;确认与重传&lt;/strong&gt;：接收方收到包后回复ACK；发送方维护一个发送缓冲区，若在&lt;strong&gt;动态计算的超时时间（RTO）&lt;/strong&gt; 内未收到ACK，则&lt;strong&gt;重传&lt;/strong&gt;该包。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;排序与去重&lt;/strong&gt;：接收方根据Seq号对乱序到达的包进行&lt;strong&gt;排序重组&lt;/strong&gt;，并丢弃重复的包。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;流量与拥塞控制&lt;/strong&gt;：通过&lt;strong&gt;滑动窗口&lt;/strong&gt;机制控制发送速率，防止接收方或网络过载。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;简单说，就是&lt;strong&gt;把TCP的可靠性机制搬到应用层来实现&lt;/strong&gt;。知名实现有&lt;strong&gt;KCP&lt;/strong&gt;和&lt;strong&gt;QUIC&lt;/strong&gt;。KCP通过更激进的重传策略，用10%-20%的额外带宽换取&lt;strong&gt;30%-40%的延迟降低&lt;/strong&gt;。&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第三部分quic-高级特性扩展&#34;&gt;第三部分：QUIC 高级特性扩展
+&lt;/h3&gt;&lt;h4 id=&#34;扩展一握手与连接建立的革命取代三次握手&#34;&gt;扩展一：握手与连接建立的革命（取代三次握手）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;1-RTT 首次握手&lt;/strong&gt;：客户端发送&lt;code&gt;Initial&lt;/code&gt;包（包含TLS ClientHello），服务器回复&lt;code&gt;Handshake&lt;/code&gt;包（包含ServerHello及证书）。&lt;strong&gt;仅需一个往返&lt;/strong&gt;，双方就生成了密钥，后续数据包全部加密传输。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;0-RTT 快速恢复&lt;/strong&gt;：如果之前连接过，客户端可缓存服务器参数。下次连接时，&lt;strong&gt;第一个数据包就直接携带加密的应用数据&lt;/strong&gt;（如HTTP请求），实现0秒延迟启动，极大优化弱网体验。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;扩展二连接迁移解决tcp的断线重连痛点&#34;&gt;扩展二：连接迁移（解决TCP的断线重连痛点）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TCP的痛点&lt;/strong&gt;：TCP通过&lt;code&gt;（源IP，源端口，目标IP，目标端口）&lt;/code&gt;四元组标识连接。当你的手机从Wi-Fi切到5G时，IP变了，TCP连接瞬间中断，必须重新握手。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;QUIC的杀手锏（Connection ID）&lt;/strong&gt;：QUIC在应用层使用一个&lt;strong&gt;64位连接ID（CID）&lt;/strong&gt; 作为连接的唯一标识，彻底摆脱四元组。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层实现&lt;/strong&gt;：当IP变化时，客户端继续用&lt;strong&gt;同一个CID&lt;/strong&gt;在新路径上发包。服务器收到后，通过CID识别出这是旧连接，无缝迁移状态（包括拥塞窗口、接收缓冲区等），应用层毫无感知。迁移前，双方还会通过&lt;code&gt;PATH_CHALLENGE&lt;/code&gt;帧探测新路径是否通畅，确保安全。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;扩展三彻底解决队头阻塞http2-over-tcp的致命伤&#34;&gt;扩展三：彻底解决队头阻塞（HTTP/2 over TCP的致命伤）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TCP的痛点&lt;/strong&gt;：HTTP/2虽然支持多路复用，但在TCP单流下，如果一个包（Packet N）丢了，TCP为了保证顺序交付，后续所有包（N+1， N+2&amp;hellip;）即使到了接收端，也必须待在内核缓冲区里&lt;strong&gt;等待重传的N到达&lt;/strong&gt;，才能一并交给应用层。这导致所有请求都被阻塞（队头阻塞）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;QUIC的终极方案（独立的Stream）&lt;/strong&gt;：QUIC在&lt;strong&gt;一个连接内支持多个独立的、隔离的逻辑流（Stream）&lt;/strong&gt;。每个流都有自己的ID、发送窗口和接收缓冲区。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层实现&lt;/strong&gt;：如果一个流（Stream 1）的第3个包丢了，接收端只会阻塞Stream 1的后续交付。而其他流（Stream 2、Stream 3）的数据包如果已收齐，&lt;strong&gt;直接解密并交付给上层应用（浏览器）&lt;/strong&gt;。这种&amp;quot;流级隔离&amp;quot;从根本上斩断了TCP单流带来的队头阻塞。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;扩展四灵活的用户态拥塞控制不再依赖内核&#34;&gt;扩展四：灵活的用户态拥塞控制（不再依赖内核）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TCP的痛点&lt;/strong&gt;：TCP的拥塞控制算法（如Cubic）是&lt;strong&gt;写死在操作系统内核&lt;/strong&gt;里的。要升级算法（比如换成BBR），必须升级整个Linux内核，重启机器，代价极大。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;QUIC的优势&lt;/strong&gt;：QUIC的拥塞控制模块完全在&lt;strong&gt;用户态（应用层）&lt;/strong&gt; 实现。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层实现&lt;/strong&gt;：工程师可以像更新普通业务代码一样，随时热更新拥塞算法（例如快速从Cubic切换成Google BBR v3），无需重启服务，甚至可以根据不同业务（视频流/网页加载）动态选择最合适的算法策略。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第四部分最终版-面试精简话术可直接背诵&#34;&gt;第四部分：最终版 &amp;ldquo;面试精简话术&amp;rdquo;（可直接背诵）
+&lt;/h3&gt;&lt;p&gt;问：&amp;rdquo;&lt;strong&gt;你了解QUIC吗？它解决了TCP什么痛点？&lt;/strong&gt;&amp;quot;&lt;/p&gt;
+&lt;p&gt;答：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;QUIC是基于UDP的现代可靠传输协议，我认为它最核心的突破有三点：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第一，连接建立极快。&lt;/strong&gt; 它把传输握手和TLS 1.3加密合二为一，首次连接只要1个RTT，重连更是支持0-RTT，直接发数据，完全甩掉了TCP三次握手的延迟开销。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第二，彻底解决了队头阻塞。&lt;/strong&gt; TCP不管复用多少路，本质上还是单流，丢一个包就堵死所有请求。QUIC在一个连接里支持多个独立的流，某个流丢包只阻塞它自己，其他流照常解密交付，用户体验丝滑很多。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第三，连接能&amp;rsquo;随身携带&amp;rsquo;。&lt;/strong&gt; TCP靠IP和端口绑死，一换Wi-Fi或切5G就断。QUIC用Connection ID作为连接的唯一标识，网络切换时，用新IP带上旧CID发包，服务端就能无缝迁移连接状态，游戏、视频通话不会中断。&lt;/p&gt;
+&lt;p&gt;另外，QUIC的拥塞控制放在用户态实现，可以像APP一样随时热更新算法，灵活性远超内核固化的TCP。总的来说，QUIC不是简单的UDP加重传，而是对传输层的一次重构。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        </item>
+        <item>
         <title>网络模型完整笔记：TCP/IP 与 OSI</title>
         <link>https://Yannick-Mo.github.io/p/network-model-tcp-ip-osi/</link>
         <pubDate>Sun, 14 Jun 2026 20:57:00 +0800</pubDate>
