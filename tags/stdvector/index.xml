@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Std::vector on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/stdvector/</link>
+        <description>Recent content in Std::vector on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/stdvector/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>std::vector 底层原理深度剖析：内存模型、扩容机制与避坑指南</title>
+        <link>https://Yannick-Mo.github.io/p/std-vector-internals/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/std-vector-internals/</guid>
+        <description>&lt;p&gt;&lt;code&gt;std::vector&lt;/code&gt; 是 C++ 中最核心的序列容器，其底层设计完美诠释了&amp;quot;动态数组&amp;quot;的概念。下面从&lt;strong&gt;特点&lt;/strong&gt;和&lt;strong&gt;底层原理&lt;/strong&gt;两个维度深度剖析。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;一stdvector-的核心特点接口层面&#34;&gt;一、std::vector 的核心特点（接口层面）
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;连续内存存储&lt;/strong&gt;：元素在内存中严格连续排列，因此支持 &lt;strong&gt;O(1)随机访问&lt;/strong&gt;（&lt;code&gt;[]&lt;/code&gt; 和 &lt;code&gt;at()&lt;/code&gt;），且缓存命中率极高（对高性能遍历友好）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;动态扩容&lt;/strong&gt;：大小（&lt;code&gt;size&lt;/code&gt;）可动态变化，但容量（&lt;code&gt;capacity&lt;/code&gt;）通常大于或等于大小，由系统自动管理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;尾部高效操作&lt;/strong&gt;：在末尾添加/删除元素（&lt;code&gt;push_back&lt;/code&gt;/&lt;code&gt;pop_back&lt;/code&gt;）均摊时间复杂度为 &lt;strong&gt;O(1)&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;非尾部操作昂贵&lt;/strong&gt;：在中间或头部插入/删除元素，需要移动后续所有元素，时间复杂度为 &lt;strong&gt;O(n)&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;迭代器失效风险高&lt;/strong&gt;：扩容或插入操作会导致指向原内存的迭代器、指针和引用全部失效（除非插入/删除发生在尾部且未触发扩容）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二stdvector-的底层原理内存与实现&#34;&gt;二、std::vector 的底层原理（内存与实现）
+&lt;/h2&gt;&lt;h3 id=&#34;1-内存模型三个指针或一个指针两个大小&#34;&gt;1. 内存模型：三个指针（或一个指针+两个大小）
+&lt;/h3&gt;&lt;p&gt;在主流编译器中（如 GCC/Clang），&lt;code&gt;std::vector&lt;/code&gt; 内部只维护&lt;strong&gt;三个指针&lt;/strong&gt;（64位系统下占用 24 字节）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;_M_start&lt;/code&gt;：指向内存块起始位置（首个元素）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;_M_finish&lt;/code&gt;：指向当前有效元素末尾（即 &lt;code&gt;size&lt;/code&gt; 的边界）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;_M_end_of_storage&lt;/code&gt;：指向已分配内存块的末尾（即 &lt;code&gt;capacity&lt;/code&gt; 的边界）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;计算关系&lt;/strong&gt;：&lt;code&gt;size = _M_finish - _M_start&lt;/code&gt;，&lt;code&gt;capacity = _M_end_of_storage - _M_start&lt;/code&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;2-内存分配策略扩容机制&#34;&gt;2. 内存分配策略（扩容机制）
+&lt;/h3&gt;&lt;p&gt;当 &lt;code&gt;size == capacity&lt;/code&gt; 时，再插入元素会触发&lt;strong&gt;重新分配&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新容量计算&lt;/strong&gt;：通常采用&lt;strong&gt;倍增策略&lt;/strong&gt;（GCC 为 2 倍，MSVC 为 1.5 倍）。这是为了平衡均摊时间复杂度（保证均摊 O(1)）与内存浪费。
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;注&lt;/em&gt;：1.5 倍较 2 倍更利于释放的旧内存块被后续新分配复用（减少内存碎片）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分配过程（三步走）&lt;/strong&gt;：
+&lt;ol&gt;
+&lt;li&gt;向&lt;strong&gt;分配器&lt;/strong&gt;（&lt;code&gt;std::allocator&lt;/code&gt;）申请新内存块（只分配原始内存，不构造对象）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;转移元素&lt;/strong&gt;：将旧内存中的元素&lt;strong&gt;移动构造&lt;/strong&gt;（C++11 后，若移动构造函数为 &lt;code&gt;noexcept&lt;/code&gt;）或&lt;strong&gt;拷贝构造&lt;/strong&gt;到新内存。&lt;/li&gt;
+&lt;li&gt;析构旧内存中的对象并释放旧内存。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;强异常安全保证&lt;/strong&gt;：若元素拷贝/移动过程中抛出异常，旧内存保持不变，容器状态回滚。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-构造与析构的分离空间与时间的解耦&#34;&gt;3. 构造与析构的分离（空间与时间的解耦）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;std::vector&lt;/code&gt; 将&lt;strong&gt;内存申请&lt;/strong&gt;（&lt;code&gt;allocate&lt;/code&gt;）与&lt;strong&gt;对象构造&lt;/strong&gt;（&lt;code&gt;placement new&lt;/code&gt;）严格分离。&lt;/li&gt;
+&lt;li&gt;这导致 &lt;code&gt;resize&lt;/code&gt; 和 &lt;code&gt;reserve&lt;/code&gt; 行为不同：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;reserve(n)&lt;/code&gt;：仅申请裸内存（增加 &lt;code&gt;capacity&lt;/code&gt;），不构造对象，不改变 &lt;code&gt;size&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;resize(n)&lt;/code&gt;：若新大小大于旧大小，会在尾部通过&lt;strong&gt;默认构造&lt;/strong&gt;或&lt;strong&gt;值初始化&lt;/strong&gt;生成新对象（增加 &lt;code&gt;size&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-元素存储要求类型必须完整&#34;&gt;4. 元素存储要求（类型必须完整）
+&lt;/h3&gt;&lt;p&gt;由于需要知道元素大小以计算指针偏移，存入 &lt;code&gt;vector&lt;/code&gt; 的类型在编译期必须是&lt;strong&gt;完整类型&lt;/strong&gt;（不完全类型如 &lt;code&gt;struct Foo;&lt;/code&gt; 无法实例化 &lt;code&gt;vector&amp;lt;Foo&amp;gt;&lt;/code&gt;，除非是 C++17 后的某些特例）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三关键底层细节带来的坑与优化点&#34;&gt;三、关键底层细节带来的&amp;quot;坑&amp;quot;与优化点
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;底层机制&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;引发的现象&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;优化建议&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;扩容时移动 vs 拷贝&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;若移动构造函数未标记 &lt;code&gt;noexcept&lt;/code&gt;，为确保异常安全，扩容时默认会&lt;strong&gt;拷贝&lt;/strong&gt;而非移动，导致性能骤降。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;自定义类移动构造和移动赋值后，务必加 &lt;code&gt;noexcept&lt;/code&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;std::vector&amp;lt;bool&amp;gt;&lt;/code&gt; 特化&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;为了节省内存，标准库对 &lt;code&gt;bool&lt;/code&gt; 进行了模板特化，采用&lt;strong&gt;位压缩&lt;/strong&gt;存储（1 bit 一个元素）。这导致它返回代理类，不支持取地址，且不是标准容器行为。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;若需位存储，可用 &lt;code&gt;std::bitset&lt;/code&gt;；若需标准容器行为，用 &lt;code&gt;deque&amp;lt;bool&amp;gt;&lt;/code&gt; 或 &lt;code&gt;vector&amp;lt;char&amp;gt;&lt;/code&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;shrink_to_fit&lt;/code&gt; 并非强制&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;该请求不保证执行，由实现决定是否真正缩容（且可能触发耗时重分配）。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;仅在确定内存紧张且容器生命周期较长时调用。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;数据指针的稳定性&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;对 &lt;code&gt;vector&lt;/code&gt; 取地址 &lt;code&gt;&amp;amp;v[0]&lt;/code&gt; 是合法的，但一旦扩容，该指针立即失效。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;若需要元素指针长期有效，改用 &lt;code&gt;deque&lt;/code&gt; 或 &lt;code&gt;list&lt;/code&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四总结&#34;&gt;四、总结
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;std::vector&lt;/code&gt; 是用三个指针管理的连续内存动态数组，以&amp;quot;空间换时间&amp;quot;（预分配 capacity）实现了尾部 O(1) 插入，扩容时通过分离内存与构造、倍增策略保证均摊高效，但代价是中间插入的高昂移动成本和扩容引发的迭代器全面失效。&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

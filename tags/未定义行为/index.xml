@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>未定义行为 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%9C%AA%E5%AE%9A%E4%B9%89%E8%A1%8C%E4%B8%BA/</link>
+        <description>Recent content in 未定义行为 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E6%9C%AA%E5%AE%9A%E4%B9%89%E8%A1%8C%E4%B8%BA/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>深入解析：动态库指针在外部被 delete 的三大结局与唯一解决方案</title>
+        <link>https://Yannick-Mo.github.io/p/dynamic-library-cross-module-delete/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/dynamic-library-cross-module-delete/</guid>
+        <description>&lt;p&gt;针对&amp;quot;动态库指针在外部被释放&amp;quot;这个动作，最终结果逃不出以下&lt;strong&gt;三大类结局&lt;/strong&gt;。请记住：无论哪种结局，在 C++ 标准看来，统统属于&lt;strong&gt;未定义行为（UB）&lt;/strong&gt;，只是表现形式和崩溃时机不同。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;结局一物理内存释放成功但留下定时炸弹最常见的隐患&#34;&gt;结局一：物理内存释放成功，但留下&amp;quot;定时炸弹&amp;quot;（最常见的隐患）
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;触发条件&lt;/strong&gt;：Linux 默认编译（动态链接 glibc）&lt;strong&gt;或&lt;/strong&gt; Windows 下所有模块统一使用 &lt;strong&gt;&lt;code&gt;/MD&lt;/code&gt;（动态链接 CRT）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;底层原理&lt;/strong&gt;：主程序（EXE）和动态库（DLL/SO）共享&lt;strong&gt;同一个堆管理器实例&lt;/strong&gt;（同一个&amp;quot;村长&amp;quot;和同一本&amp;quot;账本&amp;quot;）。外部调用 &lt;code&gt;delete&lt;/code&gt; 时，堆管理器认得这个地址，物理内存被成功回收。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;此刻的表现&lt;/strong&gt;：程序&lt;strong&gt;正常运行，不报错&lt;/strong&gt;。这让很多开发者误以为&amp;quot;这么做是安全的&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;后续的灾难（炸弹引爆）&lt;/strong&gt;：
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;悬空指针访问&lt;/strong&gt;：动态库内部可能还保存着该指针的副本。当库内部后续业务逻辑再次访问（解引用）该指针时，内存可能已被重新分配给其他对象，导致&lt;strong&gt;随机性数据损坏或段错误（Segmentation Fault）&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;双重释放（Double Free）&lt;/strong&gt;：当动态库卸载或执行清理逻辑时，如果再次尝试 &lt;code&gt;delete&lt;/code&gt; 这个指针，堆管理器会检测到&amp;quot;这块内存已被释放&amp;quot;，立即&lt;strong&gt;终止进程&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;析构函数未执行&lt;/strong&gt;：如果外部使用的是 &lt;code&gt;free()&lt;/code&gt; 而不是 &lt;code&gt;delete&lt;/code&gt;，或者外部没有调用析构函数，动态库内部对象的资源（如文件句柄、网络连接）将&lt;strong&gt;永远无法释放&lt;/strong&gt;，造成资源泄漏。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;结局二硬崩溃执行释放操作的瞬间当场死亡最剧烈的结局&#34;&gt;结局二：硬崩溃——执行释放操作的瞬间&amp;quot;当场死亡&amp;quot;（最剧烈的结局）
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;触发条件&lt;/strong&gt;：Windows 下 EXE 和 DLL 的 CRT 链接方式不一致（如一个 &lt;code&gt;/MT&lt;/code&gt; 一个 &lt;code&gt;/MD&lt;/code&gt;）&lt;strong&gt;或&lt;/strong&gt; Linux 下主程序全静态编译（&lt;code&gt;-static&lt;/code&gt;）而动态库正常编译（依赖系统 &lt;code&gt;.so&lt;/code&gt;）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;底层原理&lt;/strong&gt;：主程序与动态库拥有&lt;strong&gt;各自独立的堆管理器实例&lt;/strong&gt;（两个独立的&amp;quot;村长&amp;quot;和两本&amp;quot;账本&amp;quot;）。DLL 用村长B的内存，EXE 去释放时把地址递给村长A。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;此刻的表现&lt;/strong&gt;：执行 &lt;code&gt;delete&lt;/code&gt; 或 &lt;code&gt;free&lt;/code&gt; 这行代码时，Windows 堆管理器（&lt;code&gt;RtlValidateHeap&lt;/code&gt;）或 Linux 的 &lt;code&gt;ptmalloc&lt;/code&gt; 会立即发现&amp;quot;账本上没有这个地址的记录&amp;quot;，判定为&lt;strong&gt;严重的内存损坏（Heap Corruption）&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：操作系统直接触发异常（Windows 的 Access Violation 或 Linux 的 Abort），&lt;strong&gt;进程无任何挽回余地，直接崩溃退出&lt;/strong&gt;。这种崩溃的调用堆栈通常直接指向 &lt;code&gt;ntdll!RtlFreeHeap&lt;/code&gt; 或 &lt;code&gt;__libc_free&lt;/code&gt;，极容易定位。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;结局三堆元数据慢性中毒释放成功但结构已坏最隐蔽的结局&#34;&gt;结局三：堆元数据&amp;quot;慢性中毒&amp;quot;——释放成功，但结构已坏（最隐蔽的结局）
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;触发条件&lt;/strong&gt;：无论哪种平台，只要外部使用了与动态库内部&lt;strong&gt;不匹配的释放函数&lt;/strong&gt;（例如：库内 &lt;code&gt;new&lt;/code&gt;，库外 &lt;code&gt;free&lt;/code&gt;；或者库内 &lt;code&gt;new[]&lt;/code&gt;，库外 &lt;code&gt;delete&lt;/code&gt;）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;底层原理&lt;/strong&gt;：即使堆是同一个（结局一的情况），不同的分配函数会在内存块头部写入不同格式的元数据（&lt;code&gt;new[]&lt;/code&gt; 会记录数组元素个数，&lt;code&gt;malloc&lt;/code&gt; 和 &lt;code&gt;new&lt;/code&gt; 的元数据大小可能不同）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;此刻的表现&lt;/strong&gt;：堆管理器勉强回收了物理内存，&lt;strong&gt;程序没有立即崩溃&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;后续的灾难&lt;/strong&gt;：堆管理器的内部链表指针、空闲块大小等核心元数据已被写乱。程序可能在&lt;strong&gt;几毫秒后、甚至是完全不相关的其他对象申请内存时&lt;/strong&gt;，突然崩溃。此时的崩溃堆栈完全看不出和&amp;quot;跨库释放&amp;quot;有关，属于&lt;strong&gt;最难调试的&amp;quot;Heisenbug&amp;quot;（海森堡 Bug）&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;终极结论一张图总结&#34;&gt;终极结论（一张图总结）
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;平台 / 编译配置&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;堆是否共享&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;外部直接 &lt;code&gt;delete&lt;/code&gt; 的实时后果&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;后续风险等级&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Linux（默认动态链接）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 是&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;暂时正常&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;⭐⭐⭐⭐⭐ 极高（悬空指针/双释放）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Windows（/MD 动态CRT）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 是&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;暂时正常&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;⭐⭐⭐⭐⭐ 极高（悬空指针/双释放）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Windows（/MT 静态CRT）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 否（独立实例）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;立即崩溃&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;崩溃即暴露，反而相对容易查&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Linux（-static 全静态）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 否（独立实例）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;立即崩溃&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;崩溃即暴露，反而相对容易查&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;任意平台（&lt;code&gt;new&lt;/code&gt;/&lt;code&gt;free&lt;/code&gt; 混用）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;依赖上述情况&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;可能正常，但元数据已损坏&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;⭐⭐⭐⭐⭐ 极高（随机崩溃，极难复现）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;唯一的银弹解决方案&#34;&gt;唯一的&amp;quot;银弹&amp;quot;解决方案
+&lt;/h2&gt;&lt;p&gt;无论面对哪种平台、哪种编译选项，&lt;strong&gt;唯一的正确做法只有一条&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;绝对禁止在动态库外部直接调用 &lt;code&gt;delete&lt;/code&gt; 或 &lt;code&gt;free&lt;/code&gt;。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在工程上，必须使用**&amp;ldquo;分配器与释放器绑定&amp;rdquo;**的设计模式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;导出配套函数（C 风格）&lt;/strong&gt;：动态库提供 &lt;code&gt;create()&lt;/code&gt; 和 &lt;code&gt;destroy()&lt;/code&gt; 函数，强制外部调用 &lt;code&gt;destroy()&lt;/code&gt; 来回收。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;现代 C++ 做法（推荐）&lt;/strong&gt;：外部使用 &lt;code&gt;std::shared_ptr&lt;/code&gt;，并在构造时&lt;strong&gt;绑定动态库导出的删除器（Deleter）&lt;/strong&gt;。这样即使外部 &lt;code&gt;reset&lt;/code&gt; 智能指针，实际调用的依然是动态库内部的 &lt;code&gt;delete&lt;/code&gt; 函数，确保了堆匹配。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 动态库内部
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;extern&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;C&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;MyClass&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CreateObj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;MyClass&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;extern&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;C&amp;#34;&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DeleteObj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;MyClass&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;delete&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 外部调用
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;std&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;shared_ptr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;MyClass&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CreateObj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DeleteObj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 无论 sp 怎么释放，最终走的都是动态库内部的 DeleteObj，彻底安全！
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

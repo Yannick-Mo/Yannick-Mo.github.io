@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Map on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/map/</link>
+        <description>Recent content in Map on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/map/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>std::set / map / multiset / multimap 底层原理深度剖析：红黑树、平衡机制与迭代器失效</title>
+        <link>https://Yannick-Mo.github.io/p/set-map-multiset-multimap-internals/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/set-map-multiset-multimap-internals/</guid>
+        <description>&lt;h2 id=&#34;一四大容器核心特点对比速览表&#34;&gt;一、四大容器核心特点对比（速览表）
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;容器&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;键是否唯一&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;是否存储值&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;是否允许修改键&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;典型用途&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;set&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;唯一&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;只存键（Key）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不允许&lt;/strong&gt;（const）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;快速去重、自动排序、集合交集并集&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;map&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;唯一&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;存键值对（Key, Value）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不允许&lt;/strong&gt;改Key，但&lt;strong&gt;允许&lt;/strong&gt;改Value&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;字典、缓存（通过Key快速映射到Value）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;multiset&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不唯一&lt;/strong&gt;（允许重复）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;只存键（Key）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不允许&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;允许重复元素的自动排序列表&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;multimap&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不唯一&lt;/strong&gt;（允许重复）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;存键值对（Key, Value）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不允许&lt;/strong&gt;改Key，&lt;strong&gt;允许&lt;/strong&gt;改Value&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;一对多映射（如一个学生多门课程成绩）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;共有特点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;有序性&lt;/strong&gt;：元素始终按**键（Key）**的升序（默认使用 &lt;code&gt;operator&amp;lt;&lt;/code&gt;）排列，遍历即得有序序列。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;时间复杂度&lt;/strong&gt;：插入、删除、查找均为 &lt;strong&gt;O(log n)&lt;/strong&gt;（稳定，无最坏退化情况）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;双向迭代器&lt;/strong&gt;：支持 &lt;code&gt;++&lt;/code&gt; 和 &lt;code&gt;--&lt;/code&gt; 操作，可进行范围查询（&lt;code&gt;lower_bound&lt;/code&gt; / &lt;code&gt;upper_bound&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二底层原理红黑树详解&#34;&gt;二、底层原理（红黑树详解）
+&lt;/h2&gt;&lt;p&gt;底层统一采用&lt;strong&gt;红黑树（Red-Black Tree）&lt;/strong&gt;——一种自平衡的二叉搜索树（BST）。其本质是一个&lt;strong&gt;有序的键值对节点树&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;1-核心数据结构节点结构&#34;&gt;1. 核心数据结构（节点结构）
+&lt;/h3&gt;&lt;p&gt;红黑树的节点除了存储数据（&lt;code&gt;set&lt;/code&gt;存Key，&lt;code&gt;map&lt;/code&gt;存&lt;code&gt;pair&amp;lt;const Key, Value&amp;gt;&lt;/code&gt;）外，还包含：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;左子树指针（&lt;code&gt;left&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;右子树指针（&lt;code&gt;right&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;父节点指针（&lt;code&gt;parent&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;颜色标记（&lt;code&gt;color&lt;/code&gt;，红/黑）&lt;/li&gt;
+&lt;li&gt;（对于&lt;code&gt;map&lt;/code&gt;/&lt;code&gt;multimap&lt;/code&gt;，&lt;code&gt;pair&lt;/code&gt;中的Key带有&lt;code&gt;const&lt;/code&gt;修饰，强制不可修改）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-关键特性保证平衡&#34;&gt;2. 关键特性保证平衡
+&lt;/h3&gt;&lt;p&gt;红黑树通过以下&lt;strong&gt;5条性质&lt;/strong&gt;维持树高近似平衡（最长路径不超过最短路径的2倍），从而保证增删改查稳定在 O(log n)：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;每个节点非红即黑。&lt;/li&gt;
+&lt;li&gt;根节点是黑色。&lt;/li&gt;
+&lt;li&gt;叶子节点（NIL空节点）是黑色。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;红色节点的两个子节点必须为黑色&lt;/strong&gt;（即不能有连续的红节点）。&lt;/li&gt;
+&lt;li&gt;从任一节点到其每个叶子节点的所有路径，包含相同数量的黑节点。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;3-插入与删除的核心流程维持平衡的魔法&#34;&gt;3. 插入与删除的核心流程（维持平衡的魔法）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;插入操作&lt;/strong&gt;：
+&lt;ol&gt;
+&lt;li&gt;按二叉搜索树规则找到插入位置，将新节点标为&lt;strong&gt;红色&lt;/strong&gt;（之所以标红，是为了不破坏性质5，即黑高不变）。&lt;/li&gt;
+&lt;li&gt;若父节点为黑色，插入完成。&lt;/li&gt;
+&lt;li&gt;若父节点为红色，触发&lt;strong&gt;连续红节点&lt;/strong&gt;违规，此时进行&lt;strong&gt;旋转&lt;/strong&gt;（左旋/右旋）和&lt;strong&gt;重新着色&lt;/strong&gt;，向上回溯修复，直至满足红黑性质。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除操作&lt;/strong&gt;（更复杂）：
+删除节点后，若破坏了红黑性质，会通过&amp;quot;双黑&amp;quot;节点概念，配合旋转和着色进行修复。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-multiset-与-multimap-的重复键处理&#34;&gt;4. &lt;code&gt;multiset&lt;/code&gt; 与 &lt;code&gt;multimap&lt;/code&gt; 的重复键处理
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;红黑树在比较键时，使用 &lt;strong&gt;&lt;code&gt;!comp(a,b) &amp;amp;&amp;amp; !comp(b,a)&lt;/code&gt;&lt;/strong&gt; 判断相等。&lt;/li&gt;
+&lt;li&gt;对于重复键，标准库实现通常将&lt;strong&gt;新插入的重复元素放在已存在节点的右子树中&lt;/strong&gt;（或通过内部唯一标识区分），保证插入相同键时仍能稳定插入，且 &lt;code&gt;equal_range&lt;/code&gt; 能正确返回重复键的范围。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三迭代器失效规则与-unordered_-的核心区别&#34;&gt;三、迭代器失效规则（与 unordered_* 的核心区别）
+&lt;/h2&gt;&lt;p&gt;这是面试高频考点，与哈希表（&lt;code&gt;unordered_*&lt;/code&gt;）有显著不同：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;操作&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;是否失效&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;插入（Insert）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;所有迭代器、引用、指针均不失效&lt;/strong&gt;（红黑树节点内存地址未移动，只是修改了指针连接）。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;删除（Erase）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;仅被删除元素的迭代器失效&lt;/strong&gt;，其他所有迭代器保持不变。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;查找/遍历&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;迭代器有效。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;对比记忆&lt;/strong&gt;：&lt;code&gt;map/set&lt;/code&gt; 插入不失效，&lt;code&gt;unordered_map/set&lt;/code&gt; 触发了重哈希则会全部失效。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四与-unordered_哈希表的本质对决&#34;&gt;四、与 &lt;code&gt;unordered_*&lt;/code&gt;（哈希表）的本质对决
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;对比维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;set&lt;/code&gt; / &lt;code&gt;map&lt;/code&gt;（红黑树）&lt;/strong&gt;&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;unordered_set&lt;/code&gt; / &lt;code&gt;unordered_map&lt;/code&gt;（哈希表）&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;底层结构&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;红黑树（平衡BST）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;桶数组 + 链表（开链法）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;元素顺序&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;严格有序&lt;/strong&gt;（按Key升序）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;彻底无序&lt;/strong&gt;（由哈希值决定）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;时间复杂度&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;稳定 &lt;strong&gt;O(log n)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;平均 O(1)，最坏 O(n)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内存占用&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;节点含3个指针+颜色，开销稳定&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;桶数组+节点指针，存在额外空桶开销&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;迭代器失效&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;插入迭代器&lt;strong&gt;永不失效&lt;/strong&gt;（erase只影响自身）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;插入触发rehash则&lt;strong&gt;全部失效&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;空间预留&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无需预留&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;可 &lt;code&gt;reserve&lt;/code&gt; 以优化性能&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;适用场景&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;需要排序、范围查找（&lt;code&gt;lower_bound&lt;/code&gt;）、最值、稳定性要求高&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;仅需快速单点查找，不关心顺序，数据量大&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五工程实践中的关键注意点避坑指南&#34;&gt;五、工程实践中的关键注意点（避坑指南）
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;map&lt;/code&gt; 的 &lt;code&gt;operator[]&lt;/code&gt; 陷阱（重提但更细化）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行 &lt;code&gt;map[key]&lt;/code&gt; 时，若Key不存在，会&lt;strong&gt;默认构造一个Value&lt;/strong&gt;并插入。这在只读查询时极易误插入数据。&lt;/li&gt;
+&lt;li&gt;解决方案：仅当需要插入或修改值时用 &lt;code&gt;[]&lt;/code&gt;；只做查询用 &lt;code&gt;find()&lt;/code&gt; 或 &lt;code&gt;at()&lt;/code&gt;（&lt;code&gt;at()&lt;/code&gt; 不存在会抛异常）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;自定义类型作为Key&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;必须提供&lt;strong&gt;严格的弱序比较（Strict Weak Ordering）&lt;/strong&gt;，通常重载 &lt;code&gt;operator&amp;lt;&lt;/code&gt; 或提供自定义仿函数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;必须保证&lt;/strong&gt;：比较器对于相等的Key返回 &lt;code&gt;false&lt;/code&gt;（即 &lt;code&gt;comp(a,b)&lt;/code&gt; 和 &lt;code&gt;comp(b,a)&lt;/code&gt; 同时为假）。&lt;/li&gt;
+&lt;li&gt;若比较器逻辑错误（如不满足传递性），会导致红黑树结构崩溃，出现未定义行为。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;multimap&lt;/code&gt; 与 &lt;code&gt;multiset&lt;/code&gt; 的修改限制&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;键（Key）被定义为 &lt;code&gt;const&lt;/code&gt;，&lt;strong&gt;绝对不能直接修改&lt;/strong&gt;（会破坏树结构）。若需修改Key，必须先 &lt;code&gt;erase&lt;/code&gt; 旧元素，再 &lt;code&gt;insert&lt;/code&gt; 新元素。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;性能取舍&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果元素数量极小（如 &amp;lt; 100），线性遍历 &lt;code&gt;vector&lt;/code&gt; 可能比红黑树 O(log n) 更快（CPU缓存友好）。切勿无脑使用 &lt;code&gt;map&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;需要&lt;strong&gt;频繁插入删除&lt;/strong&gt;且&lt;strong&gt;很少查找&lt;/strong&gt;时，红黑树的节点频繁分配释放（&lt;code&gt;new/delete&lt;/code&gt;）开销较大，哈希表通常更合适。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

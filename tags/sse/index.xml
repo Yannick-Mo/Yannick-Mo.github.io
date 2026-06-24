@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>SSE on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/sse/</link>
+        <description>Recent content in SSE on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Tue, 23 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/sse/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>短轮询、长轮询、SSE、WebSocket 全方位对比与选型指南</title>
+        <link>https://Yannick-Mo.github.io/p/polling-sse-websocket-comparison/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/polling-sse-websocket-comparison/</guid>
+        <description>&lt;h2 id=&#34;一核心概念与工作机制&#34;&gt;一、核心概念与工作机制
+&lt;/h2&gt;&lt;h3 id=&#34;1-短轮询short-polling&#34;&gt;1. 短轮询（Short Polling）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;别名&lt;/strong&gt;：定时拉取。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工作流&lt;/strong&gt;：客户端通过 &lt;code&gt;setInterval&lt;/code&gt; 或 &lt;code&gt;setTimeout&lt;/code&gt; 每隔固定时间（如 2s）发起 HTTP 请求 → 服务器立即处理并返回（有数据给数据，没数据给空响应）→ 立即断开连接。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层依赖&lt;/strong&gt;：标准 HTTP/1.0 或 HTTP/1.1（无状态）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心痛点&lt;/strong&gt;：&lt;strong&gt;木桶效应&lt;/strong&gt;。实时性取决于间隔时间（间隔越短越实时，但空请求越多，流量雪崩）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-长轮询long-polling&#34;&gt;2. 长轮询（Long Polling）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;别名&lt;/strong&gt;：挂起式轮询、Comet 技术（早期方案）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工作流&lt;/strong&gt;：客户端发起 HTTP 请求 → 服务器&lt;strong&gt;挂起（Hold）&lt;strong&gt;该连接，不返回 → 直到有新数据或达到超时阈值（如 30s）才返回响应 → 客户端收到后&lt;/strong&gt;立即&lt;/strong&gt;发起下一个新请求，形成&amp;quot;串行接力&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层依赖&lt;/strong&gt;：标准 HTTP，利用了 HTTP 长连接（Keep-Alive）复用 TCP 端口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心痛点&lt;/strong&gt;：&lt;strong&gt;线程占用&lt;/strong&gt;。在 Servlet 等传统阻塞式模型中，每个挂起的请求会独占一个工作线程，高并发下极易导致线程池耗尽（OOM）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-sseserver-sent-events&#34;&gt;3. SSE（Server-Sent Events）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;全称&lt;/strong&gt;：服务器推送事件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工作流&lt;/strong&gt;：客户端发起一次普通 HTTP 请求（带有 &lt;code&gt;Accept: text/event-stream&lt;/code&gt;）→ 服务器返回状态码 200，&lt;strong&gt;不关闭&lt;/strong&gt;输出流（&lt;code&gt;response.flush()&lt;/code&gt;）→ 持续以 &lt;code&gt;data: &lt;/code&gt; 格式写入 UTF-8 文本流。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层依赖&lt;/strong&gt;：纯 HTTP 协议（无需升级），基于 &lt;strong&gt;EventSource API&lt;/strong&gt; 浏览器原生支持。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;独有特性&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;自动重连&lt;/strong&gt;：连接意外断开，浏览器内置机制自动重新发起请求。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事件 ID&lt;/strong&gt;：可通过 &lt;code&gt;id:&lt;/code&gt; 字段标记消息序列，断线重连时自动发送 &lt;code&gt;Last-Event-ID&lt;/code&gt;，实现&lt;strong&gt;断点续传&lt;/strong&gt;，保证消息不丢。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自定义事件&lt;/strong&gt;：&lt;code&gt;event: customName&lt;/code&gt; 可触发前端不同的 &lt;code&gt;addEventListener&lt;/code&gt; 回调。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-websocket&#34;&gt;4. WebSocket
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;全称&lt;/strong&gt;：Web 套接字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工作流&lt;/strong&gt;：先发起 HTTP 请求（携带 &lt;code&gt;Upgrade: websocket&lt;/code&gt; 和 &lt;code&gt;Sec-WebSocket-Key&lt;/code&gt; 校验）→ 服务器返回 &lt;code&gt;101 Switching Protocols&lt;/code&gt; 完成&lt;strong&gt;协议升级&lt;/strong&gt; → 后续通信完全脱离 HTTP 协议，走 &lt;code&gt;ws://&lt;/code&gt; 或 &lt;code&gt;wss://&lt;/code&gt;（基于 TCP）的自定义二进制帧协议。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层依赖&lt;/strong&gt;：独立的应用层协议（RFC 6455），基于 TCP 全双工通道。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;独有特性&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;帧类型&lt;/strong&gt;：文本帧、二进制帧（&lt;code&gt;Blob&lt;/code&gt;/&lt;code&gt;ArrayBuffer&lt;/code&gt;）、Ping/Pong 心跳帧、关闭帧。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无同源策略限制&lt;/strong&gt;（可以跨域，但需要服务端校验 &lt;code&gt;Origin&lt;/code&gt; 头）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二全方位多维对比&#34;&gt;二、全方位多维对比
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;短轮询&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;长轮询&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;SSE&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;WebSocket&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;通信模型&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;半双工（单向请求）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;半双工（单向请求）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;单向&lt;/strong&gt;（服务端→客户端）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;全双工&lt;/strong&gt;（双向对等）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;协议归属&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;HTTP&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;HTTP&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;HTTP（纯文本流）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;独立协议（ws/wss）&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;消息格式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;JSON/Text/Form&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;JSON/Text/Form&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;仅限 UTF-8 文本&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;文本 + 二进制（原生）&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;连接数瓶颈&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无（但请求量巨大）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无（但线程数巨大）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;HTTP/1.1 下同域最多 6 个持久连接&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;同域浏览器约 200 个上限&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;服务端内存开销&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;低（瞬时）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;极高&lt;/strong&gt;（长驻线程栈）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;低&lt;/strong&gt;（事件驱动，非阻塞）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;低&lt;/strong&gt;（事件驱动，非阻塞）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;网络流量消耗&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;极大&lt;/strong&gt;（冗余 Header）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;一般（有数据才回）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;极小（轻量 Header）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;极小（2~14 字节帧头）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;防火墙穿透性&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;极好（80/443 端口）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;极好（80/443 端口）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;极好（80/443 端口）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;一般（部分代理会拦截非 HTTP 流量）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;断线重连机制&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;手动（定时器自然重试）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;手动（回调里重连）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内置自动重连（自带）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;无内置（需手写指数退避算法）&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;历史消息补发&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不支持（需业务层做）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不支持（需业务层做）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;支持（配合 Last-Event-ID）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不支持（需业务层做快照）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三服务端资源消耗底层原理高频面试深水区&#34;&gt;三、服务端资源消耗底层原理（高频面试深水区）
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;短轮询&lt;/strong&gt;：压力在于&lt;strong&gt;网络 I/O 吞吐量&lt;/strong&gt;。假设 1 万用户，每 2 秒请求一次，QPS（每秒查询率）高达 5000，网关（Nginx）和业务进程的 CPU 大量消耗在解析重复的 HTTP Header 上。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;长轮询&lt;/strong&gt;：压力在于&lt;strong&gt;内存与线程&lt;/strong&gt;。在 Tomcat 默认配置下（maxThreads=200），长轮询挂起 30 秒，仅能支撑 200 并发用户。虽然 Netty（异步非阻塞）可解决线程问题，但业务逻辑中若涉及锁或数据库长事务，依然会拖垮数据库连接池。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SSE 与 WebSocket&lt;/strong&gt;：均基于 &lt;strong&gt;IO 多路复用（Epoll/Select）&lt;/strong&gt;。它们不独占工作线程，连接空闲时仅占用少量文件描述符（FD）和内存缓冲区，单机支撑数万并发轻而易举。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四技术选型黄金法则架构师视角&#34;&gt;四、技术选型黄金法则（架构师视角）
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;强制选 WebSocket 的场景&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;客户端需要&lt;strong&gt;频繁主动&lt;/strong&gt;向服务端发送指令（如鼠标坐标、键盘输入、编辑器 Delta 变更）。&lt;/li&gt;
+&lt;li&gt;传输&lt;strong&gt;二进制&lt;/strong&gt;大块数据（如音视频流、游戏二进制状态）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;强制选 SSE 的场景&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;业务需求是&lt;strong&gt;纯读&lt;/strong&gt;（只接收服务器通知），且需要&lt;strong&gt;断线重连保底&lt;/strong&gt;（如股票交易大屏、运维日志实时滚动、AI 对话流式输出）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重点提示&lt;/strong&gt;：若你的项目已使用 HTTP/2，SSE 可完美复用多路复用，性能无限逼近 WebSocket，且实现成本低得多。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;长轮询的唯一剩余价值&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;兼容极其老旧的浏览器（如 IE9/IE10）且用户不愿装插件。&lt;/li&gt;
+&lt;li&gt;作为 WebSocket 连接失败时的**优雅降级（Fallback）**兜底方案。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;短轮询的禁忌&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;坚决杜绝在 C 端高并发业务中使用。仅在&lt;strong&gt;定时刷新 CSRF Token（跨站请求伪造令牌）有效期&lt;/strong&gt;、&lt;strong&gt;获取非实时性的后台任务进度&lt;/strong&gt;（如导出 Excel 的百分比）时有限使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五面试精简版&#34;&gt;五、面试精简版
+&lt;/h2&gt;&lt;p&gt;问：&lt;strong&gt;&amp;ldquo;SSE、长短轮询和 WebSocket 有什么区别？你怎么选？&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;答：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;（总）&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这四种方案本质上是&lt;strong&gt;实时通信技术从&amp;quot;笨拙&amp;quot;到&amp;quot;极致&amp;quot;的演进史&lt;/strong&gt;。核心区别在于&lt;strong&gt;通信方向&lt;/strong&gt;、&lt;strong&gt;协议依赖&lt;/strong&gt;和&lt;strong&gt;资源消耗&lt;/strong&gt;。我的选型原则是：&lt;strong&gt;能单向不双向，能 SSE 不 WebSocket&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;（分）&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;第一，短轮询&lt;/strong&gt;就是客户端死循环发 HTTP 请求问服务器&amp;quot;有没有新消息&amp;quot;。优点是零实现成本，缺点是实时性差且流量浪费巨大，我现在基本废弃不用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第二，长轮询&lt;/strong&gt;是短轮询的升级版，客户端发请求后服务器&lt;strong&gt;把连接挂起&lt;/strong&gt;，等真有消息了再返回。它解决了空请求浪费的问题，但在高并发下&lt;strong&gt;特别消耗服务端线程&lt;/strong&gt;，所以现在只作为 WebSocket 的降级备胎。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第三，SSE&lt;/strong&gt;是基于 HTTP 的&lt;strong&gt;单向长连接&lt;/strong&gt;。服务端可以持续往客户端推流。它的最大优势是&lt;strong&gt;浏览器自带断线重连&lt;/strong&gt;和&lt;strong&gt;事件 ID 机制&lt;/strong&gt;，实现极简单。但短板是不能传二进制，且客户端没法主动发指令。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第四，WebSocket&lt;/strong&gt;是&lt;strong&gt;全双工独立协议&lt;/strong&gt;。它通过 HTTP 升级握手后，建立了一条持久化的双向通道。它的消息头极小，支持原生二进制，实时性最强。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;（选型总结）&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我的实际工作中，&lt;strong&gt;只有一种情况我会毫不犹豫选 WebSocket&lt;/strong&gt;：就是客户端需要高频主动发数据给后端（比如在线文档协作、游戏操作）。如果仅仅是后端推通知、推行情、推 AI 流式回复，我一定优先选 &lt;strong&gt;SSE&lt;/strong&gt;，因为代码量少 70%，还不用头疼重连逻辑。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最后补充一点&lt;/strong&gt;：用 WebSocket 时一定要注意&lt;strong&gt;心跳保活（Ping/Pong）&lt;strong&gt;和&lt;/strong&gt;断线重连&lt;/strong&gt;，因为浏览器没有内置支持，必须自己写指数退避重试；而且生产环境一定要配置 Nginx 的 &lt;code&gt;proxy_read_timeout&lt;/code&gt; 大于心跳间隔，防止连接被代理&amp;quot;假死&amp;quot;斩杀。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;💡 高级工程师的升华&lt;/strong&gt;：
+问&amp;quot;如果消息量极大怎么办&amp;quot;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;&amp;ldquo;如果面临千万级长连接，考虑将 WebSocket 连接层（Gateway）和业务逻辑层（Business）分离，利用 MQ（消息队列）进行异步解耦，并且严格监控文件描述符（FD）上限，避免 OOM（内存溢出）。&amp;rdquo;&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

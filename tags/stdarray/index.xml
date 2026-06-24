@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Std::array on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/stdarray/</link>
+        <description>Recent content in Std::array on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/stdarray/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>std::array 底层原理深度剖析：零开销封装、内存模型与最佳实践</title>
+        <link>https://Yannick-Mo.github.io/p/std-array-internals/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/std-array-internals/</guid>
+        <description>&lt;p&gt;&lt;code&gt;std::array&lt;/code&gt; 是 C++11 标准库中引入的一个容器，它旨在提供一种&lt;strong&gt;既安全又高效&lt;/strong&gt;的固定大小数组的使用方式。&lt;/p&gt;
+&lt;p&gt;简单来说，它是对原始 C 风格数组的一个轻量级封装，在保留原生数组性能的同时，赋予了它标准容器的各种优点。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;核心特点&#34;&gt;核心特点
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;固定大小，编译时确定&lt;/strong&gt;：&lt;code&gt;std::array&lt;/code&gt; 的大小是通过模板参数 &lt;code&gt;N&lt;/code&gt; 在&lt;strong&gt;编译时&lt;/strong&gt;确定的，一旦声明就&lt;strong&gt;无法动态改变&lt;/strong&gt;大小。这避免了 &lt;code&gt;std::vector&lt;/code&gt; 动态扩容的开销。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;零开销抽象&lt;/strong&gt;：由于它只是一个对原生数组的简单封装，其性能与直接使用 C 风格数组&lt;strong&gt;几乎完全一样&lt;/strong&gt;。它没有引入额外的运行时开销，符合 C++&amp;ldquo;不为不用的东西付费&amp;quot;的理念。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内存连续，与C API兼容&lt;/strong&gt;：&lt;code&gt;std::array&lt;/code&gt; 的元素在内存中&lt;strong&gt;连续存储&lt;/strong&gt;。可以通过 &lt;code&gt;data()&lt;/code&gt; 成员函数获得指向底层数组的指针，&lt;strong&gt;方便与需要原生数组指针的C风格API进行交互&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;聚合类型，初始化方便&lt;/strong&gt;：&lt;code&gt;std::array&lt;/code&gt; 是一个聚合类型，这意味着你可以使用&lt;strong&gt;花括号列表&lt;/strong&gt;对它进行初始化，非常直观。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;标准容器接口&lt;/strong&gt;：它提供了与 &lt;code&gt;std::vector&lt;/code&gt; 等STL容器一致的接口，如 &lt;code&gt;begin()&lt;/code&gt;, &lt;code&gt;end()&lt;/code&gt;, &lt;code&gt;size()&lt;/code&gt;, &lt;code&gt;at()&lt;/code&gt;, &lt;code&gt;front()&lt;/code&gt;, &lt;code&gt;back()&lt;/code&gt; 等。这让它能够无缝地配合STL算法使用，例如 &lt;code&gt;std::sort&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;底层实现原理&#34;&gt;底层实现原理
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;std::array&lt;/code&gt; 的底层原理非常直接，并没有复杂的机制。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;本质是一个结构体&lt;/strong&gt;：标准规定，&lt;code&gt;std::array&lt;/code&gt; 的语义&lt;strong&gt;等同于一个只包含一个 C 风格数组作为其唯一非静态数据成员的结构体&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型的简化实现&lt;/strong&gt;：
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;namespace&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;std&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;template&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;T&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;size_t&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;N&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;array&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;T&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_elems&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;N&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 唯一的成员变量：原生数组
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// ... 各种成员函数（begin, end, size, at等）的封装 ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;可以看到，它的核心就是 &lt;code&gt;T _elems[N]&lt;/code&gt;。所有的功能，如获取大小（&lt;code&gt;size()&lt;/code&gt;）、迭代器（&lt;code&gt;begin()/end()&lt;/code&gt;），都是在这个封装上提供的接口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内存分配&lt;/strong&gt;：作为一个结构体，&lt;code&gt;std::array&lt;/code&gt; 对象本身分配在何处（栈或全局数据区），取决于你如何声明它。如果作为局部变量，它就在&lt;strong&gt;栈上分配&lt;/strong&gt;；如果作为全局变量或静态变量，则在静态存储区。它&lt;strong&gt;不会&lt;/strong&gt;像 &lt;code&gt;std::vector&lt;/code&gt; 那样在堆上分配额外的内存。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;迭代器&lt;/strong&gt;：&lt;code&gt;std::array&lt;/code&gt; 的迭代器通常就是&lt;strong&gt;原生指针&lt;/strong&gt;的简单封装或别名，这使得它的遍历操作非常高效。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;与其他容器的对比&#34;&gt;与其他容器的对比
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;特性&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;code&gt;std::array&amp;lt;T, N&amp;gt;&lt;/code&gt;&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;code&gt;std::vector&amp;lt;T&amp;gt;&lt;/code&gt;&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;code&gt;T arr[N]&lt;/code&gt;（C风格数组）&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;大小是否固定&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 固定，编译时确定&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 动态，可运行时改变&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 固定，编译时确定&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内存分配位置&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;栈（或静态存储区）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;堆&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;栈（或静态存储区）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;是否支持STL算法&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 支持&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 支持&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 不支持（无迭代器）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;拷贝/赋值&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 支持&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 支持&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 不支持&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;边界检查&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;operator[]&lt;/code&gt;无检查，&lt;code&gt;.at()&lt;/code&gt;有检查&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;operator[]&lt;/code&gt;无检查，&lt;code&gt;.at()&lt;/code&gt;有检查&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 无&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;传参时类型退化&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 不退化，保持完整类型&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 不退化&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 退化为指针&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;性能&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;与C数组一样高&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;稍低（有堆分配和扩容开销）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;最高&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结与最佳实践&#34;&gt;总结与最佳实践
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;何时使用 &lt;code&gt;std::array&lt;/code&gt;&lt;/strong&gt;：当&lt;strong&gt;数组大小在编译时已知且固定不变&lt;/strong&gt;时，应优先使用 &lt;code&gt;std::array&lt;/code&gt; 来替代 C 风格数组。它能提供更好的类型安全、更丰富的功能和与现代C++更好的集成性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;何时使用 &lt;code&gt;std::vector&lt;/code&gt;&lt;/strong&gt;：当&lt;strong&gt;数组大小在运行时才能确定&lt;/strong&gt;，或者需要&lt;strong&gt;动态增删元素&lt;/strong&gt;时。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;何时使用C风格数组&lt;/strong&gt;：通常仅在与&lt;strong&gt;旧式C库交互&lt;/strong&gt;时，作为接收数据的缓冲区使用。在C++代码内部，应尽量避免直接使用。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

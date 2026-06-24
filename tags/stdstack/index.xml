@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Std::stack on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/stdstack/</link>
+        <description>Recent content in Std::stack on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/stdstack/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>std::queue / std::stack 底层原理剖析：容器适配器设计、默认底层与灵活替换</title>
+        <link>https://Yannick-Mo.github.io/p/queue-stack-underlying-principles/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/queue-stack-underlying-principles/</guid>
+        <description>&lt;p&gt;&lt;code&gt;std::queue&lt;/code&gt; 和 &lt;code&gt;std::stack&lt;/code&gt; 是 C++ 标准库中的&lt;strong&gt;容器适配器&lt;/strong&gt;（Container Adapters）。它们本身不是独立的容器，而是&lt;strong&gt;对底层容器（如 &lt;code&gt;std::deque&lt;/code&gt;）的封装&lt;/strong&gt;，提供特定的受限接口。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;stdqueue队列&#34;&gt;std::queue（队列）
+&lt;/h2&gt;&lt;h3 id=&#34;特点&#34;&gt;特点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;先进先出（FIFO）&lt;/strong&gt;：元素从队尾（&lt;code&gt;push&lt;/code&gt;）进入，从队头（&lt;code&gt;pop&lt;/code&gt;）弹出。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;受限操作&lt;/strong&gt;：只允许在队尾插入（&lt;code&gt;push&lt;/code&gt;/&lt;code&gt;emplace&lt;/code&gt;）、在队头删除（&lt;code&gt;pop&lt;/code&gt;）、访问队头（&lt;code&gt;front&lt;/code&gt;）和队尾（&lt;code&gt;back&lt;/code&gt;）元素。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不支持遍历&lt;/strong&gt;：没有迭代器，不能通过 &lt;code&gt;begin&lt;/code&gt;/&lt;code&gt;end&lt;/code&gt; 遍历。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大小动态&lt;/strong&gt;：随元素增减而动态变化（受底层容器影响）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;底层原理&#34;&gt;底层原理
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;默认底层容器为 &lt;code&gt;std::deque&amp;lt;T&amp;gt;&lt;/code&gt;，因为 &lt;code&gt;deque&lt;/code&gt; 在两端操作都是 O(1)，非常适合队列。&lt;/li&gt;
+&lt;li&gt;也可以指定 &lt;code&gt;std::list&amp;lt;T&amp;gt;&lt;/code&gt; 或 &lt;code&gt;std::vector&amp;lt;T&amp;gt;&lt;/code&gt; 作为底层容器（但 &lt;code&gt;vector&lt;/code&gt; 在头部删除效率低，不推荐）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;queue&lt;/code&gt; 的所有操作都直接转发给底层容器：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;push&lt;/code&gt; → 底层容器的 &lt;code&gt;push_back&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pop&lt;/code&gt; → 底层容器的 &lt;code&gt;pop_front&lt;/code&gt;（要求底层支持 &lt;code&gt;pop_front&lt;/code&gt;，故 &lt;code&gt;vector&lt;/code&gt; 不行）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;front&lt;/code&gt; → 底层容器的 &lt;code&gt;front&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;back&lt;/code&gt; → 底层容器的 &lt;code&gt;back&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无额外空间开销&lt;/strong&gt;：适配器本身不存储额外数据，仅持有底层容器对象。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;stdstack栈&#34;&gt;std::stack（栈）
+&lt;/h2&gt;&lt;h3 id=&#34;特点-1&#34;&gt;特点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;后进先出（LIFO）&lt;/strong&gt;：元素从栈顶（&lt;code&gt;push&lt;/code&gt;）进入，从栈顶（&lt;code&gt;pop&lt;/code&gt;）弹出。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;受限操作&lt;/strong&gt;：只允许在栈顶插入（&lt;code&gt;push&lt;/code&gt;/&lt;code&gt;emplace&lt;/code&gt;）、删除（&lt;code&gt;pop&lt;/code&gt;）、访问栈顶（&lt;code&gt;top&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不支持遍历&lt;/strong&gt;：无迭代器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大小动态&lt;/strong&gt;：随元素增减而变化。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;底层原理-1&#34;&gt;底层原理
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;默认底层容器为 &lt;code&gt;std::deque&amp;lt;T&amp;gt;&lt;/code&gt;（同样因两端操作高效）。&lt;/li&gt;
+&lt;li&gt;也可指定 &lt;code&gt;std::vector&amp;lt;T&amp;gt;&lt;/code&gt; 或 &lt;code&gt;std::list&amp;lt;T&amp;gt;&lt;/code&gt;。&lt;code&gt;vector&lt;/code&gt; 作为底层时，&lt;code&gt;push&lt;/code&gt;/&lt;code&gt;pop&lt;/code&gt; 在尾部，效率很高（O(1) 均摊），且内存连续，缓存友好，所以有时会手动指定 &lt;code&gt;std::stack&amp;lt;int, std::vector&amp;lt;int&amp;gt;&amp;gt;&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;操作转发：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;push&lt;/code&gt; → 底层容器的 &lt;code&gt;push_back&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pop&lt;/code&gt; → 底层容器的 &lt;code&gt;pop_back&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;top&lt;/code&gt; → 底层容器的 &lt;code&gt;back&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无额外开销&lt;/strong&gt;：仅封装底层容器。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;与-stddeque-及-stdvector-的关系&#34;&gt;与 &lt;code&gt;std::deque&lt;/code&gt; 及 &lt;code&gt;std::vector&lt;/code&gt; 的关系
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;容器适配器&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;默认底层&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;可替换底层&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;关键操作要求&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;queue&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;deque&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;list&lt;/code&gt;（&lt;code&gt;vector&lt;/code&gt;&lt;strong&gt;不可&lt;/strong&gt;）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;需要 &lt;code&gt;pop_front&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;stack&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;deque&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;vector&lt;/code&gt;, &lt;code&gt;list&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;需要 &lt;code&gt;push_back&lt;/code&gt;, &lt;code&gt;pop_back&lt;/code&gt;, &lt;code&gt;back&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结与最佳实践&#34;&gt;总结与最佳实践
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;何时使用 &lt;code&gt;queue&lt;/code&gt;&lt;/strong&gt;：当你需要一个纯粹的 FIFO 数据结构，且不希望暴露底层实现细节时。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;何时使用 &lt;code&gt;stack&lt;/code&gt;&lt;/strong&gt;：当你需要一个纯粹的 LIFO 数据结构（如递归模拟、表达式求值）时。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;性能考量&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;默认 &lt;code&gt;deque&lt;/code&gt; 在两端操作上表现优秀，且不会因重新分配导致已有元素移动（与 &lt;code&gt;vector&lt;/code&gt; 不同）。&lt;/li&gt;
+&lt;li&gt;若确定只在栈顶操作（&lt;code&gt;stack&lt;/code&gt;），且追求极致缓存性能，可指定 &lt;code&gt;vector&lt;/code&gt; 为底层（例如 &lt;code&gt;std::stack&amp;lt;int, std::vector&amp;lt;int&amp;gt;&amp;gt;&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注意&lt;/strong&gt;：两者都是&lt;strong&gt;非侵入式&lt;/strong&gt;设计，选择底层容器时应确保其提供的操作满足适配器要求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;总之，&lt;code&gt;queue&lt;/code&gt; 和 &lt;code&gt;stack&lt;/code&gt; 是&lt;strong&gt;策略性封装&lt;/strong&gt;，限制了底层容器的接口，使代码更清晰、语义更明确，同时也允许你根据性能需求灵活替换底层容器。如果不需要这种限制，可直接使用 &lt;code&gt;deque&lt;/code&gt; 或 &lt;code&gt;vector&lt;/code&gt; 获得更丰富的功能。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

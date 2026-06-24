@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>预处理 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E9%A2%84%E5%A4%84%E7%90%86/</link>
+        <description>Recent content in 预处理 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E9%A2%84%E5%A4%84%E7%90%86/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>C&#43;&#43; 为什么要严格经过预处理、编译、汇编、链接四个阶段？</title>
+        <link>https://Yannick-Mo.github.io/p/cpp-compilation-four-stages/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/cpp-compilation-four-stages/</guid>
+        <description>&lt;p&gt;C++之所以要严格经过&lt;strong&gt;预处理、编译、汇编、链接&lt;/strong&gt;这4个阶段，根本原因不在于&amp;quot;技术限制&amp;quot;，而在于&lt;strong&gt;历史遗产&lt;/strong&gt;、&lt;strong&gt;工程效率&lt;/strong&gt;和&lt;strong&gt;职责分离&lt;/strong&gt;三大核心逻辑。我把它拆解成三个层面来讲，你就豁然开朗了：&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;第一层面必要性为什么不能一步到位语法与环境的割裂&#34;&gt;第一层面：必要性——为什么不能&amp;quot;一步到位&amp;quot;？（语法与环境的割裂）
+&lt;/h2&gt;&lt;p&gt;C++源自C语言，诞生于上世纪70年代内存极小的UNIX环境。当时如果一次性把整个工程的代码全部加载到内存里解析，机器会直接崩溃。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;最大的&amp;quot;拦路虎&amp;quot;是&amp;quot;声明与定义分离&amp;quot;&lt;/strong&gt;：C++允许你调用一个在其他文件（甚至还没编译的第三方库）中定义的函数。编译器在解析当前文件时，根本不知道这个函数占多少内存、返回什么类型。&lt;/li&gt;
+&lt;li&gt;因此，&lt;strong&gt;必须分阶段&lt;/strong&gt;：前三个阶段（预处理、编译、汇编）只负责把&lt;strong&gt;单个源文件（.cpp）&lt;strong&gt;变成&lt;/strong&gt;未链接的机器码（.o/.obj）&lt;/strong&gt;，此时所有&amp;quot;外部符号&amp;quot;都用占位符代替。最后一个阶段（链接）再把所有零散的机器码和库合并，把占位符填上真实的内存地址。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;第二层面效率性为什么必须拆成4步修改代码的痛苦与快乐&#34;&gt;第二层面：效率性——为什么必须拆成4步？（修改代码的痛苦与快乐）
+&lt;/h2&gt;&lt;p&gt;假设你有一个包含10万个源文件的大型项目（如Chromium）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;如果不分阶段&lt;/strong&gt;：哪怕你只修改了1行代码，编译器都必须把全部10万个文件重新扫描、解析、生成机器码。一次编译可能需要几个小时。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分成4阶段后&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;预处理+编译+汇编&lt;/strong&gt;（前3步）只针对&lt;strong&gt;你修改的那1个文件&lt;/strong&gt;执行，只需几秒钟，生成一个新的&lt;code&gt;.o&lt;/code&gt;文件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;链接&lt;/strong&gt;（第4步）虽然要处理全部10万个&lt;code&gt;.o&lt;/code&gt;文件，但链接器只检查符号表，速度远快于重新解析语法树。&lt;/li&gt;
+&lt;li&gt;这就是&lt;strong&gt;增量编译&lt;/strong&gt;的底层基石。你每次点&amp;quot;生成&amp;quot;之所以快，就是因为大部分&lt;code&gt;.o&lt;/code&gt;文件没变，直接复用了前3步的成果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;第三层面逻辑性每一步到底在过滤什么层层降维&#34;&gt;第三层面：逻辑性——每一步到底在&amp;quot;过滤&amp;quot;什么？（层层降维）
+&lt;/h2&gt;&lt;p&gt;这4个阶段其实是对代码的&lt;strong&gt;4次&amp;quot;降维打击&amp;quot;&lt;/strong&gt;，每一步都不可互相替代：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;预处理（文本级替换）&lt;/strong&gt;：处理&lt;code&gt;#include&lt;/code&gt;、&lt;code&gt;#define&lt;/code&gt;。这一步&lt;strong&gt;不懂C++语法&lt;/strong&gt;，纯粹是复制粘贴文本。必须单独做，因为如果和编译混在一起，宏定义的字符串替换会彻底搞乱编译器的报错行号。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;编译（生成汇编代码）&lt;/strong&gt;：把C++高级语法翻译成&lt;strong&gt;人类可读的汇编指令&lt;/strong&gt;。之所以不直接生成机器码，是因为汇编是中间&amp;quot;检查点&amp;quot;，方便编译器做跨平台优化（不同CPU架构）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;汇编（生成机器码）&lt;/strong&gt;：把汇编文本变成&lt;strong&gt;二进制的目标文件（.o）&lt;/strong&gt;。此时内存地址是&amp;quot;浮动&amp;quot;的（从0开始），不可能是最终地址。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;链接（重定位与合并）&lt;/strong&gt;：这是&lt;strong&gt;最核心的灵魂&lt;/strong&gt;。它将所有&lt;code&gt;.o&lt;/code&gt;文件中的函数和变量，按照操作系统规定的可执行文件格式（如ELF或PE）&lt;strong&gt;排布到真正的物理/虚拟内存地址&lt;/strong&gt;，并处理静态库的&amp;quot;抽取&amp;quot;和动态库的&amp;quot;桩函数&amp;quot;生成。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;前3步（预处理、编译、汇编）解决的是&amp;quot;这句话什么意思&amp;quot;（语义翻译），而最后1步（链接）解决的是&amp;quot;这句话到底放在哪&amp;quot;（地址编排）。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;如果没有链接，C++就永远只能写单个文件的&amp;quot;玩具代码&amp;quot;；如果不分前3步，每次修改代码都要等全量编译，大型软件根本不可能开发出来。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

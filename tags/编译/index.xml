@@ -7,7 +7,407 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
-        <lastBuildDate>Sun, 14 Jun 2026 21:12:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>C/C&#43;&#43; 数组与指针完整知识笔记：核心本质、深度进阶与面试高频陷阱</title>
+        <link>https://Yannick-Mo.github.io/p/array-pointer-complete-guide/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/array-pointer-complete-guide/</guid>
+        <description>&lt;h2 id=&#34;一核心本质内存与类型总纲&#34;&gt;一、核心本质：内存与类型（总纲）
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;概念&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;数组（Array）&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;指针（Pointer）&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;本质&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;相同类型元素的&lt;strong&gt;连续内存块&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;存放&lt;strong&gt;内存地址&lt;/strong&gt;的变量&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;类型&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;自带维度信息（如 &lt;code&gt;int [10]&lt;/code&gt;）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不带维度信息（如 &lt;code&gt;int*&lt;/code&gt;）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;存储&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;实体数据本身（除非作为形参）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;仅存4/8字节地址值&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;左值性&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不可修改&lt;/strong&gt;的常量地址（不能赋值）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;可修改&lt;/strong&gt;的变量（可赋值、自增）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;大小&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;sizeof&lt;/code&gt; 返回总字节数&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;sizeof&lt;/code&gt; 返回指针自身字节数（4/8）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二数组名-a-与指针-p-的互换与不可互换&#34;&gt;二、数组名 &lt;code&gt;a&lt;/code&gt; 与指针 &lt;code&gt;p&lt;/code&gt; 的&amp;quot;互换&amp;quot;与&amp;quot;不可互换&amp;quot;
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;数组名在&lt;strong&gt;绝大多数&lt;/strong&gt;表达式中会&amp;quot;退化&amp;quot;为指向首元素的指针（&lt;code&gt;&amp;amp;a[0]&lt;/code&gt;），但也有例外。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-可以互换的表达式退化发生&#34;&gt;✅ 可以互换的表达式（退化发生）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;作为函数实参：&lt;code&gt;func(a)&lt;/code&gt; 等价于 &lt;code&gt;func(p)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;下标访问：&lt;code&gt;a[i]&lt;/code&gt; 等价于 &lt;code&gt;p[i]&lt;/code&gt;（底层都是 &lt;code&gt;*(a+i)&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;算术运算：&lt;code&gt;a + 1&lt;/code&gt; 等价于 &lt;code&gt;p + 1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;关系比较：&lt;code&gt;if(a == p)&lt;/code&gt; 合法（比较地址值）&lt;/li&gt;
+&lt;li&gt;三目运算符：&lt;code&gt;(cond ? a : p)&lt;/code&gt; 返回指针&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-绝对不能互换的表达式硬核区别&#34;&gt;❌ 绝对不能互换的表达式（硬核区别）
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;场景&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;使用 &lt;code&gt;a&lt;/code&gt; 的结果&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;使用 &lt;code&gt;p&lt;/code&gt; 的结果&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;原因&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;sizeof&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;整个数组字节数（如40）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;指针字节数（如8）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;a&lt;/code&gt; 携带类型长度，&lt;code&gt;p&lt;/code&gt; 不携带&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;&amp;amp;&lt;/code&gt; 取地址&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;类型为 &lt;code&gt;int (*)[10]&lt;/code&gt;（行指针）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;类型为 &lt;code&gt;int**&lt;/code&gt;（二级指针）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;&amp;amp;a+1&lt;/code&gt; 偏移40字节，&lt;code&gt;&amp;amp;p+1&lt;/code&gt; 偏移8字节&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;赋值左侧&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;a = ...&lt;/code&gt; 编译报错&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;p = ...&lt;/code&gt; 合法&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;数组名是右值常量，指针是左值变量&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;自增自减&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;a++&lt;/code&gt; / &lt;code&gt;++a&lt;/code&gt; 非法&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;p++&lt;/code&gt; / &lt;code&gt;++p&lt;/code&gt; 合法&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;常量地址不可变&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三深度进阶语法细节&#34;&gt;三、深度进阶语法细节
+&lt;/h2&gt;&lt;h3 id=&#34;1-下标运算符--的对称性冷知识&#34;&gt;1. 下标运算符 &lt;code&gt;[]&lt;/code&gt; 的对称性（冷知识）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;编译器将 &lt;code&gt;a[i]&lt;/code&gt; 翻译为 &lt;code&gt;*(a + i)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;加法交换律 =&amp;gt; &lt;code&gt;*(a + i)&lt;/code&gt; 完全等价于 &lt;code&gt;*(i + a)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结论&lt;/strong&gt;：&lt;code&gt;a[i]&lt;/code&gt; 完全可以写成 &lt;strong&gt;&lt;code&gt;i[a]&lt;/code&gt;&lt;/strong&gt;（极其考验代码阅读能力的写法，实际项目中禁用）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-指针数组-vs-数组指针类型区分神器&#34;&gt;2. 指针数组 vs 数组指针（类型区分神器）
+&lt;/h3&gt;&lt;p&gt;通过&lt;strong&gt;优先级规则&lt;/strong&gt;（&lt;code&gt;[]&lt;/code&gt; 优先级高于 &lt;code&gt;*&lt;/code&gt;）判断：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;写法&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;读法&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;含义&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;内存跨度&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;int *p[10]&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;指针数组&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;数组存了10个 &lt;code&gt;int*&lt;/code&gt; 指针&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;p+1&lt;/code&gt; 偏移 &lt;strong&gt;8&lt;/strong&gt; 字节（一个指针大小）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;int (*p)[10]&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;数组指针&lt;/strong&gt;（行指针）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;一个指针，指向含10个int的整块数组&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;p+1&lt;/code&gt; 偏移 &lt;strong&gt;40&lt;/strong&gt; 字节（10*4）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;int **p&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;二级指针&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;指向 &lt;code&gt;int*&lt;/code&gt; 的指针&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;p+1&lt;/code&gt; 偏移 8 字节&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;重点记忆&lt;/strong&gt;：&lt;code&gt;int (*p)[10]&lt;/code&gt; 是专门用来指向二维数组行的，也是 &lt;code&gt;&amp;amp;a&lt;/code&gt; 返回的精确类型。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;3-多维数组二维数组的内存与退化&#34;&gt;3. 多维数组（二维数组）的内存与退化
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;内存布局&lt;/strong&gt;：&lt;strong&gt;行主序&lt;/strong&gt;，所有元素在物理内存上连续线性排列。
+&lt;code&gt;int a[3][4]&lt;/code&gt; 在内存中为：&lt;code&gt;a00 a01 a02 a03 a10 a11 ...&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;退化规则&lt;/strong&gt;：二维数组名 &lt;code&gt;a&lt;/code&gt; &lt;strong&gt;绝不退化为 &lt;code&gt;int**&lt;/code&gt;&lt;/strong&gt;，而是退化为 &lt;strong&gt;&lt;code&gt;int (*)[4]&lt;/code&gt;&lt;/strong&gt;。
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;原因&lt;/em&gt;：编译器必须知道每行宽度（4列），才能算出 &lt;code&gt;a[i][j]&lt;/code&gt; 的偏移量：&lt;code&gt;*( *(a+i) + j )&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-字符串字面量与字符数组生命周期陷阱&#34;&gt;4. 字符串字面量与字符数组（生命周期陷阱）
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;定义方式&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;存储区域&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;是否可修改&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;code&gt;sizeof&lt;/code&gt; 结果&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;char arr[] = &amp;quot;abc&amp;quot;;&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;栈/全局区（副本）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;可修改&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;4（含 &lt;code&gt;\0&lt;/code&gt;）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;char *p = &amp;quot;abc&amp;quot;;&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;常量只读区（&lt;code&gt;.rodata&lt;/code&gt;）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不可修改&lt;/strong&gt;（修改即崩溃）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;8（指针大小）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;致命错误&lt;/strong&gt;：&lt;code&gt;char *p = &amp;quot;abc&amp;quot;; p[0] = &#39;A&#39;;&lt;/code&gt; 段错误。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全赋值&lt;/strong&gt;：若想通过指针修改，必须用 &lt;code&gt;char *p = strdup(&amp;quot;abc&amp;quot;);&lt;/code&gt;（堆区副本）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四函数参数传递中的退化与大小丢失必考&#34;&gt;四、函数参数传递中的&amp;quot;退化&amp;quot;与大小丢失（必考）
+&lt;/h2&gt;&lt;h3 id=&#34;1-一维数组形参&#34;&gt;1. 一维数组形参
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;void func(int a[10])&lt;/code&gt; &lt;strong&gt;完全等价于&lt;/strong&gt; &lt;code&gt;void func(int *a)&lt;/code&gt;，&lt;strong&gt;数组长度10被无情忽略&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;在函数体内，&lt;code&gt;sizeof(a)&lt;/code&gt; 永远等于指针大小（8），&lt;strong&gt;无法&lt;/strong&gt;通过 &lt;code&gt;sizeof&lt;/code&gt; 求元素个数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：必须显式传入长度参数，如 &lt;code&gt;void func(int *a, int len)&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-多维数组形参只能省略第一维&#34;&gt;2. 多维数组形参（只能省略第一维）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;void func(int a[][4])&lt;/code&gt; &lt;strong&gt;等价于&lt;/strong&gt; &lt;code&gt;void func(int (*a)[4])&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;第二维 &lt;code&gt;4&lt;/code&gt; &lt;strong&gt;绝对不能省略&lt;/strong&gt;，否则编译器不知道行跨步长。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;错误示范&lt;/strong&gt;：&lt;code&gt;void func(int **a)&lt;/code&gt; 传入二维数组会直接导致内存访问错乱（因为 &lt;code&gt;a[1][0]&lt;/code&gt; 的解引用逻辑完全错误）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五动态内存分配堆区伪数组&#34;&gt;五、动态内存分配（堆区&amp;quot;伪数组&amp;quot;）
+&lt;/h2&gt;&lt;p&gt;使用 &lt;code&gt;malloc/calloc&lt;/code&gt; 开辟的内存，返回的是指针，不是数组。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;本质区别&lt;/strong&gt;：&lt;code&gt;int *p = malloc(10 * sizeof(int));&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;p&lt;/code&gt; 是&lt;strong&gt;变量指针&lt;/strong&gt;（可 &lt;code&gt;p++&lt;/code&gt; 移动）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;p&lt;/code&gt; &lt;strong&gt;不携带&lt;/strong&gt;数组长度信息，&lt;code&gt;sizeof(p)&lt;/code&gt; 永远为 8。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内存泄漏风险&lt;/strong&gt;：若执行 &lt;code&gt;p++&lt;/code&gt; 后，丢失了原始首地址，再也无法正确 &lt;code&gt;free(p)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;长度管理&lt;/strong&gt;：必须额外使用变量（如 &lt;code&gt;int n = 10;&lt;/code&gt;）来记录数组元素个数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六经典易错点--面试高频陷阱top-5&#34;&gt;六、经典易错点 &amp;amp; 面试高频陷阱（Top 5）
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;数组作形参误写长度&lt;/strong&gt;：&lt;code&gt;sizeof(arr)/sizeof(arr[0])&lt;/code&gt; 写在函数体内是错的（算出来是 8/4=2），必须传 &lt;code&gt;len&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多维数组传参误用二级指针&lt;/strong&gt;：&lt;code&gt;int a[3][4]&lt;/code&gt; 传给 &lt;code&gt;int **p&lt;/code&gt; 会编译警告，且运行时 &lt;code&gt;p[i][j]&lt;/code&gt; 寻址错误。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;指针自增丢失头地址&lt;/strong&gt;：遍历数组时建议用 &lt;code&gt;int *q = p;&lt;/code&gt; 移动 &lt;code&gt;q&lt;/code&gt;，不动 &lt;code&gt;p&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;常量字符串赋值给 &lt;code&gt;char*&lt;/code&gt;&lt;/strong&gt;：旧标准允许但不安全，现代 C++ 要求 &lt;code&gt;const char*&lt;/code&gt;，修改会导致未定义行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;&amp;amp;a&lt;/code&gt; 和 &lt;code&gt;a&lt;/code&gt; 的指针运算混淆&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;a + 1&lt;/code&gt; 偏移 4 字节（指向第二个元素）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;amp;a + 1&lt;/code&gt; 偏移 40 字节（越过整个数组尾部）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七速查对比总表一图流&#34;&gt;七、速查对比总表（一图流）
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;表达式 / 场景&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;code&gt;int a[10]&lt;/code&gt;&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;code&gt;int *p = a&lt;/code&gt;&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;结论&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;sizeof(x)&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;40&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;8&lt;/code&gt;（64位）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不同&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;&amp;amp;x&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;int (*)[10]&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;int **&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不同&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;x = NULL&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 报错&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 合法&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不同&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;x++&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 报错&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 合法&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不同&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;x[3]&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 第4个元素&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 第4个元素&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;相同&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;*(x+3)&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 第4个元素&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 第4个元素&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;相同&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;3[x]&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 第4个元素&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 第4个元素&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;相同&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;函数实参传 &lt;code&gt;func(x)&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;退化为 &lt;code&gt;int*&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;传入 &lt;code&gt;int*&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;相同&lt;/strong&gt;（形参侧）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;终极口诀&lt;/strong&gt;：
+&lt;strong&gt;数组是地盘，指针是门牌&lt;/strong&gt;。
+地盘有大有小（&lt;code&gt;sizeof&lt;/code&gt;），门牌就一巴掌大。
+下标算术长相像，取址赋值露原形。
+传参必带长度数，二维传指别传星。&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        </item>
+        <item>
+        <title>头文件定义全局变量：static / extern / inline / const 全场景行为对照</title>
+        <link>https://Yannick-Mo.github.io/p/header-global-variable-guide/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/header-global-variable-guide/</guid>
+        <description>&lt;p&gt;这里涉及三个核心维度：&lt;strong&gt;语言（C/C++）&lt;/strong&gt;、&lt;strong&gt;修饰符（static/extern/inline/const）&lt;/strong&gt;、&lt;strong&gt;C++ 标准版本&lt;/strong&gt;。请看下表：&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;全场景行为对照表&#34;&gt;全场景行为对照表
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;头文件中的写法&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;适用语言&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;链接属性&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;被多个 &lt;code&gt;.c&lt;/code&gt;/&lt;code&gt;.cpp&lt;/code&gt; 包含后的结果&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;最终内存实例数&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;存储位置（段）&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;int g_val = 10;&lt;/code&gt;&lt;/strong&gt;（普通变量）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;C / C++&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;外部&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ &lt;strong&gt;链接器报错&lt;/strong&gt;（多重定义）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;编译失败&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;N/A&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;static int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;C / C++&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内部&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，但各文件独立&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;N 份&lt;/strong&gt;（互不干扰）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.data&lt;/code&gt; / &lt;code&gt;.bss&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;const int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C++&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内部&lt;/strong&gt;（隐式）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，各文件独立&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;N 份&lt;/strong&gt;（互不干扰）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.rodata&lt;/code&gt;（只读）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;const int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C 语言&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;外部&lt;/strong&gt;（显式）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ &lt;strong&gt;链接器报错&lt;/strong&gt;（多重定义）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;编译失败&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;N/A&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;extern int g_val;&lt;/code&gt;&lt;/strong&gt;（仅声明）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;C / C++&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;外部（声明）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;（需在某个 &lt;code&gt;.cpp&lt;/code&gt; 中定义）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;1 份&lt;/strong&gt;（全局唯一）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;取决于定义处&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;inline int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C++17 及以上&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;外部（允许重复）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，链接器自动合并去重&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;1 份&lt;/strong&gt;（全局唯一）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.data&lt;/code&gt; / &lt;code&gt;.bss&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;constexpr int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C++17 及以上&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;外部（隐式 inline）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，链接器自动合并去重&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;1 份&lt;/strong&gt;（全局唯一）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.rodata&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;constexpr int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C++11 / C++14&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内部&lt;/strong&gt;（隐式）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，各文件独立&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;N 份&lt;/strong&gt;（互不干扰）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.rodata&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;关键补充说明&#34;&gt;关键补充说明
+&lt;/h2&gt;&lt;h3 id=&#34;1-关于普通变量报错的底层细节-fcommon-历史遗留&#34;&gt;1. 关于&amp;quot;普通变量报错&amp;quot;的底层细节（&lt;code&gt;-fcommon&lt;/code&gt; 历史遗留）
+&lt;/h3&gt;&lt;p&gt;表格中提到 &lt;code&gt;int g_val = 10;&lt;/code&gt; 会报错，这是基于现代编译器（&lt;strong&gt;GCC 10+&lt;/strong&gt; 和 &lt;strong&gt;Clang 默认&lt;/strong&gt;）的行为。
+在非常古老的 Unix 编译器或未开启 &lt;code&gt;-fno-common&lt;/code&gt; 选项时，链接器曾允许这种写法，并将多个同名变量&lt;strong&gt;合并到同一块内存&lt;/strong&gt;。但这种行为早已被废弃，&lt;strong&gt;绝对不要依赖&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;2-const-在-c-和-c-中的本质区别面试高频坑&#34;&gt;2. &lt;code&gt;const&lt;/code&gt; 在 C 和 C++ 中的本质区别（面试高频坑）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;C++ 的设计哲学&lt;/strong&gt;：认为常量天然就是只读的&amp;quot;替换物&amp;quot;，默认内部链接可以放心写在头文件里。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C 的设计哲学&lt;/strong&gt;：&lt;code&gt;const&lt;/code&gt; 仅仅是&amp;quot;只读&amp;quot;的修饰，并不改变变量的链接属性，默认依然是外部链接，所以头文件包含会导致冲突。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-内存实例数对程序的实际影响内存占用&#34;&gt;3. 内存实例数对程序的实际影响（内存占用）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;N 份（内部链接）&lt;/strong&gt;：如果头文件被 100 个源文件包含，且变量是 &lt;code&gt;int buf[1024]&lt;/code&gt;，则会额外浪费约 &lt;code&gt;100 * 4KB = 400KB&lt;/code&gt; 的内存。在嵌入式或内存敏感场景下，这是不可接受的。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1 份（外部链接 / inline）&lt;/strong&gt;：无论包含多少次，物理内存只分配一次，最省空间且逻辑全局一致。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;工程级最佳实践一句话记忆法则&#34;&gt;工程级最佳实践（一句话记忆法则）
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;C 语言项目&lt;/strong&gt;：头文件里&lt;strong&gt;只放&lt;/strong&gt; &lt;code&gt;extern&lt;/code&gt; 声明，定义必须放在唯一的 &lt;code&gt;.c&lt;/code&gt; 文件中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C++ 11/14 项目&lt;/strong&gt;：头文件里只放 &lt;code&gt;extern&lt;/code&gt; 声明，或使用 &lt;code&gt;static&lt;/code&gt; / &lt;code&gt;const&lt;/code&gt; 存放&amp;quot;本模块私有&amp;quot;的常量。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C++ 17 及以上项目（推荐）&lt;/strong&gt;：头文件里直接使用 &lt;strong&gt;&lt;code&gt;inline&lt;/code&gt;&lt;/strong&gt; 或 &lt;strong&gt;&lt;code&gt;constexpr&lt;/code&gt;&lt;/strong&gt; 定义全局变量，既安全又优雅，完美解决&amp;quot;多重定义&amp;quot;烦恼。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;绝对红线&lt;/strong&gt;：&lt;strong&gt;禁止&lt;/strong&gt;在头文件中定义不带任何修饰符（&lt;code&gt;static&lt;/code&gt;/&lt;code&gt;extern&lt;/code&gt;/&lt;code&gt;inline&lt;/code&gt;）的全局变量，这是 100% 的编程错误。&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
         <title>Makefile 完全教程：自动化 C/C&#43;&#43; 编译流程</title>
         <link>https://Yannick-Mo.github.io/p/makefile-tutorial/</link>
         <pubDate>Sun, 14 Jun 2026 21:12:00 +0800</pubDate>

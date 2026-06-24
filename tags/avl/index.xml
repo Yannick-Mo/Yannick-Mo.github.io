@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>AVL on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/avl/</link>
+        <description>Recent content in AVL on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/avl/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>数据结构进阶笔记：从 BST 到 B&#43; 树的进化完全指南</title>
+        <link>https://Yannick-Mo.github.io/p/bst-to-bplus-tree-evolution/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/bst-to-bplus-tree-evolution/</guid>
+        <description>&lt;h2 id=&#34;1-基础铺垫二叉搜索树bst&#34;&gt;1. 基础铺垫：二叉搜索树（BST）
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;定义&lt;/strong&gt;：左子树所有节点 &amp;lt; 根节点 &amp;lt; 右子树所有节点（递归定义）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;痛点（致命缺陷）&lt;/strong&gt;：在极端情况下（如插入顺序为 1,2,3,4,5），树会退化为&lt;strong&gt;链表&lt;/strong&gt;，导致查找时间复杂度从 O(log n) 恶化至 &lt;strong&gt;O(n)&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2-进化第一步平衡二叉树avl树---严格平衡&#34;&gt;2. 进化第一步：平衡二叉树（AVL树 - 严格平衡）
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;诞生目的&lt;/strong&gt;：解决BST退化为链表的问题，保证查询性能稳定。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心特征（考点）&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;平衡因子（BF）&lt;/strong&gt;：任意节点的左子树高度 - 右子树高度，绝对值 &lt;strong&gt;≤ 1&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高度保证&lt;/strong&gt;：节点数 n 的情况下，树高严格维持在 &lt;strong&gt;约 log₂(n)&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;动态维护（四种旋转）&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;LL（左左）&lt;/strong&gt;：右单旋。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RR（右右）&lt;/strong&gt;：左单旋。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LR（左右）&lt;/strong&gt;：先左旋（左孩子），再右旋（根节点）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RL（右左）&lt;/strong&gt;：先右旋（右孩子），再左旋（根节点）。&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;口诀&lt;/em&gt;：&lt;strong&gt;左左向右，右右向左，左右先左后右，右左先右后左&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;性能分析&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;查找：O(log n) &lt;strong&gt;（极快，最稳定）&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;插入/删除：O(log n)，但删除时可能触发&lt;strong&gt;多次回溯旋转&lt;/strong&gt;，常数开销大。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;适用场景&lt;/strong&gt;：&lt;strong&gt;查询多、插入/删除少&lt;/strong&gt;（如内存数据库缓存、配置读取）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;3-进化第二步红黑树r-b-tree---松散平衡&#34;&gt;3. 进化第二步：红黑树（R-B Tree - 松散平衡）
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;诞生目的&lt;/strong&gt;：解决AVL树因频繁旋转导致的写操作性能损耗。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心特征（考点）&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;并不追求&amp;quot;高度差≤1&amp;quot;，只要求&lt;strong&gt;最长路径不超过最短路径的 2 倍&lt;/strong&gt;（近似平衡）。&lt;/li&gt;
+&lt;li&gt;节点标记红/黑，满足五大性质（根黑、叶黑、红子黑、黑高相同）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;性能对比（AVL vs 红黑树）&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;对比维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;strong&gt;AVL树（严格）&lt;/strong&gt;&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;strong&gt;红黑树（松散）&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;平衡标准&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;高度差 ≤ 1&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;最长 ≤ 2 × 最短&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;查找效率&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;更快&lt;/strong&gt;（树更矮）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;略慢（树略高）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;插入/删除效率&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;较慢（旋转多）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;极快&lt;/strong&gt;（最多仅需 3 次旋转 + 变色）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内存占用&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;存高度/平衡因子（int）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;存颜色（1 bit，实际填充后几乎不增开销）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;适用场景&lt;/strong&gt;：&lt;strong&gt;增删改查混合频繁&lt;/strong&gt;（如 Java &lt;code&gt;TreeMap&lt;/code&gt;、C++ &lt;code&gt;std::map&lt;/code&gt;、Linux 内核调度、&lt;code&gt;epoll&lt;/code&gt; 事件管理）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;4-进化第三步b树b-tree--多路平衡搜索树&#34;&gt;4. 进化第三步：B树（B-Tree / 多路平衡搜索树）
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;诞生目的&lt;/strong&gt;：内存中的树（AVL/红黑树）节点太小，无法有效利用磁盘块（Page），导致磁盘I/O次数过多。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心特征（必背）&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;多路分叉&lt;/strong&gt;：一个节点可存多个Key，拥有多个孩子（由阶数m决定）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;绝对平衡&lt;/strong&gt;：&lt;strong&gt;所有叶子节点位于同一层&lt;/strong&gt;（通过分裂与合并维持）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;向上生长&lt;/strong&gt;：插入溢出时，中间节点上提分裂，树是向上&amp;quot;长高&amp;quot;的（区别于二叉树向下长高）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据分布&lt;/strong&gt;：关键字和数据（卫星数据）&lt;strong&gt;存放在所有节点&lt;/strong&gt;（包括内部节点和叶子节点）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;设计哲学&lt;/strong&gt;：节点大小通常设置为磁盘的一个&lt;strong&gt;页（Page，如4KB/16KB）&lt;/strong&gt;，一次I/O读取一整页数据，在内存中二分查找，极大减少磁盘寻道次数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对比内存树&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;对比维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;strong&gt;AVL / 红黑树&lt;/strong&gt;&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;strong&gt;B树&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;存储介质&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;内存（字节寻址，极快）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;磁盘（块寻址，I/O极慢）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;优化目标&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;减少CPU比较次数&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;减少磁盘I/O次数（降低树高）&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;树的高度&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;较高（10亿数据约30层）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;极矮&lt;/strong&gt;（10亿数据仅需3-4层）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;5-实战巅峰b树btree---数据库索引之王&#34;&gt;5. 实战巅峰：B+树（B+Tree - 数据库索引之王）
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;诞生目的&lt;/strong&gt;：弥补B树在&lt;strong&gt;范围查询（Range Query）&lt;strong&gt;和&lt;/strong&gt;磁盘空间利用率&lt;/strong&gt;上的不足。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;B树 vs B+树（一字之差，天壤之别）&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心差异&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;strong&gt;标准 B树&lt;/strong&gt;&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;&lt;strong&gt;B+树（实战）&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;数据存储位置&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;所有节点（内部+叶子）都存数据&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;只有叶子节点存数据&lt;/strong&gt;，内部节点只存索引（Key）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;分支数量&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;内部节点存数据，占用空间大，分叉少&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;内部节点纯索引，分叉更多，&lt;strong&gt;树更矮&lt;/strong&gt;，I/O更少&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;叶子节点结构&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;相互独立&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;所有叶子节点通过&lt;strong&gt;有序链表&lt;/strong&gt;连接&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;范围查询效率&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;需反复中序遍历回溯，效率低&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;命中边界后，&lt;strong&gt;沿链表顺序扫描&lt;/strong&gt;即可，效率极高&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;单条查询&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;可能在中间节点就命中，稍快&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;必须走到叶子节点，每次稳定（但差距极小）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;为什么MySQL InnoDB用B+树？&lt;/strong&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;范围查询极快&lt;/strong&gt;（天然支持 &lt;code&gt;&amp;gt; &amp;lt; BETWEEN&lt;/code&gt; 和 &lt;code&gt;ORDER BY&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;I/O次数更少&lt;/strong&gt;（内部节点不存数据，能存更多索引，树更矮）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;全表扫描更优&lt;/strong&gt;（直接遍历叶子链表即可，无需递归遍历整棵树）。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;6-终极面试速查总结一张表全搞定&#34;&gt;6. 终极面试速查总结（一张表全搞定）
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;数据结构&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;平衡性&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;查询效率&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;插入/删除效率&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心应用场景&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;BST&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;不保证&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;O(n) 最坏&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;O(n)&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;教学演示，基本不用&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;AVL树&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;严格（差≤1）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;极高&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;中等（旋转频繁）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;内存中读多写少的查找&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;红黑树&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;松散（2倍）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;高&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;极高&lt;/strong&gt;（旋转少）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;通用内存容器（Map/Set）、epoll&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;B树&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;绝对（同层）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;较低（需磁盘I/O）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;较高（需分裂合并）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;早期文件系统、MongoDB（部分）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;B+树&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;绝对（同层）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;磁盘最优&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;磁盘最优&lt;/strong&gt;（批量）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;MySQL索引、现代文件系统（NTFS/Ext4）&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;核心感悟&#34;&gt;核心感悟
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;从AVL到红黑树&lt;/strong&gt;：是在&amp;quot;查询速度&amp;quot;和&amp;quot;写入速度&amp;quot;之间做&lt;strong&gt;折中&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从红黑树到B树&lt;/strong&gt;：是&lt;strong&gt;跨越存储介质&lt;/strong&gt;的变革，CPU再快也快不过磁盘I/O，所以必须增加节点内的Key数量来降低树高。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从B树到B+树&lt;/strong&gt;：是&lt;strong&gt;工程落地&lt;/strong&gt;的极致优化，为了数据库最常用的&amp;quot;范围查询&amp;quot;和&amp;quot;全表遍历&amp;quot;而专门改良。&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -7,12 +7,500 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
-        <lastBuildDate>Tue, 23 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>AVL</title>
+        <link>https://Yannick-Mo.github.io/tags/avl/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/avl/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>B&#43;树</title>
+        <link>https://Yannick-Mo.github.io/tags/b&#43;%E6%A0%91/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/b&#43;%E6%A0%91/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>BST</title>
+        <link>https://Yannick-Mo.github.io/tags/bst/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/bst/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>B树</title>
+        <link>https://Yannick-Mo.github.io/tags/b%E6%A0%91/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/b%E6%A0%91/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>C&#43;&#43;</title>
+        <link>https://Yannick-Mo.github.io/tags/c&#43;&#43;/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/c&#43;&#43;/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Map</title>
+        <link>https://Yannick-Mo.github.io/tags/map/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/map/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Multimap</title>
+        <link>https://Yannick-Mo.github.io/tags/multimap/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/multimap/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Multiset</title>
+        <link>https://Yannick-Mo.github.io/tags/multiset/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/multiset/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>MySQL</title>
+        <link>https://Yannick-Mo.github.io/tags/mysql/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/mysql/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Set</title>
+        <link>https://Yannick-Mo.github.io/tags/set/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/set/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Std::array</title>
+        <link>https://Yannick-Mo.github.io/tags/stdarray/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stdarray/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Std::deque</title>
+        <link>https://Yannick-Mo.github.io/tags/stddeque/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stddeque/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Std::forward_list</title>
+        <link>https://Yannick-Mo.github.io/tags/stdforward_list/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stdforward_list/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Std::list</title>
+        <link>https://Yannick-Mo.github.io/tags/stdlist/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stdlist/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Std::queue</title>
+        <link>https://Yannick-Mo.github.io/tags/stdqueue/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stdqueue/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Std::stack</title>
+        <link>https://Yannick-Mo.github.io/tags/stdstack/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stdstack/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Std::vector</title>
+        <link>https://Yannick-Mo.github.io/tags/stdvector/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stdvector/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>STL</title>
+        <link>https://Yannick-Mo.github.io/tags/stl/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stl/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Unordered_map</title>
+        <link>https://Yannick-Mo.github.io/tags/unordered_map/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/unordered_map/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Unordered_set</title>
+        <link>https://Yannick-Mo.github.io/tags/unordered_set/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/unordered_set/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>哈希表</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>红黑树</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BA%A2%E9%BB%91%E6%A0%91/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%BA%A2%E9%BB%91%E6%A0%91/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>链表</title>
+        <link>https://Yannick-Mo.github.io/tags/%E9%93%BE%E8%A1%A8/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E9%93%BE%E8%A1%A8/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>内存管理</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>容器</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%AE%B9%E5%99%A8/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%AE%B9%E5%99%A8/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>容器适配器</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%AE%B9%E5%99%A8%E9%80%82%E9%85%8D%E5%99%A8/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%AE%B9%E5%99%A8%E9%80%82%E9%85%8D%E5%99%A8/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>数据结构</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>数组</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%95%B0%E7%BB%84/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%95%B0%E7%BB%84/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>双端队列</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%8F%8C%E7%AB%AF%E9%98%9F%E5%88%97/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%8F%8C%E7%AB%AF%E9%98%9F%E5%88%97/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>索引</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%B4%A2%E5%BC%95/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%B4%A2%E5%BC%95/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>301</title>
+        <link>https://Yannick-Mo.github.io/tags/301/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/301/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>302</title>
+        <link>https://Yannick-Mo.github.io/tags/302/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/302/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>C</title>
+        <link>https://Yannick-Mo.github.io/tags/c/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/c/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>DLL</title>
+        <link>https://Yannick-Mo.github.io/tags/dll/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/dll/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>GRPC</title>
+        <link>https://Yannick-Mo.github.io/tags/grpc/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/grpc/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>HTTP</title>
         <link>https://Yannick-Mo.github.io/tags/http/</link>
-        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/http/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>JSON</title>
+        <link>https://Yannick-Mo.github.io/tags/json/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/json/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Protobuf</title>
+        <link>https://Yannick-Mo.github.io/tags/protobuf/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/protobuf/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>SEO</title>
+        <link>https://Yannick-Mo.github.io/tags/seo/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/seo/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>编译</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>编译器</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91%E5%99%A8/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91%E5%99%A8/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>编译原理</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>动态库</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%8A%A8%E6%80%81%E5%BA%93/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%8A%A8%E6%80%81%E5%BA%93/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>堆</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%A0%86/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%A0%86/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>二叉搜索树</title>
+        <link>https://Yannick-Mo.github.io/tags/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>分布式</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>哈希</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%93%88%E5%B8%8C/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%93%88%E5%B8%8C/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>哈希冲突</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>汇编</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%B1%87%E7%BC%96/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%B1%87%E7%BC%96/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>架构</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%9E%B6%E6%9E%84/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%9E%B6%E6%9E%84/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>链接</title>
+        <link>https://Yannick-Mo.github.io/tags/%E9%93%BE%E6%8E%A5/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E9%93%BE%E6%8E%A5/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>面试</title>
+        <link>https://Yannick-Mo.github.io/tags/%E9%9D%A2%E8%AF%95/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E9%9D%A2%E8%AF%95/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>全局变量</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>算法</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%AE%97%E6%B3%95/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%AE%97%E6%B3%95/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>头文件</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%A4%B4%E6%96%87%E4%BB%B6/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%A4%B4%E6%96%87%E4%BB%B6/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>网络协议</title>
+        <link>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>未定义行为</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%9C%AA%E5%AE%9A%E4%B9%89%E8%A1%8C%E4%B8%BA/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%9C%AA%E5%AE%9A%E4%B9%89%E8%A1%8C%E4%B8%BA/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>序列化</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>一致性哈希</title>
+        <link>https://Yannick-Mo.github.io/tags/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>预处理</title>
+        <link>https://Yannick-Mo.github.io/tags/%E9%A2%84%E5%A4%84%E7%90%86/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E9%A2%84%E5%A4%84%E7%90%86/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>指针</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%8C%87%E9%92%88/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%8C%87%E9%92%88/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>重定向</title>
+        <link>https://Yannick-Mo.github.io/tags/%E9%87%8D%E5%AE%9A%E5%90%91/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E9%87%8D%E5%AE%9A%E5%90%91/</guid>
         <description></description>
         </item>
         <item>
@@ -56,11 +544,27 @@
         <description></description>
         </item>
         <item>
+        <title>SSE</title>
+        <link>https://Yannick-Mo.github.io/tags/sse/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/sse/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>SSL</title>
         <link>https://Yannick-Mo.github.io/tags/ssl/</link>
         <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/ssl/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>TCP</title>
+        <link>https://Yannick-Mo.github.io/tags/tcp/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/tcp/</guid>
         <description></description>
         </item>
         <item>
@@ -80,6 +584,14 @@
         <description></description>
         </item>
         <item>
+        <title>WebSocket</title>
+        <link>https://Yannick-Mo.github.io/tags/websocket/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/websocket/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>加密</title>
         <link>https://Yannick-Mo.github.io/tags/%E5%8A%A0%E5%AF%86/</link>
         <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
@@ -96,11 +608,19 @@
         <description></description>
         </item>
         <item>
-        <title>网络协议</title>
-        <link>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</link>
+        <title>轮询</title>
+        <link>https://Yannick-Mo.github.io/tags/%E8%BD%AE%E8%AF%A2/</link>
         <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
         
-        <guid>https://Yannick-Mo.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/</guid>
+        <guid>https://Yannick-Mo.github.io/tags/%E8%BD%AE%E8%AF%A2/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>实时通信</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%AE%9E%E6%97%B6%E9%80%9A%E4%BF%A1/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E5%AE%9E%E6%97%B6%E9%80%9A%E4%BF%A1/</guid>
         <description></description>
         </item>
         <item>
@@ -109,6 +629,14 @@
         <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/%E5%BA%94%E7%94%A8%E5%B1%82/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>长连接</title>
+        <link>https://Yannick-Mo.github.io/tags/%E9%95%BF%E8%BF%9E%E6%8E%A5/</link>
+        <pubDate>Tue, 23 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E9%95%BF%E8%BF%9E%E6%8E%A5/</guid>
         <description></description>
         </item>
         <item>
@@ -141,14 +669,6 @@
         <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/so_reuseaddr/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>TCP</title>
-        <link>https://Yannick-Mo.github.io/tags/tcp/</link>
-        <pubDate>Mon, 22 Jun 2026 00:00:00 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/tcp/</guid>
         <description></description>
         </item>
         <item>
@@ -221,14 +741,6 @@
         <pubDate>Sun, 21 Jun 2026 00:00:00 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/c/c&#43;&#43;/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>C&#43;&#43;</title>
-        <link>https://Yannick-Mo.github.io/tags/c&#43;&#43;/</link>
-        <pubDate>Sun, 21 Jun 2026 00:00:00 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/c&#43;&#43;/</guid>
         <description></description>
         </item>
         <item>
@@ -488,14 +1000,6 @@
         <description></description>
         </item>
         <item>
-        <title>编译</title>
-        <link>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91/</link>
-        <pubDate>Sun, 14 Jun 2026 21:12:00 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/%E7%BC%96%E8%AF%91/</guid>
-        <description></description>
-        </item>
-        <item>
         <title>构建工具</title>
         <link>https://Yannick-Mo.github.io/tags/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/</link>
         <pubDate>Sun, 14 Jun 2026 21:12:00 +0800</pubDate>
@@ -549,22 +1053,6 @@
         <pubDate>Sun, 14 Jun 2026 14:22:00 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/queue/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>STL</title>
-        <link>https://Yannick-Mo.github.io/tags/stl/</link>
-        <pubDate>Sun, 14 Jun 2026 14:22:00 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/stl/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>数据结构</title>
-        <link>https://Yannick-Mo.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
-        <pubDate>Sun, 14 Jun 2026 14:22:00 +0800</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
         <description></description>
         </item>
         <item>
@@ -717,14 +1205,6 @@
         <pubDate>Tue, 09 Jun 2026 02:57:21 +0800</pubDate>
         
         <guid>https://Yannick-Mo.github.io/tags/%E5%85%83%E5%AF%B9%E8%B1%A1%E7%B3%BB%E7%BB%9F/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>JSON</title>
-        <link>https://Yannick-Mo.github.io/tags/json/</link>
-        <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
-        
-        <guid>https://Yannick-Mo.github.io/tags/json/</guid>
         <description></description>
         </item>
         <item>

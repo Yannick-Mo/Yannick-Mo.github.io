@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>头文件 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%A4%B4%E6%96%87%E4%BB%B6/</link>
+        <description>Recent content in 头文件 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E5%A4%B4%E6%96%87%E4%BB%B6/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>头文件定义全局变量：static / extern / inline / const 全场景行为对照</title>
+        <link>https://Yannick-Mo.github.io/p/header-global-variable-guide/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/header-global-variable-guide/</guid>
+        <description>&lt;p&gt;这里涉及三个核心维度：&lt;strong&gt;语言（C/C++）&lt;/strong&gt;、&lt;strong&gt;修饰符（static/extern/inline/const）&lt;/strong&gt;、&lt;strong&gt;C++ 标准版本&lt;/strong&gt;。请看下表：&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;全场景行为对照表&#34;&gt;全场景行为对照表
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;头文件中的写法&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;适用语言&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;链接属性&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;被多个 &lt;code&gt;.c&lt;/code&gt;/&lt;code&gt;.cpp&lt;/code&gt; 包含后的结果&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;最终内存实例数&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;存储位置（段）&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;int g_val = 10;&lt;/code&gt;&lt;/strong&gt;（普通变量）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;C / C++&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;外部&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ &lt;strong&gt;链接器报错&lt;/strong&gt;（多重定义）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;编译失败&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;N/A&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;static int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;C / C++&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内部&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，但各文件独立&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;N 份&lt;/strong&gt;（互不干扰）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.data&lt;/code&gt; / &lt;code&gt;.bss&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;const int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C++&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内部&lt;/strong&gt;（隐式）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，各文件独立&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;N 份&lt;/strong&gt;（互不干扰）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.rodata&lt;/code&gt;（只读）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;const int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C 语言&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;外部&lt;/strong&gt;（显式）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ &lt;strong&gt;链接器报错&lt;/strong&gt;（多重定义）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;编译失败&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;N/A&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;extern int g_val;&lt;/code&gt;&lt;/strong&gt;（仅声明）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;C / C++&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;外部（声明）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;（需在某个 &lt;code&gt;.cpp&lt;/code&gt; 中定义）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;1 份&lt;/strong&gt;（全局唯一）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;取决于定义处&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;inline int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C++17 及以上&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;外部（允许重复）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，链接器自动合并去重&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;1 份&lt;/strong&gt;（全局唯一）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.data&lt;/code&gt; / &lt;code&gt;.bss&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;constexpr int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C++17 及以上&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;外部（隐式 inline）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，链接器自动合并去重&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;1 份&lt;/strong&gt;（全局唯一）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.rodata&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;constexpr int g_val = 10;&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;C++11 / C++14&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;内部&lt;/strong&gt;（隐式）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ &lt;strong&gt;编译通过&lt;/strong&gt;，各文件独立&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;N 份&lt;/strong&gt;（互不干扰）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;.rodata&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;关键补充说明&#34;&gt;关键补充说明
+&lt;/h2&gt;&lt;h3 id=&#34;1-关于普通变量报错的底层细节-fcommon-历史遗留&#34;&gt;1. 关于&amp;quot;普通变量报错&amp;quot;的底层细节（&lt;code&gt;-fcommon&lt;/code&gt; 历史遗留）
+&lt;/h3&gt;&lt;p&gt;表格中提到 &lt;code&gt;int g_val = 10;&lt;/code&gt; 会报错，这是基于现代编译器（&lt;strong&gt;GCC 10+&lt;/strong&gt; 和 &lt;strong&gt;Clang 默认&lt;/strong&gt;）的行为。
+在非常古老的 Unix 编译器或未开启 &lt;code&gt;-fno-common&lt;/code&gt; 选项时，链接器曾允许这种写法，并将多个同名变量&lt;strong&gt;合并到同一块内存&lt;/strong&gt;。但这种行为早已被废弃，&lt;strong&gt;绝对不要依赖&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;2-const-在-c-和-c-中的本质区别面试高频坑&#34;&gt;2. &lt;code&gt;const&lt;/code&gt; 在 C 和 C++ 中的本质区别（面试高频坑）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;C++ 的设计哲学&lt;/strong&gt;：认为常量天然就是只读的&amp;quot;替换物&amp;quot;，默认内部链接可以放心写在头文件里。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C 的设计哲学&lt;/strong&gt;：&lt;code&gt;const&lt;/code&gt; 仅仅是&amp;quot;只读&amp;quot;的修饰，并不改变变量的链接属性，默认依然是外部链接，所以头文件包含会导致冲突。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-内存实例数对程序的实际影响内存占用&#34;&gt;3. 内存实例数对程序的实际影响（内存占用）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;N 份（内部链接）&lt;/strong&gt;：如果头文件被 100 个源文件包含，且变量是 &lt;code&gt;int buf[1024]&lt;/code&gt;，则会额外浪费约 &lt;code&gt;100 * 4KB = 400KB&lt;/code&gt; 的内存。在嵌入式或内存敏感场景下，这是不可接受的。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1 份（外部链接 / inline）&lt;/strong&gt;：无论包含多少次，物理内存只分配一次，最省空间且逻辑全局一致。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;工程级最佳实践一句话记忆法则&#34;&gt;工程级最佳实践（一句话记忆法则）
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;C 语言项目&lt;/strong&gt;：头文件里&lt;strong&gt;只放&lt;/strong&gt; &lt;code&gt;extern&lt;/code&gt; 声明，定义必须放在唯一的 &lt;code&gt;.c&lt;/code&gt; 文件中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C++ 11/14 项目&lt;/strong&gt;：头文件里只放 &lt;code&gt;extern&lt;/code&gt; 声明，或使用 &lt;code&gt;static&lt;/code&gt; / &lt;code&gt;const&lt;/code&gt; 存放&amp;quot;本模块私有&amp;quot;的常量。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C++ 17 及以上项目（推荐）&lt;/strong&gt;：头文件里直接使用 &lt;strong&gt;&lt;code&gt;inline&lt;/code&gt;&lt;/strong&gt; 或 &lt;strong&gt;&lt;code&gt;constexpr&lt;/code&gt;&lt;/strong&gt; 定义全局变量，既安全又优雅，完美解决&amp;quot;多重定义&amp;quot;烦恼。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;绝对红线&lt;/strong&gt;：&lt;strong&gt;禁止&lt;/strong&gt;在头文件中定义不带任何修饰符（&lt;code&gt;static&lt;/code&gt;/&lt;code&gt;extern&lt;/code&gt;/&lt;code&gt;inline&lt;/code&gt;）的全局变量，这是 100% 的编程错误。&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

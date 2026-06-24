@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>哈希冲突 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81/</link>
+        <description>Recent content in 哈希冲突 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>哈希冲突解决与一致性哈希：从单机到分布式的完整指南</title>
+        <link>https://Yannick-Mo.github.io/p/hash-collision-and-consistent-hashing/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/hash-collision-and-consistent-hashing/</guid>
+        <description>&lt;h2 id=&#34;第一部分开放地址法open-addressing&#34;&gt;第一部分：开放地址法（Open Addressing）
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;核心思想&lt;/strong&gt;：所有元素都存储在哈希表数组本身中。当发生冲突时，按照某种探测规则，在数组中去寻找下一个空闲的槽位。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;常见探测方式&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;线性探测&lt;/strong&gt;：冲突后，依次查看下一个槽位（&lt;code&gt;index + 1&lt;/code&gt;, &lt;code&gt;index + 2&lt;/code&gt;&amp;hellip;）。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优点&lt;/strong&gt;：实现简单，CPU缓存友好。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺点&lt;/strong&gt;：容易产生&lt;strong&gt;聚集&lt;/strong&gt;现象（一旦连续几个槽位被占，后面的冲突会连成一片，查找效率急剧下降）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;二次探测&lt;/strong&gt;：探测步长按平方增长（&lt;code&gt;index + 1^2&lt;/code&gt;, &lt;code&gt;index + 2^2&lt;/code&gt;&amp;hellip;）。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优点&lt;/strong&gt;：解决了主聚集问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺点&lt;/strong&gt;：可能产生次级聚集，且不一定能探测到整个散列表的空位（需要保证表大小为质数）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;双重散列&lt;/strong&gt;：使用第二个哈希函数计算探测步长。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优点&lt;/strong&gt;：分布最均匀，几乎避免了聚集。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;关键操作注意&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;删除&lt;/strong&gt;：不能物理删除（置空），因为会切断探测链。通常使用**墓碑（Tombstone）**标记，表示&amp;quot;此位已删除，但可用于插入&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;装载因子（Load Factor）&lt;/strong&gt;：必须严格控制在 &lt;strong&gt;0.7~0.8&lt;/strong&gt; 以下，否则性能呈指数级恶化。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;第二部分拉链法separate-chaining&#34;&gt;第二部分：拉链法（Separate Chaining）
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;核心思想&lt;/strong&gt;：哈希数组的每个槽位不直接存元素，而是存储一个链表（或更高效的红黑树、跳表）的头指针。发生冲突的元素，统统挂在同一个槽位的链表上。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;装载因子不受限&lt;/strong&gt;：理论上可以大于1，链表会动态增长，不会&amp;quot;满&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除简单&lt;/strong&gt;：直接从链表中移除节点，无需标记墓碑。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;抗冲突性强&lt;/strong&gt;：即使哈希函数很差，也能正常工作（退化为链表查找）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;缺点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;内存不连续&lt;/strong&gt;：链表节点分散在堆中，CPU缓存不友好。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;额外内存开销&lt;/strong&gt;：每个节点需要存储指针（在64位系统下占较大空间）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;现代优化&lt;/strong&gt;：Java 8 的 &lt;code&gt;HashMap&lt;/code&gt; 在链表长度超过 &lt;strong&gt;8&lt;/strong&gt; 且数组长度大于 &lt;strong&gt;64&lt;/strong&gt; 时，会将链表转为红黑树，将最坏查找复杂度从 O(n) 优化为 O(log n)。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;第三部分两者对比开放地址法-vs-拉链法&#34;&gt;第三部分：两者对比（开放地址法 vs 拉链法）
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;开放地址法&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;拉链法&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;空间利用率&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;高（无指针开销）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;低（指针占用额外空间）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;缓存性能&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;极好（连续内存）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;差（指针跳转）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;删除操作&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;复杂（需要墓碑）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;简单（直接删节点）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;装载因子&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;需 &amp;lt; 0.8（否则性能崩溃）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;可 &amp;gt; 1.0（性能缓慢线性下降）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;适用场景&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;数据量可预估、内存敏感（如Redis字典）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;数据量动态大、删除频繁（如Java HashMap）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;第四部分一致性哈希consistent-hashing&#34;&gt;第四部分：一致性哈希（Consistent Hashing）
+&lt;/h2&gt;&lt;p&gt;注意：&lt;strong&gt;一致性哈希并不解决&amp;quot;单个哈希表内的冲突&amp;quot;&lt;/strong&gt;，它解决的是&lt;strong&gt;分布式缓存/数据库&lt;/strong&gt;中，**服务器节点增减时，大规模数据重哈希（Rehashing）**的问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;核心机制&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;哈希环&lt;/strong&gt;：将哈希值空间组织成一个首尾相连的环（范围 0 ~ 2^32-1）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;节点映射&lt;/strong&gt;：将服务器节点（如 Redis 节点）的 IP/名称哈希，放在环上的不同位置。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据定位&lt;/strong&gt;：数据的键哈希后，顺时针找到离它最近的服务器节点。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;当节点变化时&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新增节点&lt;/strong&gt;：只需将&lt;strong&gt;顺时针方向下一段区间&lt;/strong&gt;的数据从原节点迁移到新节点。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除节点&lt;/strong&gt;：只需将该节点的数据迁移到顺时针下一节点。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;影响范围&lt;/strong&gt;：仅影响变化节点与环上前一个节点之间的数据，&lt;strong&gt;绝大多数的数据映射关系保持不变&lt;/strong&gt;（避免了传统取模算法中大面积失效的问题）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;虚拟节点（Virtual Nodes）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;为了解决物理节点分布不均（导致数据倾斜）的问题，一致性哈希引入了虚拟节点。&lt;/li&gt;
+&lt;li&gt;每个物理节点复制出 100~200 个虚拟节点散布在环上。这样数据分布更均匀，且当物理节点宕机时，其负载会被均匀地分摊给所有其他节点。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;核心应用&lt;/strong&gt;：Redis Cluster、Amazon DynamoDB、Memcached 分布式方案。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;开放地址法 &amp;amp; 拉链法&lt;/strong&gt;：是&lt;strong&gt;单机&lt;/strong&gt;哈希表内部的&amp;quot;撞车&amp;quot;处理方案。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一致性哈希&lt;/strong&gt;：是&lt;strong&gt;分布式&lt;/strong&gt;系统中，决定&amp;quot;数据该存到哪台机器上&amp;quot;的寻址方案，核心目标是&lt;strong&gt;最小化集群扩容/缩容时的数据迁移量&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

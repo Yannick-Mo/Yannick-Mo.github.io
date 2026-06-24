@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>架构 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%9E%B6%E6%9E%84/</link>
+        <description>Recent content in 架构 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E6%9E%B6%E6%9E%84/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>JSON vs Protobuf 核心对比：兼容性、性能原理与选型建议</title>
+        <link>https://Yannick-Mo.github.io/p/json-vs-protobuf/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/json-vs-protobuf/</guid>
+        <description>&lt;h2 id=&#34;1-一句话核心定位&#34;&gt;1. 一句话核心定位
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;JSON&lt;/strong&gt;：面向&lt;strong&gt;人类可读&lt;/strong&gt;的文本协议，生态最广，调试极方便。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Protobuf&lt;/strong&gt;：面向&lt;strong&gt;机器性能&lt;/strong&gt;的二进制协议，体积小、速度快，强制契约。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2-基础特性对比速查表&#34;&gt;2. 基础特性对比速查表
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;JSON&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;Protobuf&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;数据格式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;文本（字符串）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;二进制（字节流）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;可读性&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 极高（记事本直接改）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 极低（乱码，需&lt;code&gt;.proto&lt;/code&gt;解析）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;传输体积&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;大（键名重复传输）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;小（仅传字段编号，约JSON的20%~30%）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;序列化速度&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;慢（大量字符串操作）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;快（直接位运算，约快3~5倍）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Schema（契约）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;可选（非强制）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;强制&lt;/strong&gt;（必须预先定义&lt;code&gt;.proto&lt;/code&gt;文件）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;数据类型&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;弱类型（JS动态）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;强类型（int、long、bool严格区分）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;3-高性能原理为什么快且小&#34;&gt;3. 高性能原理（为什么快且小？）
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;不传Key名&lt;/strong&gt;：JSON传&lt;code&gt;{&amp;quot;user_id&amp;quot;:123}&lt;/code&gt;要传字符&lt;code&gt;user_id&lt;/code&gt;；Protobuf只传&lt;strong&gt;字段编号&lt;/strong&gt;（如&lt;code&gt;1 = 123&lt;/code&gt;），接收端靠&lt;code&gt;.proto&lt;/code&gt;文件反向映射。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Varint编码&lt;/strong&gt;：Protobuf对整数采用变长编码，数字越小占用字节越少（如数字&lt;code&gt;1&lt;/code&gt;仅占1字节）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;4-重点兼容性处理增删字段的底层逻辑&#34;&gt;4. 【重点】兼容性处理（增删字段的底层逻辑）
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;纠正误区&lt;/strong&gt;：前端老代码不可能凭空去读一个&amp;quot;未知的新字段&amp;quot;。真正的风险在于&lt;strong&gt;遍历对象&lt;/strong&gt;、&lt;strong&gt;类型强制转换&lt;/strong&gt;以及&lt;strong&gt;字段突然消失&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;1后端新增字段&#34;&gt;（1）后端新增字段
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;协议&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;老前端处理逻辑&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;结果/风险&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;JSON&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;新字段会完整出现在&lt;code&gt;JSON.parse&lt;/code&gt;后的对象里。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;风险&lt;/strong&gt;：如果老代码用&lt;code&gt;Object.keys()&lt;/code&gt;遍历对象，会意外把新字段渲染到UI上（导致显示错乱），或误入现有的&lt;code&gt;if&lt;/code&gt;判断分支。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Protobuf&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;老前端的&lt;code&gt;.proto&lt;/code&gt;没有该&lt;strong&gt;字段编号&lt;/strong&gt;，底层库&lt;strong&gt;直接跳过该字节块&lt;/strong&gt;，不反序列化进对象。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;绝对安全&lt;/strong&gt;：老代码遍历对象时根本看不到这个新字段，完全不受影响。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;2后端删除字段&#34;&gt;（2）后端删除字段
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;协议&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;老前端处理逻辑&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;结果/风险&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;JSON&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;对象中直接没有该属性，值为&lt;code&gt;undefined&lt;/code&gt;。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;高危&lt;/strong&gt;：若老代码执行&lt;code&gt;data.phone.toString()&lt;/code&gt;，因&lt;code&gt;undefined&lt;/code&gt;无&lt;code&gt;toString&lt;/code&gt;方法，&lt;strong&gt;程序直接崩溃&lt;/strong&gt;。必须手动&lt;code&gt;if&lt;/code&gt;判空。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Protobuf&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;老前端&lt;code&gt;.proto&lt;/code&gt;有该编号，但二进制数据中缺失。底层库自动赋予&lt;strong&gt;类型默认值&lt;/strong&gt;（字符串给&lt;code&gt;&amp;quot;&amp;quot;&lt;/code&gt;，数字给&lt;code&gt;0&lt;/code&gt;，布尔给&lt;code&gt;false&lt;/code&gt;）。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;绝对安全&lt;/strong&gt;：调用&lt;code&gt;phone.toString()&lt;/code&gt;返回空字符串，&lt;strong&gt;绝不崩溃&lt;/strong&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;5-选型终极建议直接照抄&#34;&gt;5. 选型终极建议（直接照抄）
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;应用场景&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;推荐方案&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;核心理由&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;浏览器 Web / App 前端&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;JSON&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;浏览器原生支持，无需加载额外库（节省包体积），且浏览器DevTools调试网络请求极其直观。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;后端内部微服务（高并发）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Protobuf（gRPC）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;节省内网带宽，降低延迟。强制契约（&lt;code&gt;.proto&lt;/code&gt;）杜绝团队协作中的字段名拼写错误。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;IoT物联网/嵌入式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Protobuf&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;流量昂贵（4G/5G），省流、省电就是省钱。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;配置文件（如package.json）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;JSON&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;需要人类直接阅读和手动修改。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;对外 OpenAPI（第三方调用）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;JSON&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;兼容性最好，任何语言/任何版本的HTTP客户端都能无缝解析。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;6-进阶折中方案大厂主流&#34;&gt;6. 进阶折中方案（大厂主流）
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;架构设计&lt;/strong&gt;：网关层（对外）接收JSON，内部微服务间（对内）转换为Protobuf。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;代表技术&lt;/strong&gt;：gRPC-Web、Connect-RPC。既享用了前端JSON的调试便利，又吃到了后端Protobuf的性能红利。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;总结口诀&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;对外调试用JSON，对内高并发上Proto；&lt;/strong&gt;
+&lt;strong&gt;JSON怕字段突然没（undefined崩），Proto怕字段编号乱（保留编号保平安）。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

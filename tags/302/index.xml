@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>302 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/302/</link>
+        <description>Recent content in 302 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/302/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>HTTP 301 与 302 重定向：核心区别、浏览器行为与最佳实践</title>
+        <link>https://Yannick-Mo.github.io/p/http-301-302-redirect/</link>
+        <pubDate>Wed, 24 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/http-301-302-redirect/</guid>
+        <description>&lt;p&gt;HTTP 301 和 302 都是重定向状态码，核心区别在于：&lt;strong&gt;301 是永久重定向，而 302 是临时重定向&lt;/strong&gt;。这个根本差异，导致了它们在浏览器行为、缓存处理和 SEO（搜索引擎优化）影响上都有所不同。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;核心对比&#34;&gt;核心对比
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;对比维度&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;301 Moved Permanently（永久重定向）&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;302 Found（临时重定向）&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;核心语义&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;请求的资源已被&lt;strong&gt;永久&lt;/strong&gt;性地移动到了新URL，旧URL将不再使用。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;请求的资源&lt;strong&gt;暂时&lt;/strong&gt;位于另一个URL，旧URL依然有效，未来可能恢复使用。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;客户端/浏览器行为&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;缓存&lt;/strong&gt;：浏览器会&lt;strong&gt;缓存&lt;/strong&gt;这个重定向关系。下次再访问旧URL时，会直接跳转到新URL，不再向服务器请求确认。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;缓存&lt;/strong&gt;：浏览器&lt;strong&gt;默认不缓存&lt;/strong&gt;。每次访问旧URL时，都会先向服务器发起请求，由服务器决定是否以及重定向到何处。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;请求方法&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;如果原请求是POST，重定向后&lt;strong&gt;可能会&lt;/strong&gt;被改为GET。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;如果原请求是POST，重定向后&lt;strong&gt;可能会&lt;/strong&gt;被改为GET，这可能导致数据丢失。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;对SEO的影响&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;搜索引擎会&lt;strong&gt;传递&lt;/strong&gt;旧页面的权重（link equity）到新页面，并在索引中用新URL替换旧URL。&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;搜索引擎会&lt;strong&gt;抓取&lt;/strong&gt;新内容，但会&lt;strong&gt;保留&lt;/strong&gt;旧URL的索引，认为这只是一个临时变化。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;典型应用场景&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;- 网站&lt;strong&gt;域名更换&lt;/strong&gt;&lt;br&gt;- 页面路径&lt;strong&gt;永久性重构&lt;/strong&gt;&lt;br&gt;- &lt;strong&gt;HTTP升级到HTTPS&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;- 用户&lt;strong&gt;未登录&lt;/strong&gt;时重定向到登录页&lt;br&gt;- 网站&lt;strong&gt;临时维护&lt;/strong&gt;时展示通知页&lt;br&gt;- &lt;strong&gt;A/B测试&lt;/strong&gt;或活动页面的临时跳转&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;注意事项post请求与数据丢失&#34;&gt;注意事项：POST请求与数据丢失
+&lt;/h2&gt;&lt;p&gt;表格中提到了&amp;quot;请求方法可能被改变&amp;quot;，这是一个需要特别注意的点。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;历史原因&lt;/strong&gt;：在早期的HTTP/1.0规范中，301和302在重定向POST请求时，行为不够明确，很多浏览器会将其改为GET请求。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;潜在风险&lt;/strong&gt;：如果你的业务场景是提交表单（POST请求）后需要重定向，使用301或302可能会导致请求方法被改为GET，从而&lt;strong&gt;丢失POST提交的数据&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;现代解决方案&lt;/strong&gt;：为了更精确地控制行为，HTTP/1.1引入了新的状态码：
+&lt;ul&gt;
+&lt;li&gt;需要&lt;strong&gt;永久重定向&lt;/strong&gt;且&lt;strong&gt;保持请求方法&lt;/strong&gt;（如POST）时，应使用 &lt;strong&gt;&lt;code&gt;308 Permanent Redirect&lt;/code&gt;&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;需要&lt;strong&gt;临时重定向&lt;/strong&gt;且&lt;strong&gt;保持请求方法&lt;/strong&gt;时，应使用 &lt;strong&gt;&lt;code&gt;307 Temporary Redirect&lt;/code&gt;&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结与建议&#34;&gt;总结与建议
+&lt;/h2&gt;&lt;p&gt;简单来说，选择301还是302，关键在于判断URL的变更是&lt;strong&gt;永久性的&lt;/strong&gt;还是&lt;strong&gt;临时性的&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;对于网站管理员&lt;/strong&gt;：如果是&lt;strong&gt;永久的&lt;/strong&gt;网址变更，请务必使用&lt;strong&gt;301重定向&lt;/strong&gt;，这有利于SEO。如果是&lt;strong&gt;临时性&lt;/strong&gt;的跳转，则使用&lt;strong&gt;302重定向&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对于普通用户&lt;/strong&gt;：在浏览网页时，你基本感觉不到两者的区别，因为浏览器会自动完成跳转。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
