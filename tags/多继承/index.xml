@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>多继承 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/</link>
+        <description>Recent content in 多继承 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Qt 多重继承避坑指南：为何禁止多重 QObject 子类继承</title>
+        <link>https://Yannick-Mo.github.io/p/qt-multiple-inheritance-guide/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/qt-multiple-inheritance-guide/</guid>
+        <description>&lt;p&gt;在Qt中使用多继承，&lt;strong&gt;最核心也最需要警惕的一点是：永远不要从两个或更多直接或间接继承自&lt;code&gt;QObject&lt;/code&gt;的类进行多重继承&lt;/strong&gt;。这会导致未定义行为，是Qt官方明确不支持的操作。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;核心问题qobject与元对象系统&#34;&gt;核心问题：&lt;code&gt;QObject&lt;/code&gt;与元对象系统
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;QObject&lt;/code&gt;是Qt所有核心类（如&lt;code&gt;QWidget&lt;/code&gt;、&lt;code&gt;QThread&lt;/code&gt;等）的基类，它带来了信号槽、属性系统等强大功能。Qt通过**元对象系统（Meta-Object System）**来管理这些功能，每个&lt;code&gt;QObject&lt;/code&gt;子类都有一个全局唯一的&lt;code&gt;QMetaObject&lt;/code&gt;对象与之关联。&lt;/p&gt;
+&lt;p&gt;当你试图从两个&lt;code&gt;QObject&lt;/code&gt;子类派生时，问题就出现了：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;元对象冲突&lt;/strong&gt;：派生类会继承到两个不同的&lt;code&gt;QMetaObject&lt;/code&gt;，导致Qt无法确定该使用哪一个来正确处理信号、槽和属性。编译器会明确给出警告：&amp;quot;&lt;code&gt;Class &#39;...&#39; inherits from two QObject subclasses &#39;...&#39; and &#39;...&#39;. This is not supported!&lt;/code&gt;&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对象实例冗余&lt;/strong&gt;：即使使用C++的&lt;strong&gt;虚拟继承（virtual inheritance）&lt;/strong&gt;，也无法解决这个问题。虚拟继承解决的是C++层面的&amp;quot;菱形继承&amp;quot;问题（避免基类重复），但Qt的元对象系统无法识别这种共享，仍然会尝试为不同的继承路径创建独立的元对象信息，最终导致混乱。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;常见的多继承场景与风险&#34;&gt;常见的多继承场景与风险
+&lt;/h2&gt;&lt;p&gt;以下是几种在Qt中试图对&lt;code&gt;QObject&lt;/code&gt;子类进行多重继承的典型场景及其后果：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;直接继承两个&lt;code&gt;QObject&lt;/code&gt;子类&lt;/strong&gt;：例如，同时继承&lt;code&gt;QWidget&lt;/code&gt;和&lt;code&gt;QThread&lt;/code&gt;。这是&lt;strong&gt;完全禁止&lt;/strong&gt;的操作，会直接导致前述的元对象冲突。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;继承两个有继承关系的类&lt;/strong&gt;：例如，同时继承&lt;code&gt;QWidget&lt;/code&gt;和&lt;code&gt;QPushButton&lt;/code&gt;。由于&lt;code&gt;QPushButton&lt;/code&gt;本身就是&lt;code&gt;QWidget&lt;/code&gt;的子类，这会形成&amp;quot;菱形继承&amp;quot;。派生类中会包含两个&lt;code&gt;QWidget&lt;/code&gt;的实例，导致访问&lt;code&gt;QWidget&lt;/code&gt;成员（如&lt;code&gt;setGeometry()&lt;/code&gt;）时产生&lt;strong&gt;二义性错误&lt;/strong&gt;，编译器无法确定你要操作哪个父类对象。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;继承&lt;code&gt;QRunnable&lt;/code&gt;和&lt;code&gt;QObject&lt;/code&gt;&lt;/strong&gt;：&lt;code&gt;QRunnable&lt;/code&gt;本身不是&lt;code&gt;QObject&lt;/code&gt;的子类，因此这种多继承在技术上是可行的。但这样做会破坏&lt;code&gt;QRunnable&lt;/code&gt;的设计初衷——&lt;strong&gt;轻量级&lt;/strong&gt;，并且会引入&lt;code&gt;QObject&lt;/code&gt;带来的额外开销。实际上，Qt官方推荐使用&lt;code&gt;QMetaObject::invokeMethod&lt;/code&gt;等替代方案来实现跨线程通知。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;最佳实践与替代方案&#34;&gt;最佳实践与替代方案
+&lt;/h2&gt;&lt;p&gt;面对这些限制，Qt官方和社区推荐使用以下更安全、更优雅的模式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优先使用组合（Composition）&lt;/strong&gt;：这是最推荐的解决方案。与其继承一个类来获得其功能，不如将其作为成员变量包含在类中。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;示例&lt;/strong&gt;：如果需要为&lt;code&gt;QWidget&lt;/code&gt;添加一个&amp;quot;按钮&amp;quot;功能，不应当继承&lt;code&gt;QPushButton&lt;/code&gt;，而应在&lt;code&gt;QWidget&lt;/code&gt;子类中包含一个&lt;code&gt;QPushButton*&lt;/code&gt;成员，并自行管理其布局和信号连接。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;使用接口类（纯虚类）&lt;/strong&gt;：如果你需要让不同的&lt;code&gt;QObject&lt;/code&gt;子类拥有相同的行为，可以定义一个不继承&lt;code&gt;QObject&lt;/code&gt;的纯虚类（Interface）作为&amp;quot;混入（Mixin）&amp;quot;。然后，让你的具体类继承自一个&lt;code&gt;QObject&lt;/code&gt;子类和这个接口类。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;利用Qt的&amp;quot;混入&amp;quot;设计&lt;/strong&gt;：Qt框架本身在一些地方设计了&amp;quot;混入&amp;quot;模式。例如，&lt;code&gt;QGraphicsObject&lt;/code&gt;类就是通过多重继承&lt;code&gt;QObject&lt;/code&gt;和&lt;code&gt;QGraphicsItem&lt;/code&gt;来提供信号槽支持的。这是Qt官方经过特殊处理的少数例外，在自定义代码中不建议模仿。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;继承模板类&lt;/strong&gt;：有时需要继承一个模板类，而模板类本身不能是&lt;code&gt;QObject&lt;/code&gt;的子类。这时，一个有效的方法是让模板类继承自一个非&lt;code&gt;QObject&lt;/code&gt;的基类，然后让你的最终类多重继承这个模板类和&lt;code&gt;QObject&lt;/code&gt;。&lt;strong&gt;请务必确保&lt;code&gt;QObject&lt;/code&gt;及其子类位于继承列表的第一位&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;p&gt;在Qt中处理多继承，可以遵循以下简单原则：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;绝对禁止&lt;/strong&gt;：对两个或以上的&lt;code&gt;QObject&lt;/code&gt;子类进行多重继承。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优先选择&lt;/strong&gt;：使用**组合（Composition）**来替代继承，这是最安全、最灵活的做法。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;例外情况&lt;/strong&gt;：如果必须使用多重继承，请确保&lt;strong&gt;只有一个基类继承自&lt;code&gt;QObject&lt;/code&gt;&lt;/strong&gt;，并将其放在继承列表的首位。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

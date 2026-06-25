@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>脏读 on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/%E8%84%8F%E8%AF%BB/</link>
+        <description>Recent content in 脏读 on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/%E8%84%8F%E8%AF%BB/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MySQL 脏读、不可重复读、幻读全解析</title>
+        <link>https://Yannick-Mo.github.io/p/mysql-dirty-read-non-repeatable-read-phantom-read/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/mysql-dirty-read-non-repeatable-read-phantom-read/</guid>
+        <description>&lt;h2 id=&#34;脏读读到了半成品&#34;&gt;脏读——读到了&amp;quot;半成品&amp;quot;
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;核心&lt;/strong&gt;：一个事务读到了**另一个事务尚未提交（正在执行中）**的数据。如果那个事务最终回滚了，读到的就是&amp;quot;脏数据&amp;quot;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;举例&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;事务 A&lt;/strong&gt;（转账）：将 id=1 的余额从 100 改为 0（&lt;strong&gt;尚未提交&lt;/strong&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（查询）：此时读取 id=1 的余额，读到了 &lt;strong&gt;0&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 A&lt;/strong&gt;（反悔）：发生错误，执行 &lt;strong&gt;ROLLBACK（回滚）&lt;/strong&gt;，余额恢复为 100。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;结果：事务 B 基于&amp;quot;余额为 0&amp;quot;做出的业务判断是完全错误的，因为它读到了根本不存在的临时数据。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;不可重复读同一条数据变脸了&#34;&gt;不可重复读——同一条数据变脸了
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;核心&lt;/strong&gt;：在&lt;strong&gt;同一个事务内部&lt;/strong&gt;，两次读取&lt;strong&gt;同一条记录&lt;/strong&gt;，得到的结果&lt;strong&gt;不一样&lt;/strong&gt;。原因是被其他已提交的事务修改了这条数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;举例&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（查询）：第一次查询 id=1 的余额，结果是 &lt;strong&gt;100&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 A&lt;/strong&gt;（转账）：将 id=1 的余额从 100 改为 0，并 &lt;strong&gt;COMMIT（提交）&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（再次查询）：在同一个事务中，第二次查询 id=1 的余额，结果变成了 &lt;strong&gt;0&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;结果：事务 B 中的两次查询结果不一致（100 → 0），产生了困惑。重点在于&lt;strong&gt;数据本身变了&lt;/strong&gt;（针对的是同一行数据的字段更新）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;幻读数据集凭空变多或变少&#34;&gt;幻读——数据集凭空变多或变少
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;核心&lt;/strong&gt;：在&lt;strong&gt;同一个事务内部&lt;/strong&gt;，两次执行&lt;strong&gt;相同的查询条件&lt;/strong&gt;，返回的&lt;strong&gt;结果集条数&lt;/strong&gt;不一样。原因是其他已提交的事务**插入（Insert）或删除（Delete）**了符合条件的数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;举例&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（查询）：查询所有余额为 100 的用户，发现只有 &lt;strong&gt;1 条&lt;/strong&gt;记录（id=1）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 A&lt;/strong&gt;（新增）：插入一条新用户 id=2，余额也为 100，并 &lt;strong&gt;COMMIT（提交）&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（再次查询）：在同一个事务中，再次查询所有余额为 100 的用户，发现变成了 &lt;strong&gt;2 条&lt;/strong&gt;记录（id=1 和 id=2）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;结果：事务 B 明明只想统计当前数据，却发现凭空多出了一条&amp;quot;幻影&amp;quot;记录。重点在于&lt;strong&gt;数据条数变了&lt;/strong&gt;（针对的是集合的增删）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;一句话总结区别&#34;&gt;一句话总结区别
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;现象&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;关注点&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;发生原因&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;针对操作&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;脏读&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;读到了&lt;strong&gt;未提交&lt;/strong&gt;的临时数据&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;读取了其他事务未提交的修改&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;UPDATE&lt;/code&gt;（未提交）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不可重复读&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;同一条记录&lt;strong&gt;前后值&lt;/strong&gt;不同&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;其他事务提交了&lt;strong&gt;更新（Update）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;UPDATE&lt;/code&gt;（已提交）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;幻读&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;结果集的&lt;strong&gt;数量&lt;/strong&gt;前后不同&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;其他事务提交了&lt;strong&gt;新增（Insert）&lt;strong&gt;或&lt;/strong&gt;删除（Delete）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;INSERT&lt;/code&gt; / &lt;code&gt;DELETE&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;隔离级别是如何解决它们的&#34;&gt;隔离级别是如何解决它们的？
+&lt;/h2&gt;&lt;p&gt;MySQL InnoDB 的四种隔离级别，对这三种现象的防御力度如下（✅ 代表避免了，❌ 代表可能发生）：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;隔离级别&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;脏读&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;不可重复读&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;幻读&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;读未提交&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;读已提交&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;可重复读（默认）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;⚠️ &lt;strong&gt;基本避免&lt;/strong&gt;（通过间隙锁）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;可串行化&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 完全避免（强制串行）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -8,6 +8,878 @@
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
         <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Linux 常用命令速查手册</title>
+        <link>https://Yannick-Mo.github.io/p/linux-command-cheat-sheet/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/linux-command-cheat-sheet/</guid>
+        <description>&lt;h2 id=&#34;1-文件与目录操作最常用&#34;&gt;1. 文件与目录操作（最常用）
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;命令&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;常用参数&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;作用&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;示例&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;ls&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-l&lt;/code&gt;（长格式）, &lt;code&gt;-a&lt;/code&gt;（显示隐藏）, &lt;code&gt;-h&lt;/code&gt;（人类可读大小）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;列出目录内容&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;ls -lah&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;cd&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;~&lt;/code&gt;（家目录）, &lt;code&gt;-&lt;/code&gt;（上一个目录）, &lt;code&gt;..&lt;/code&gt;（上级目录）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;切换目录&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;cd /var/log&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;pwd&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;显示当前工作路径&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;pwd&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;mkdir&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-p&lt;/code&gt;（递归创建父目录）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;创建目录&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;mkdir -p a/b/c&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;rm&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-r&lt;/code&gt;（递归）, &lt;code&gt;-f&lt;/code&gt;（强制不提示）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;删除文件或目录&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;rm -rf old_folder&lt;/code&gt; ⚠️&lt;strong&gt;高危&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;cp&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-r&lt;/code&gt;（复制目录）, &lt;code&gt;-i&lt;/code&gt;（覆盖前提示）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;复制文件或目录&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;cp -r source/ target/&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;mv&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;移动或重命名&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;mv file1.txt file2.txt&lt;/code&gt;（重命名）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;touch&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;创建空文件或更新时间戳&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;touch config.ini&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;find&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-name&lt;/code&gt;（按名）, &lt;code&gt;-type f/d&lt;/code&gt;（文件/目录）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查找文件&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;find . -name &amp;quot;*.log&amp;quot;&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2-文件查看与内容处理&#34;&gt;2. 文件查看与内容处理
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;命令&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;常用参数&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;作用&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;示例&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;cat&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-n&lt;/code&gt;（显示行号）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看完整文件（适合小文件）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;cat /etc/passwd&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;less&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-N&lt;/code&gt;（显示行号）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;分页查看&lt;/strong&gt;（大文件必用，按&lt;code&gt;q&lt;/code&gt;退出）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;less huge.log&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;head&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-n 100&lt;/code&gt;（前100行）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看文件开头&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;head -n 20 access.log&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;tail&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-f&lt;/code&gt;（实时追踪）, &lt;code&gt;-n&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看文件末尾&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;tail -f error.log&lt;/code&gt;（实时监控日志）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;grep&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-i&lt;/code&gt;（忽略大小写）, &lt;code&gt;-r&lt;/code&gt;（递归）, &lt;code&gt;-v&lt;/code&gt;（反向匹配）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;过滤文本&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;grep -ir &amp;quot;error&amp;quot; /var/log/&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;vim&lt;/code&gt;/&lt;code&gt;vi&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;无&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;文本编辑器（按&lt;code&gt;i&lt;/code&gt;编辑，&lt;code&gt;:wq&lt;/code&gt;保存退出）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;vim ~/.bashrc&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;wc&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-l&lt;/code&gt;（行数）, &lt;code&gt;-w&lt;/code&gt;（单词数）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;统计&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;wc -l file.txt&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;3-权限管理&#34;&gt;3. 权限管理
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;命令&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;常用参数&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;作用&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;示例&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;chmod&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;+x&lt;/code&gt;（加执行）, &lt;code&gt;755&lt;/code&gt;（数字法）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;修改文件权限&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;chmod +x script.sh&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;chown&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;user:group&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;修改文件所有者和组&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;chown root:root file&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;sudo&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-i&lt;/code&gt;（切换root环境）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;以超级管理员执行&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;sudo apt update&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;4-系统状态与资源监控&#34;&gt;4. 系统状态与资源监控
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;命令&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;常用参数&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;作用&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;示例&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;top&lt;/code&gt;&lt;/strong&gt; / &lt;strong&gt;&lt;code&gt;htop&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-u username&lt;/code&gt;（只看某用户）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;实时进程监控（CPU/内存排行）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;按&lt;code&gt;P&lt;/code&gt;按CPU排序，按&lt;code&gt;M&lt;/code&gt;按内存&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;ps&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;aux&lt;/code&gt;（所有进程）, &lt;code&gt;ef&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看进程快照&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;ps aux | grep nginx&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;kill&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-9&lt;/code&gt;（强制杀死）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;结束进程&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;kill -9 1234&lt;/code&gt;（PID）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;df&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-h&lt;/code&gt;（人类可读）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看磁盘分区使用率&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;df -h&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;du&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-sh&lt;/code&gt;（总大小）, &lt;code&gt;-ch&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看目录占用的磁盘空间&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;du -sh *&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;free&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-m&lt;/code&gt;（MB）, &lt;code&gt;-g&lt;/code&gt;（GB）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看内存使用&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;free -h&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;netstat&lt;/code&gt;&lt;/strong&gt; / &lt;strong&gt;&lt;code&gt;ss&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-tuln&lt;/code&gt;（查看监听端口）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看网络连接与端口&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;ss -tuln | grep 80&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;5-网络通信&#34;&gt;5. 网络通信
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;命令&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;常用参数&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;作用&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;示例&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;ping&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-c 4&lt;/code&gt;（发包次数）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;测试网络连通性&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;ping -c 4 baidu.com&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;curl&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-O&lt;/code&gt;（下载）, &lt;code&gt;-I&lt;/code&gt;（仅响应头）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;发送HTTP请求或下载&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;curl -O https://example.com/file.zip&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;wget&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-c&lt;/code&gt;（断点续传）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;下载文件&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;wget -c https://...&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;ifconfig&lt;/code&gt;&lt;/strong&gt; / &lt;strong&gt;&lt;code&gt;ip&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;ip a&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看IP地址&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;ip a&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;6-压缩与打包&#34;&gt;6. 压缩与打包
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;命令&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;常用参数&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;作用&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;示例&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;tar&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-czvf&lt;/code&gt;（压缩）, &lt;code&gt;-xzvf&lt;/code&gt;（解压）, &lt;code&gt;-j&lt;/code&gt;（bzip2）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;最通用的打包工具&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;tar -czvf archive.tar.gz /path&lt;/code&gt; &lt;br&gt; &lt;code&gt;tar -xzvf archive.tar.gz&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;zip&lt;/code&gt;/&lt;code&gt;unzip&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;-r&lt;/code&gt;（递归）&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;处理.zip文件&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;unzip file.zip -d target_dir/&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;7-用户与ssh&#34;&gt;7. 用户与SSH
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;命令&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;作用&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;示例&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;whoami&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;查看当前用户名&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;whoami&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;passwd&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;修改密码&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;passwd&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;ssh&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;远程连接服务器&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;ssh root@192.168.1.100 -p 22&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;&lt;code&gt;scp&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;远程拷贝文件&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;scp file.txt user@ip:/home/&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;救命技巧&#34;&gt;救命技巧
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;管道符 &lt;code&gt;|&lt;/code&gt;&lt;/strong&gt;：把左边输出交给右边处理（组合拳）。
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;实战&lt;/em&gt;：&lt;code&gt;history | grep &amp;quot;docker&amp;quot;&lt;/code&gt;（查找历史中所有docker命令）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重定向 &lt;code&gt;&amp;gt;&lt;/code&gt; 和 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt;&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;gt;&lt;/code&gt; 覆盖写入文件。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 追加写入文件。&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;实战&lt;/em&gt;：&lt;code&gt;echo &amp;quot;Hello&amp;quot; &amp;gt;&amp;gt; log.txt&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;万能帮助&lt;/strong&gt;：遇到不会用的命令，立刻输入 &lt;code&gt;command --help&lt;/code&gt; 或 &lt;code&gt;man command&lt;/code&gt;（按&lt;code&gt;q&lt;/code&gt;退出）。&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
+        <title>MySQL 脏读、不可重复读、幻读全解析</title>
+        <link>https://Yannick-Mo.github.io/p/mysql-dirty-read-non-repeatable-read-phantom-read/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/mysql-dirty-read-non-repeatable-read-phantom-read/</guid>
+        <description>&lt;h2 id=&#34;脏读读到了半成品&#34;&gt;脏读——读到了&amp;quot;半成品&amp;quot;
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;核心&lt;/strong&gt;：一个事务读到了**另一个事务尚未提交（正在执行中）**的数据。如果那个事务最终回滚了，读到的就是&amp;quot;脏数据&amp;quot;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;举例&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;事务 A&lt;/strong&gt;（转账）：将 id=1 的余额从 100 改为 0（&lt;strong&gt;尚未提交&lt;/strong&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（查询）：此时读取 id=1 的余额，读到了 &lt;strong&gt;0&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 A&lt;/strong&gt;（反悔）：发生错误，执行 &lt;strong&gt;ROLLBACK（回滚）&lt;/strong&gt;，余额恢复为 100。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;结果：事务 B 基于&amp;quot;余额为 0&amp;quot;做出的业务判断是完全错误的，因为它读到了根本不存在的临时数据。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;不可重复读同一条数据变脸了&#34;&gt;不可重复读——同一条数据变脸了
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;核心&lt;/strong&gt;：在&lt;strong&gt;同一个事务内部&lt;/strong&gt;，两次读取&lt;strong&gt;同一条记录&lt;/strong&gt;，得到的结果&lt;strong&gt;不一样&lt;/strong&gt;。原因是被其他已提交的事务修改了这条数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;举例&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（查询）：第一次查询 id=1 的余额，结果是 &lt;strong&gt;100&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 A&lt;/strong&gt;（转账）：将 id=1 的余额从 100 改为 0，并 &lt;strong&gt;COMMIT（提交）&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（再次查询）：在同一个事务中，第二次查询 id=1 的余额，结果变成了 &lt;strong&gt;0&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;结果：事务 B 中的两次查询结果不一致（100 → 0），产生了困惑。重点在于&lt;strong&gt;数据本身变了&lt;/strong&gt;（针对的是同一行数据的字段更新）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;幻读数据集凭空变多或变少&#34;&gt;幻读——数据集凭空变多或变少
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;核心&lt;/strong&gt;：在&lt;strong&gt;同一个事务内部&lt;/strong&gt;，两次执行&lt;strong&gt;相同的查询条件&lt;/strong&gt;，返回的&lt;strong&gt;结果集条数&lt;/strong&gt;不一样。原因是其他已提交的事务**插入（Insert）或删除（Delete）**了符合条件的数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;举例&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（查询）：查询所有余额为 100 的用户，发现只有 &lt;strong&gt;1 条&lt;/strong&gt;记录（id=1）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 A&lt;/strong&gt;（新增）：插入一条新用户 id=2，余额也为 100，并 &lt;strong&gt;COMMIT（提交）&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事务 B&lt;/strong&gt;（再次查询）：在同一个事务中，再次查询所有余额为 100 的用户，发现变成了 &lt;strong&gt;2 条&lt;/strong&gt;记录（id=1 和 id=2）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;结果：事务 B 明明只想统计当前数据，却发现凭空多出了一条&amp;quot;幻影&amp;quot;记录。重点在于&lt;strong&gt;数据条数变了&lt;/strong&gt;（针对的是集合的增删）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;一句话总结区别&#34;&gt;一句话总结区别
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;现象&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;关注点&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;发生原因&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;针对操作&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;脏读&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;读到了&lt;strong&gt;未提交&lt;/strong&gt;的临时数据&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;读取了其他事务未提交的修改&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;UPDATE&lt;/code&gt;（未提交）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;不可重复读&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;同一条记录&lt;strong&gt;前后值&lt;/strong&gt;不同&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;其他事务提交了&lt;strong&gt;更新（Update）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;UPDATE&lt;/code&gt;（已提交）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;幻读&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;结果集的&lt;strong&gt;数量&lt;/strong&gt;前后不同&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;其他事务提交了&lt;strong&gt;新增（Insert）&lt;strong&gt;或&lt;/strong&gt;删除（Delete）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;INSERT&lt;/code&gt; / &lt;code&gt;DELETE&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;隔离级别是如何解决它们的&#34;&gt;隔离级别是如何解决它们的？
+&lt;/h2&gt;&lt;p&gt;MySQL InnoDB 的四种隔离级别，对这三种现象的防御力度如下（✅ 代表避免了，❌ 代表可能发生）：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;隔离级别&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;脏读&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;不可重复读&lt;/th&gt;
+          &lt;th style=&#34;text-align: left&#34;&gt;幻读&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;读未提交&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;读已提交&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;❌ 会发生&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;可重复读（默认）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;⚠️ &lt;strong&gt;基本避免&lt;/strong&gt;（通过间隙锁）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;可串行化&lt;/strong&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 避免&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;✅ 完全避免（强制串行）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+        </item>
+        <item>
+        <title>Qt 底层架构深度解析：QPA、元对象系统、事件循环与图形渲染</title>
+        <link>https://Yannick-Mo.github.io/p/qt-architecture-deep-dive/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/qt-architecture-deep-dive/</guid>
+        <description>&lt;p&gt;要深入理解Qt，我们可以把它想象成一座精心设计的摩天大楼，每一层都各司其职，协同工作。这座大楼从上到下，大致可以分为这样几个层次：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;高层逻辑（应用层）&lt;/strong&gt;：开发者编写的 &lt;code&gt;QWidget&lt;/code&gt;、&lt;code&gt;QML&lt;/code&gt; 界面和业务逻辑。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心机制（框架层）&lt;/strong&gt;：支撑高层逻辑的&amp;quot;骨架&amp;quot;，主要是&lt;strong&gt;元对象系统&lt;/strong&gt;和&lt;strong&gt;事件循环&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;操作系统对接（平台抽象层）&lt;/strong&gt;：通过 &lt;strong&gt;QPA（Qt Platform Abstraction）&lt;/strong&gt; 与底层的Windows、Linux、macOS等系统沟通。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;下面我们从下往上，逐一深入探索。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;底层基石如何对接操作系统qpa&#34;&gt;底层基石：如何对接操作系统（QPA）
+&lt;/h2&gt;&lt;p&gt;QPA是Qt实现跨平台的核心，它是一个插件系统。每个平台（如Windows、Linux）都有一个对应的QPA插件（如&lt;code&gt;qwindows&lt;/code&gt;、&lt;code&gt;qxcb&lt;/code&gt;）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;启动与初始化&lt;/strong&gt;：当Qt程序启动（进入&lt;code&gt;main()&lt;/code&gt;函数），会创建一个&lt;code&gt;QApplication&lt;/code&gt;或&lt;code&gt;QCoreApplication&lt;/code&gt;对象。在构造过程中，Qt会&lt;strong&gt;根据目标平台，动态加载并初始化对应的QPA插件&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层服务&lt;/strong&gt;：QPA插件负责将Qt的抽象操作，翻译成具体操作系统的系统调用。例如：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;窗口管理&lt;/strong&gt;：创建、移动、调整窗口，管理窗口焦点。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事件获取&lt;/strong&gt;：从操作系统获取鼠标点击、键盘输入等原生事件，并转换成Qt的&lt;code&gt;QEvent&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;图形渲染&lt;/strong&gt;：提供&lt;code&gt;QPlatformOpenGLContext&lt;/code&gt;等接口，让Qt可以利用OpenGL等图形API进行渲染。在嵌入式Linux上，也可以通过Linux Framebuffer直接操作显存。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以这样理解：&lt;strong&gt;QPA是Qt的&amp;quot;操作系统翻译官&amp;quot;&lt;/strong&gt;，它把Qt通用的&amp;quot;指令&amp;quot;翻译成各个操作系统能听懂的&amp;quot;方言&amp;quot;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;核心骨架元对象系统meta-object-system&#34;&gt;核心骨架：元对象系统（Meta-Object System）
+&lt;/h2&gt;&lt;p&gt;元对象系统是Qt最独特的核心，它赋予了C++原本不具备的&lt;strong&gt;运行时内省（Introspection）&lt;strong&gt;能力。也就是说，程序在运行时能够&amp;quot;审视&amp;quot;和&amp;quot;询问&amp;quot;关于对象自身的信息，比如它的类名、有哪些方法和属性。这套系统基于&lt;/strong&gt;三个要素&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;基类 &lt;code&gt;QObject&lt;/code&gt;&lt;/strong&gt;：所有需要使用元对象系统特性的类，都必须直接或间接继承自&lt;code&gt;QObject&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;宏 &lt;code&gt;Q_OBJECT&lt;/code&gt;&lt;/strong&gt;：在类声明中，必须包含这个宏。它就像一个&amp;quot;标记&amp;quot;，告诉元对象编译器（MOC）需要为这个类生成元对象代码。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;元对象编译器（MOC）&lt;/strong&gt;：这是实现元对象系统的&lt;strong&gt;引擎&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;moc元信息的建筑师&#34;&gt;MOC：元信息的&amp;quot;建筑师&amp;quot;
+&lt;/h3&gt;&lt;p&gt;MOC是一个预处理器，在C++编译器之前运行。当一个类声明了&lt;code&gt;Q_OBJECT&lt;/code&gt;，MOC就会读取这个头文件，并&lt;strong&gt;生成一个新的C++源文件&lt;/strong&gt;（通常命名为&lt;code&gt;moc_类名.cpp&lt;/code&gt;）。&lt;/p&gt;
+&lt;p&gt;这个新文件里包含了所有实现元对象系统所需的代码，核心是&lt;strong&gt;为每个类生成了一个静态的 &lt;code&gt;staticMetaObject&lt;/code&gt; 对象&lt;/strong&gt;。这个&lt;code&gt;staticMetaObject&lt;/code&gt;就是该类的&amp;quot;&lt;strong&gt;运行时说明书&lt;/strong&gt;&amp;ldquo;或&amp;rdquo;&lt;strong&gt;信息卡&lt;/strong&gt;&amp;quot;，其中包含了：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;字符串表&lt;/strong&gt;：存储类名、信号名、槽名、属性名等所有名字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;元数据表&lt;/strong&gt;：描述这些名字的类型和索引，比如哪个是信号，哪个是槽。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;信号与槽元对象系统的杀手级应用&#34;&gt;信号与槽：元对象系统的&amp;quot;杀手级应用&amp;quot;
+&lt;/h3&gt;&lt;p&gt;信号与槽机制，正是建立在MOC生成的这份&amp;quot;说明书&amp;quot;之上的。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;连接（&lt;code&gt;connect&lt;/code&gt;）&lt;/strong&gt;：当你调用&lt;code&gt;connect(sender, SIGNAL(signalA()), receiver, SLOT(slotB()))&lt;/code&gt;时，Qt实际上是在&lt;strong&gt;运行时查找&lt;/strong&gt;发送者（sender）和接收者（receiver）的元对象（&lt;code&gt;metaObject&lt;/code&gt;），然后在它们各自的&amp;quot;说明书&amp;quot;里找到名为&lt;code&gt;signalA&lt;/code&gt;和&lt;code&gt;slotB&lt;/code&gt;的方法索引。最后，Qt会建立一个&amp;quot;连接&amp;quot;，记录下&amp;quot;当发送者的信号A触发时，调用接收者的槽B&amp;quot;这个路由信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;触发（&lt;code&gt;emit&lt;/code&gt;）&lt;/strong&gt;：当你&lt;code&gt;emit signalA()&lt;/code&gt;时，实际上会调用由MOC生成的、信号对应的一个内部函数。这个函数的核心工作是&lt;strong&gt;从元对象中找到这个信号的索引，然后调用 &lt;code&gt;QMetaObject::activate&lt;/code&gt;&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分发（&lt;code&gt;activate&lt;/code&gt;）&lt;/strong&gt;：&lt;code&gt;activate&lt;/code&gt;函数会&lt;strong&gt;查找所有连接到这个信号的&amp;quot;连接&amp;quot;列表&lt;/strong&gt;，然后根据连接类型（是同一个线程还是跨线程）执行调用。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;同线程&lt;/strong&gt;：直接通过函数指针调用槽函数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨线程&lt;/strong&gt;：将槽的调用封装成一个&lt;code&gt;QMetaCallEvent&lt;/code&gt;事件，&lt;strong&gt;投递到接收者所在的线程的事件队列中&lt;/strong&gt;，由该线程的事件循环稍后处理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;所以，&lt;strong&gt;信号与槽的本质，是基于元对象信息的&amp;quot;运行时方法调用与分发系统&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;动力引擎事件循环event-loop&#34;&gt;动力引擎：事件循环（Event Loop）
+&lt;/h2&gt;&lt;p&gt;如果说元对象系统是骨架，那事件循环就是驱动整个Qt程序运转的&amp;quot;心脏&amp;quot;。它是一个&lt;strong&gt;无限循环&lt;/strong&gt;，不断地从事件队列中取出事件并分发处理。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;启动与运行&lt;/strong&gt;：调用&lt;code&gt;app.exec()&lt;/code&gt;后，主事件循环便开始运行。每个线程都可以有自己的事件循环。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事件来源&lt;/strong&gt;：事件可能来自操作系统（如鼠标点击，由QPA插件产生），也可能来自Qt内部（如定时器超时、其他线程投递的事件）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;投递与分发&lt;/strong&gt;：事件通过&lt;code&gt;QCoreApplication::postEvent()&lt;/code&gt;被投递到目标对象所在线程的事件队列中。事件循环不断调用&lt;code&gt;processEvents()&lt;/code&gt;来处理队列中的事件，最终调用目标对象的&lt;code&gt;event()&lt;/code&gt;函数进行分发。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;与线程的关联&lt;/strong&gt;：每个&lt;code&gt;QThread&lt;/code&gt;对象都包含一个&lt;code&gt;QThreadData&lt;/code&gt;，其中关联着该线程的事件调度器（EventDispatcher）。在Linux上，它可能是&lt;code&gt;QEventDispatcherUNIX&lt;/code&gt;或&lt;code&gt;QEventDispatcherGlib&lt;/code&gt;，负责将系统事件（如X11或Wayland事件）转换为Qt的&lt;code&gt;QEvent&lt;/code&gt;并投递到队列中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;图形与渲染从逻辑到像素&#34;&gt;图形与渲染：从逻辑到像素
+&lt;/h2&gt;&lt;p&gt;图形渲染是用户能最直接感知的部分，其工作流程如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;绘制指令&lt;/strong&gt;：开发者使用&lt;code&gt;QPainter&lt;/code&gt;类发出绘制指令，如&lt;code&gt;drawRect()&lt;/code&gt;, &lt;code&gt;drawText()&lt;/code&gt;等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;绘制后端（Paint Engine）&lt;/strong&gt;：&lt;code&gt;QPainter&lt;/code&gt;并不直接绘制，而是将指令传递给一个&lt;strong&gt;绘制后端（Paint Engine）&lt;/strong&gt;。Qt支持多种绘制后端，如基于CPU的软件渲染（Raster）、基于OpenGL的硬件加速渲染等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;渲染到目标&lt;/strong&gt;：绘制后端将指令转换为实际的像素操作。
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;软件渲染&lt;/strong&gt;：直接在内存中的&lt;code&gt;QImage&lt;/code&gt;或&lt;code&gt;QSvgRenderer&lt;/code&gt;上操作像素。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;硬件加速&lt;/strong&gt;：通过OpenGL等图形API，利用GPU进行高效渲染。在Qt 5之后，引入了&lt;strong&gt;渲染硬件接口（RHI）&lt;/strong&gt;，进一步抽象了底层图形API（如OpenGL, Vulkan, Direct3D, Metal），让图形渲染更加统一和高效。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提交与合成&lt;/strong&gt;：渲染完成的像素数据（通常是一个个&amp;quot;后备存储&amp;quot;backingstore）被提交给窗口系统。窗口系统通过&lt;strong&gt;合成（Compositing）&lt;/strong&gt;，将各个窗口的内容组合成最终显示在屏幕上的图像。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;p&gt;从宏观到微观，Qt的底层架构清晰而精妙：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;main()&lt;/code&gt;启动 -&amp;gt; QPA初始化 -&amp;gt; 事件循环运行&lt;code&gt;exec()&lt;/code&gt;&lt;/strong&gt;：程序启动，底层平台就绪，心脏开始跳动。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用户点击 -&amp;gt; QPA捕获 -&amp;gt; 投递&lt;code&gt;QEvent&lt;/code&gt; -&amp;gt; 事件循环分发 -&amp;gt; 信号&lt;code&gt;emit&lt;/code&gt;&lt;/strong&gt;：一次交互的完整旅程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;emit&lt;/code&gt;信号 -&amp;gt; &lt;code&gt;QMetaObject::activate&lt;/code&gt; -&amp;gt; 查元对象 -&amp;gt; 调槽函数&lt;/strong&gt;：骨架（元对象系统）支撑起了对象间的动态通信。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;QPainter&lt;/code&gt;绘制 -&amp;gt; 绘制后端 -&amp;gt; 硬件/软件渲染 -&amp;gt; QPA提交 -&amp;gt; 屏幕显示&lt;/strong&gt;：从逻辑指令到最终像素的华丽变身。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>Qt 多重继承避坑指南：为何禁止多重 QObject 子类继承</title>
+        <link>https://Yannick-Mo.github.io/p/qt-multiple-inheritance-guide/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/qt-multiple-inheritance-guide/</guid>
+        <description>&lt;p&gt;在Qt中使用多继承，&lt;strong&gt;最核心也最需要警惕的一点是：永远不要从两个或更多直接或间接继承自&lt;code&gt;QObject&lt;/code&gt;的类进行多重继承&lt;/strong&gt;。这会导致未定义行为，是Qt官方明确不支持的操作。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;核心问题qobject与元对象系统&#34;&gt;核心问题：&lt;code&gt;QObject&lt;/code&gt;与元对象系统
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;QObject&lt;/code&gt;是Qt所有核心类（如&lt;code&gt;QWidget&lt;/code&gt;、&lt;code&gt;QThread&lt;/code&gt;等）的基类，它带来了信号槽、属性系统等强大功能。Qt通过**元对象系统（Meta-Object System）**来管理这些功能，每个&lt;code&gt;QObject&lt;/code&gt;子类都有一个全局唯一的&lt;code&gt;QMetaObject&lt;/code&gt;对象与之关联。&lt;/p&gt;
+&lt;p&gt;当你试图从两个&lt;code&gt;QObject&lt;/code&gt;子类派生时，问题就出现了：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;元对象冲突&lt;/strong&gt;：派生类会继承到两个不同的&lt;code&gt;QMetaObject&lt;/code&gt;，导致Qt无法确定该使用哪一个来正确处理信号、槽和属性。编译器会明确给出警告：&amp;quot;&lt;code&gt;Class &#39;...&#39; inherits from two QObject subclasses &#39;...&#39; and &#39;...&#39;. This is not supported!&lt;/code&gt;&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对象实例冗余&lt;/strong&gt;：即使使用C++的&lt;strong&gt;虚拟继承（virtual inheritance）&lt;/strong&gt;，也无法解决这个问题。虚拟继承解决的是C++层面的&amp;quot;菱形继承&amp;quot;问题（避免基类重复），但Qt的元对象系统无法识别这种共享，仍然会尝试为不同的继承路径创建独立的元对象信息，最终导致混乱。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;常见的多继承场景与风险&#34;&gt;常见的多继承场景与风险
+&lt;/h2&gt;&lt;p&gt;以下是几种在Qt中试图对&lt;code&gt;QObject&lt;/code&gt;子类进行多重继承的典型场景及其后果：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;直接继承两个&lt;code&gt;QObject&lt;/code&gt;子类&lt;/strong&gt;：例如，同时继承&lt;code&gt;QWidget&lt;/code&gt;和&lt;code&gt;QThread&lt;/code&gt;。这是&lt;strong&gt;完全禁止&lt;/strong&gt;的操作，会直接导致前述的元对象冲突。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;继承两个有继承关系的类&lt;/strong&gt;：例如，同时继承&lt;code&gt;QWidget&lt;/code&gt;和&lt;code&gt;QPushButton&lt;/code&gt;。由于&lt;code&gt;QPushButton&lt;/code&gt;本身就是&lt;code&gt;QWidget&lt;/code&gt;的子类，这会形成&amp;quot;菱形继承&amp;quot;。派生类中会包含两个&lt;code&gt;QWidget&lt;/code&gt;的实例，导致访问&lt;code&gt;QWidget&lt;/code&gt;成员（如&lt;code&gt;setGeometry()&lt;/code&gt;）时产生&lt;strong&gt;二义性错误&lt;/strong&gt;，编译器无法确定你要操作哪个父类对象。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;继承&lt;code&gt;QRunnable&lt;/code&gt;和&lt;code&gt;QObject&lt;/code&gt;&lt;/strong&gt;：&lt;code&gt;QRunnable&lt;/code&gt;本身不是&lt;code&gt;QObject&lt;/code&gt;的子类，因此这种多继承在技术上是可行的。但这样做会破坏&lt;code&gt;QRunnable&lt;/code&gt;的设计初衷——&lt;strong&gt;轻量级&lt;/strong&gt;，并且会引入&lt;code&gt;QObject&lt;/code&gt;带来的额外开销。实际上，Qt官方推荐使用&lt;code&gt;QMetaObject::invokeMethod&lt;/code&gt;等替代方案来实现跨线程通知。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;最佳实践与替代方案&#34;&gt;最佳实践与替代方案
+&lt;/h2&gt;&lt;p&gt;面对这些限制，Qt官方和社区推荐使用以下更安全、更优雅的模式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优先使用组合（Composition）&lt;/strong&gt;：这是最推荐的解决方案。与其继承一个类来获得其功能，不如将其作为成员变量包含在类中。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;示例&lt;/strong&gt;：如果需要为&lt;code&gt;QWidget&lt;/code&gt;添加一个&amp;quot;按钮&amp;quot;功能，不应当继承&lt;code&gt;QPushButton&lt;/code&gt;，而应在&lt;code&gt;QWidget&lt;/code&gt;子类中包含一个&lt;code&gt;QPushButton*&lt;/code&gt;成员，并自行管理其布局和信号连接。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;使用接口类（纯虚类）&lt;/strong&gt;：如果你需要让不同的&lt;code&gt;QObject&lt;/code&gt;子类拥有相同的行为，可以定义一个不继承&lt;code&gt;QObject&lt;/code&gt;的纯虚类（Interface）作为&amp;quot;混入（Mixin）&amp;quot;。然后，让你的具体类继承自一个&lt;code&gt;QObject&lt;/code&gt;子类和这个接口类。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;利用Qt的&amp;quot;混入&amp;quot;设计&lt;/strong&gt;：Qt框架本身在一些地方设计了&amp;quot;混入&amp;quot;模式。例如，&lt;code&gt;QGraphicsObject&lt;/code&gt;类就是通过多重继承&lt;code&gt;QObject&lt;/code&gt;和&lt;code&gt;QGraphicsItem&lt;/code&gt;来提供信号槽支持的。这是Qt官方经过特殊处理的少数例外，在自定义代码中不建议模仿。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;继承模板类&lt;/strong&gt;：有时需要继承一个模板类，而模板类本身不能是&lt;code&gt;QObject&lt;/code&gt;的子类。这时，一个有效的方法是让模板类继承自一个非&lt;code&gt;QObject&lt;/code&gt;的基类，然后让你的最终类多重继承这个模板类和&lt;code&gt;QObject&lt;/code&gt;。&lt;strong&gt;请务必确保&lt;code&gt;QObject&lt;/code&gt;及其子类位于继承列表的第一位&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;p&gt;在Qt中处理多继承，可以遵循以下简单原则：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;绝对禁止&lt;/strong&gt;：对两个或以上的&lt;code&gt;QObject&lt;/code&gt;子类进行多重继承。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优先选择&lt;/strong&gt;：使用**组合（Composition）**来替代继承，这是最安全、最灵活的做法。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;例外情况&lt;/strong&gt;：如果必须使用多重继承，请确保&lt;strong&gt;只有一个基类继承自&lt;code&gt;QObject&lt;/code&gt;&lt;/strong&gt;，并将其放在继承列表的首位。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>Qt 模型/视图/委托框架深度解析：MVC 演进、QModelIndex、信号槽与性能优化</title>
+        <link>https://Yannick-Mo.github.io/p/qt-model-view-delegate-deep-dive/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/qt-model-view-delegate-deep-dive/</guid>
+        <description>&lt;p&gt;Qt 的模型/视图/委托（Model/View/Delegate）框架，本质上是对经典 MVC（Model-View-Controller）设计模式的一种演进和简化。&lt;/p&gt;
+&lt;p&gt;它将视图（View）和控制器（Controller）合并，同时引入了&amp;quot;委托（Delegate）&amp;ldquo;的概念，形成了一种更清晰、更灵活的数据与界面分离的架构。其核心思想是：&lt;strong&gt;数据（Model）、展示（View）和交互（Delegate）各司其职，通过标准接口和信号/槽机制进行通信&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;框架三大核心组件&#34;&gt;框架三大核心组件
+&lt;/h2&gt;&lt;h3 id=&#34;模型model-数据的唯一真理来源&#34;&gt;模型（Model）— 数据的唯一真理来源
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;职责&lt;/strong&gt;：负责与数据源（如内存列表、数据库、文件系统等）通信，管理数据，并为视图和委托提供访问数据的标准接口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基类&lt;/strong&gt;：所有模型的抽象基类是 &lt;code&gt;QAbstractItemModel&lt;/code&gt;。实际开发中，更常用的是它针对特定数据结构的子类：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;QAbstractListModel&lt;/code&gt;：用于一维列表数据。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QAbstractTableModel&lt;/code&gt;：用于二维表格数据。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QAbstractTreeModel&lt;/code&gt;：用于树形数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键点&lt;/strong&gt;：模型本身&lt;strong&gt;不关心&lt;/strong&gt;数据如何显示，它只负责提供数据。同一个模型可以同时被多个视图使用，保证数据一致性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;视图view-数据的展示窗口&#34;&gt;视图（View）— 数据的展示窗口
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;职责&lt;/strong&gt;：从模型获取数据，并按照特定的布局（列表、表格、树形等）将其呈现给用户。它负责管理项目的选择、滚动等交互行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基类&lt;/strong&gt;：所有视图的抽象基类是 &lt;code&gt;QAbstractItemView&lt;/code&gt;。Qt 提供了几种开箱即用的视图：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;QListView&lt;/code&gt;：显示为列表。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QTableView&lt;/code&gt;：显示为表格。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QTreeView&lt;/code&gt;：显示为树形结构。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键点&lt;/strong&gt;：视图&lt;strong&gt;不持有数据&lt;/strong&gt;，只持有指向模型的指针。它通过模型提供的接口来读取需要显示的数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;委托delegate-定制外观与交互的画笔&#34;&gt;委托（Delegate）— 定制外观与交互的画笔
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;职责&lt;/strong&gt;：负责&lt;strong&gt;绘制&lt;/strong&gt;视图中的每一个数据项，并管理数据项的&lt;strong&gt;编辑&lt;/strong&gt;过程（例如，创建一个输入框让用户修改数据）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基类&lt;/strong&gt;：所有委托的抽象基类是 &lt;code&gt;QAbstractItemDelegate&lt;/code&gt;。Qt 提供了默认实现 &lt;code&gt;QStyledItemDelegate&lt;/code&gt;，它也是所有标准视图的默认委托。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键点&lt;/strong&gt;：通过自定义委托，可以精细地控制每个单元格的绘制样式（如字体、颜色、背景、甚至绘制图形），以及定制编辑时使用的编辑器控件（如下拉框、日期选择器等）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;底层实现原理三大核心机制&#34;&gt;底层实现原理：三大核心机制
+&lt;/h2&gt;&lt;h3 id=&#34;模型索引qmodelindex-整个框架的指针&#34;&gt;模型索引（QModelIndex）— 整个框架的&amp;quot;指针&amp;rdquo;
+&lt;/h3&gt;&lt;p&gt;为了让视图和委托能精确地定位到模型中的某一条数据，框架引入了 &lt;code&gt;QModelIndex&lt;/code&gt; 这个概念。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;它就像一个&lt;strong&gt;智能指针&lt;/strong&gt;，包含了数据在模型中的&amp;quot;坐标&amp;quot;（行、列）以及其父项的索引，从而唯一确定一个数据项。&lt;/li&gt;
+&lt;li&gt;视图和委托不直接操作数据，而是通过持有和传递 &lt;code&gt;QModelIndex&lt;/code&gt; 来向模型请求数据（调用 &lt;code&gt;model-&amp;gt;data(index)&lt;/code&gt;）或修改数据（调用 &lt;code&gt;model-&amp;gt;setData(index, value)&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;信号与槽--组件间的通信总线&#34;&gt;信号与槽 — 组件间的通信总线
+&lt;/h3&gt;&lt;p&gt;模型、视图和委托是完全解耦的，它们之间的所有交互都通过信号和槽机制完成。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;模型 → 视图&lt;/strong&gt;：当数据发生变化时，模型会发出信号（如 &lt;code&gt;dataChanged&lt;/code&gt;），所有关联的视图在收到信号后会自行刷新，从而保证数据一致性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;视图 → 模型/委托&lt;/strong&gt;：当用户与视图交互（如点击一个项目）时，视图会发出信号。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;委托 → 模型/视图&lt;/strong&gt;：在编辑过程中，委托会发出信号来通知模型和视图编辑器的状态变化（如开始编辑、数据已修改、结束编辑等）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;性能优化轻量级渲染&#34;&gt;性能优化：轻量级渲染
+&lt;/h3&gt;&lt;p&gt;传统的 GUI 框架可能会为表格的每个单元格创建一个独立的控件（Widget），这在数据量巨大时会导致性能崩溃。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Qt 的视图采用了&lt;strong&gt;按需绘制&lt;/strong&gt;的策略。它只为**当前可见区域（视口，Viewport）**内的数据项创建和布局绘制所需的元素。&lt;/li&gt;
+&lt;li&gt;对于不可见的项目，它们并不存在。当用户滚动视图时，这些&amp;quot;消失&amp;quot;的项目会被回收或重新绘制，从而极大地减少了内存占用和提高了渲染性能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;深入委托delegate的工作流程&#34;&gt;深入委托（Delegate）的工作流程
+&lt;/h2&gt;&lt;p&gt;自定义委托通常需要继承 &lt;code&gt;QStyledItemDelegate&lt;/code&gt; 并重写以下几个核心方法，以实现定制化的显示和编辑：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;paint()&lt;/code&gt;&lt;/strong&gt;：这是绘制单个数据项的核心方法。你可以在这里使用 &lt;code&gt;QPainter&lt;/code&gt; 绘制任何你想要的样式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;sizeHint()&lt;/code&gt;&lt;/strong&gt;：返回绘制该数据项所需的推荐尺寸，用于视图的布局计算。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;createEditor()&lt;/code&gt;&lt;/strong&gt;：当用户开始编辑一个数据项时，视图会调用此方法来创建一个编辑器控件（如 &lt;code&gt;QLineEdit&lt;/code&gt;, &lt;code&gt;QComboBox&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;setEditorData()&lt;/code&gt;&lt;/strong&gt;：将模型中的数据加载到你创建的编辑器控件中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;setModelData()&lt;/code&gt;&lt;/strong&gt;：当用户完成编辑后，此方法负责将编辑器中的数据保存回模型。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;p&gt;Qt 的模型/视图/委托框架通过清晰的职责划分和信号/槽通信机制，实现了数据与界面的优雅解耦，不仅提升了代码的可维护性和可扩展性，也通过性能优化策略保证了处理大规模数据时的流畅性。理解并熟练运用这套框架，是开发高质量 Qt 应用程序的关键。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Qt 事件循环机制深度解析：exec、事件队列、分发与嵌套循环</title>
+        <link>https://Yannick-Mo.github.io/p/qt-event-loop-deep-dive/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/qt-event-loop-deep-dive/</guid>
+        <description>&lt;p&gt;Qt 的事件循环是一个&lt;strong&gt;核心的、无限循环的&amp;quot;消息泵&amp;quot;&lt;/strong&gt;，它驱动着整个 Qt 应用程序的运行，负责监听、排队和分发各种事件。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;启动事件循环一切的开端&#34;&gt;启动事件循环：一切的开端
+&lt;/h2&gt;&lt;p&gt;程序启动后，必须在主线程中创建一个 &lt;code&gt;QCoreApplication&lt;/code&gt;（或它的子类 &lt;code&gt;QApplication&lt;/code&gt;、&lt;code&gt;QGuiApplication&lt;/code&gt;）对象，并调用其 &lt;code&gt;exec()&lt;/code&gt; 方法。这个调用会启动&lt;strong&gt;主事件循环&lt;/strong&gt;，让程序进入等待并响应事件的状态。&lt;code&gt;exec()&lt;/code&gt; 会阻塞直到循环退出。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;事件从何而来&#34;&gt;事件从何而来？
+&lt;/h2&gt;&lt;p&gt;事件是驱动应用运转的&amp;quot;燃料&amp;quot;，主要来源有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;系统事件&lt;/strong&gt;：操作系统产生的，如鼠标点击、键盘输入、窗口重绘等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Qt 内部事件&lt;/strong&gt;：由 Qt 自身产生，如定时器超时（&lt;code&gt;QTimer&lt;/code&gt;）、网络数据就绪（&lt;code&gt;QTcpSocket&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;应用/自定义事件&lt;/strong&gt;：开发者可以创建并发送自定义事件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨线程事件&lt;/strong&gt;：在不同线程间通过信号槽通信时，事件会被投递到目标线程的事件循环中处理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;事件循环内部如何工作&#34;&gt;事件循环内部如何工作？
+&lt;/h2&gt;&lt;p&gt;其内部工作流程可以概括为以下几个步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;排队等待&lt;/strong&gt;：所有事件产生后，并非立即处理，而是被放入一个&lt;strong&gt;线程局部的事件队列&lt;/strong&gt;中，遵循**先进先出（FIFO）**的原则。投递事件可使用线程安全的 &lt;code&gt;QCoreApplication::postEvent()&lt;/code&gt; 方法。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;循环取出&lt;/strong&gt;：事件循环不停地从这个队列的头部取出事件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分发处理&lt;/strong&gt;：事件循环通过&lt;strong&gt;事件分发器（Event Dispatcher）&lt;/strong&gt;，将事件发送给目标 &lt;code&gt;QObject&lt;/code&gt; 的 &lt;code&gt;event()&lt;/code&gt; 函数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事件处理&lt;/strong&gt;：&lt;code&gt;QObject::event()&lt;/code&gt; 函数会根据事件类型（如鼠标事件、键盘事件），调用对应的特定事件处理函数（如 &lt;code&gt;mousePressEvent()&lt;/code&gt;, &lt;code&gt;keyPressEvent()&lt;/code&gt; 等）。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;一个简化的内部逻辑如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;应用程序未退出&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;err&#34;&gt;从事件队列中取出一个事件&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;err&#34;&gt;将事件分发给目标对象&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;err&#34;&gt;目标对象处理该事件&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id=&#34;嵌套事件循环&#34;&gt;嵌套事件循环
+&lt;/h2&gt;&lt;p&gt;除了主循环，你还可以随时创建 &lt;code&gt;QEventLoop&lt;/code&gt; 对象并调用 &lt;code&gt;exec()&lt;/code&gt;，从而启动一个&lt;strong&gt;局部（嵌套）事件循环&lt;/strong&gt;。这在显示模态对话框（如 &lt;code&gt;QDialog::exec()&lt;/code&gt;）时很常见。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;工作方式&lt;/strong&gt;：嵌套循环会阻塞当前代码的执行，直到调用 &lt;code&gt;exit()&lt;/code&gt; 或 &lt;code&gt;quit()&lt;/code&gt; 才会退出。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;与主循环关系&lt;/strong&gt;：内层循环会处理事件，只有当它退出后，外层循环才能继续。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;保持界面响应processevents&#34;&gt;保持界面响应：&lt;code&gt;processEvents()&lt;/code&gt;
+&lt;/h2&gt;&lt;p&gt;如果主线程执行一个耗时很长的操作，事件循环会被阻塞，导致界面&amp;quot;卡死&amp;quot;。为了解决这个问题，可以在耗时操作中定期调用 &lt;code&gt;QCoreApplication::processEvents()&lt;/code&gt;。这会强制事件循环在当前调用点&amp;quot;插队&amp;quot;处理积压的事件，从而保持界面响应。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;线程与事件循环&#34;&gt;线程与事件循环
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;每个线程都可拥有&lt;/strong&gt;：每个 &lt;code&gt;QThread&lt;/code&gt; 都可以有自己独立的事件循环，这使得在后台线程中可以使用 &lt;code&gt;QTimer&lt;/code&gt;、&lt;code&gt;QTcpSocket&lt;/code&gt; 等依赖事件循环的类。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;启动线程的事件循环&lt;/strong&gt;：默认情况下，&lt;code&gt;QThread::run()&lt;/code&gt; 会调用 &lt;code&gt;exec()&lt;/code&gt; 来启动线程的事件循环。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;线程亲和性&lt;/strong&gt;：&lt;code&gt;QObject&lt;/code&gt; 在哪个线程创建，就&amp;quot;属于&amp;quot;哪个线程（即&lt;strong&gt;线程亲和性&lt;/strong&gt;）。这个对象的事件会投递到它所在线程的事件循环中处理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨线程信号槽&lt;/strong&gt;：当一个线程的信号触发另一个线程对象的槽函数时，Qt 会通过**队列连接（Queued Connection）**将调用包装成一个事件，投递到目标对象所在线程的事件队列中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;关键点总结&#34;&gt;关键点总结
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;exec()&lt;/code&gt;&lt;/strong&gt;：启动事件循环并阻塞。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;exit()&lt;/code&gt; / &lt;code&gt;quit()&lt;/code&gt;&lt;/strong&gt;：退出事件循环。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;processEvents()&lt;/code&gt;&lt;/strong&gt;：处理待处理事件而不阻塞。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;QEventLoop&lt;/code&gt;&lt;/strong&gt;：用于创建嵌套事件循环。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事件队列&lt;/strong&gt;：每个线程独立，用于存储待处理事件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事件分发器&lt;/strong&gt;：负责将事件从队列取出并分发给目标对象。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;线程亲和性&lt;/strong&gt;：决定对象的事件在哪个线程处理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;简单来说，Qt 的事件循环就是一个高效、有序的&amp;quot;任务调度中心&amp;quot;，它让程序能够异步、非阻塞地响应各种事件，是构建流畅、响应式图形界面应用程序的基石。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Qt 子线程更新 UI 的正确方式：信号槽、invokeMethod 与自定义事件</title>
+        <link>https://Yannick-Mo.github.io/p/qt-thread-safe-ui-update/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/qt-thread-safe-ui-update/</guid>
+        <description>&lt;p&gt;在Qt中，&lt;strong&gt;绝对禁止在子线程（工作线程）中直接操作UI&lt;/strong&gt;。这是Qt框架的一条核心铁律。强行这样做，程序几乎必然会出现各种随机、难以复现且极其隐蔽的问题。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;在子线程直接更新ui的后果&#34;&gt;在子线程直接更新UI的后果
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;程序崩溃（最典型后果）&lt;/strong&gt;：这是最常见且最严重的问题。由于UI组件（如&lt;code&gt;QWidget&lt;/code&gt;）&lt;strong&gt;不是线程安全的&lt;/strong&gt;，多线程同时操作会导致内存访问冲突和数据竞争，引发难以捕捉的&amp;quot;幽灵&amp;quot;崩溃。Qt甚至会明确报错&lt;code&gt;QWidget::repaint: Recursive repaint detected&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;界面错乱与无响应&lt;/strong&gt;：子线程操作UI会打乱主线程事件循环，导致界面刷新异常、显示残缺或状态错误。如果子线程长时间占用CPU，还会阻塞主线程，使界面&amp;quot;卡死&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;未定义行为（最危险）&lt;/strong&gt;：最糟糕的是，有时程序看起来&amp;quot;运行正常&amp;quot;，但这是一种假象。内部数据可能已遭破坏，随时可能在毫无征兆的情况下崩溃，让调试变得异常困难。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;为什么会有这个限制&#34;&gt;为什么会有这个限制？
+&lt;/h2&gt;&lt;p&gt;这个限制是Qt的设计哲学和底层机制共同决定的，主要原因如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;UI组件非线程安全&lt;/strong&gt;：Qt的GUI组件（&lt;code&gt;QWidget&lt;/code&gt;及其子类）内部状态复杂，设计上并未考虑多线程同时访问的情况。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;底层平台限制&lt;/strong&gt;：几乎所有主流操作系统（Windows、macOS、X11等）的图形API都要求UI操作在&lt;strong&gt;主线程&lt;/strong&gt;执行。Qt作为跨平台框架必须遵守此规则。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;事件循环机制&lt;/strong&gt;：Qt依赖主线程的&lt;strong&gt;事件循环&lt;/strong&gt;来处理所有UI事件（绘制、鼠标、键盘等）。子线程没有这个事件循环，无法正确处理UI更新请求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;正确的做法如何安全更新ui&#34;&gt;正确的做法：如何安全更新UI
+&lt;/h2&gt;&lt;p&gt;核心原则是：&lt;strong&gt;子线程负责执行耗时任务并&amp;quot;生产&amp;quot;数据，主线程负责接收数据并&amp;quot;消费&amp;quot;数据来更新UI&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;Qt为此提供了几种安全、优雅的线程间通信（IPC）方式：&lt;/p&gt;
+&lt;h3 id=&#34;使用信号与槽最推荐&#34;&gt;使用信号与槽（最推荐）
+&lt;/h3&gt;&lt;p&gt;这是Qt官方推荐的标准做法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在工作线程（&lt;code&gt;QThread&lt;/code&gt;）中定义一个信号，用于传递数据。&lt;/li&gt;
+&lt;li&gt;在主线程（如&lt;code&gt;MainWindow&lt;/code&gt;）中定义一个槽函数，负责接收数据并更新UI。&lt;/li&gt;
+&lt;li&gt;将线程的信号连接到主窗口的槽，&lt;strong&gt;连接类型使用&lt;code&gt;Qt::QueuedConnection&lt;/code&gt;&lt;/strong&gt;（跨线程连接时，Qt默认使用此类型）。这样，信号会被安全地&amp;quot;投递&amp;quot;到主线程的事件队列中排队，由主线程在合适时机执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 工作线程类
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Worker&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;QObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;Q_OBJECT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;nl&#34;&gt;slots&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;doWork&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;QString&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;计算完成&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;emit&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;workFinished&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 发射信号传递结果
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nl&#34;&gt;signals&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;workFinished&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;QString&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 主窗口类
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;MainWindow&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;QMainWindow&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;Q_OBJECT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;MainWindow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;c1&#34;&gt;// ... 创建 Worker 和 QThread，并将 Worker moveToThread ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// 关键：连接信号和槽
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;worker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Worker&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;workFinished&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;MainWindow&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;updateUI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                &lt;span class=&#34;n&#34;&gt;Qt&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;QueuedConnection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;c1&#34;&gt;// ... 启动线程 ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;nl&#34;&gt;slots&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;updateUI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;QString&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;ui&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;label&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;setText&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 在主线程安全更新UI
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;使用-qmetaobjectinvokemethod&#34;&gt;使用 &lt;code&gt;QMetaObject::invokeMethod&lt;/code&gt;
+&lt;/h3&gt;&lt;p&gt;这是一个便捷的静态方法，可以在子线程中直接&amp;quot;请求&amp;quot;主线程执行一个对象的方法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在子线程中，调用&lt;code&gt;QMetaObject::invokeMethod&lt;/code&gt;，并指定目标对象（如主窗口）、要调用的方法名、连接类型为&lt;code&gt;Qt::QueuedConnection&lt;/code&gt;以及参数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 在子线程的 run() 或某个槽函数中
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WorkerThread&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;QString&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fetchData&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;// 安全地调用主线程中 MainWindow 对象的 updateDisplay 方法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;QMetaObject&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;invokeMethod&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mainWindow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;updateDisplay&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                              &lt;span class=&#34;n&#34;&gt;Qt&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;QueuedConnection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                              &lt;span class=&#34;n&#34;&gt;Q_ARG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;QString&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;发送自定义事件&#34;&gt;发送自定义事件
+&lt;/h3&gt;&lt;p&gt;这是一种更底层、更灵活的方式，适用于需要传递复杂数据或进行特殊处理的场景。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;创建一个继承自&lt;code&gt;QEvent&lt;/code&gt;的自定义事件类。&lt;/li&gt;
+&lt;li&gt;在子线程中，使用&lt;code&gt;QCoreApplication::postEvent()&lt;/code&gt;将事件发送给主线程的UI对象。&lt;/li&gt;
+&lt;li&gt;在主线程的UI对象中，重写&lt;code&gt;event()&lt;/code&gt;方法来处理该自定义事件并更新UI。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;p&gt;在Qt中，&lt;strong&gt;永远不要尝试在子线程里直接调用任何UI对象的方法&lt;/strong&gt;。请务必通过信号槽、&lt;code&gt;invokeMethod&lt;/code&gt;或自定义事件等方式，将UI更新操作&amp;quot;委托&amp;quot;给主线程执行。这不仅是保证程序稳定运行的关键，也是写出健壮、可维护Qt程序的基本功。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>std::array 底层原理深度剖析：零开销封装、内存模型与最佳实践</title>
         <link>https://Yannick-Mo.github.io/p/std-array-internals/</link>
         <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>QStyledItemDelegate on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/qstyleditemdelegate/</link>
+        <description>Recent content in QStyledItemDelegate on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/qstyleditemdelegate/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Qt 模型/视图/委托框架深度解析：MVC 演进、QModelIndex、信号槽与性能优化</title>
+        <link>https://Yannick-Mo.github.io/p/qt-model-view-delegate-deep-dive/</link>
+        <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/qt-model-view-delegate-deep-dive/</guid>
+        <description>&lt;p&gt;Qt 的模型/视图/委托（Model/View/Delegate）框架，本质上是对经典 MVC（Model-View-Controller）设计模式的一种演进和简化。&lt;/p&gt;
+&lt;p&gt;它将视图（View）和控制器（Controller）合并，同时引入了&amp;quot;委托（Delegate）&amp;ldquo;的概念，形成了一种更清晰、更灵活的数据与界面分离的架构。其核心思想是：&lt;strong&gt;数据（Model）、展示（View）和交互（Delegate）各司其职，通过标准接口和信号/槽机制进行通信&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;框架三大核心组件&#34;&gt;框架三大核心组件
+&lt;/h2&gt;&lt;h3 id=&#34;模型model-数据的唯一真理来源&#34;&gt;模型（Model）— 数据的唯一真理来源
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;职责&lt;/strong&gt;：负责与数据源（如内存列表、数据库、文件系统等）通信，管理数据，并为视图和委托提供访问数据的标准接口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基类&lt;/strong&gt;：所有模型的抽象基类是 &lt;code&gt;QAbstractItemModel&lt;/code&gt;。实际开发中，更常用的是它针对特定数据结构的子类：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;QAbstractListModel&lt;/code&gt;：用于一维列表数据。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QAbstractTableModel&lt;/code&gt;：用于二维表格数据。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QAbstractTreeModel&lt;/code&gt;：用于树形数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键点&lt;/strong&gt;：模型本身&lt;strong&gt;不关心&lt;/strong&gt;数据如何显示，它只负责提供数据。同一个模型可以同时被多个视图使用，保证数据一致性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;视图view-数据的展示窗口&#34;&gt;视图（View）— 数据的展示窗口
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;职责&lt;/strong&gt;：从模型获取数据，并按照特定的布局（列表、表格、树形等）将其呈现给用户。它负责管理项目的选择、滚动等交互行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基类&lt;/strong&gt;：所有视图的抽象基类是 &lt;code&gt;QAbstractItemView&lt;/code&gt;。Qt 提供了几种开箱即用的视图：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;QListView&lt;/code&gt;：显示为列表。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QTableView&lt;/code&gt;：显示为表格。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;QTreeView&lt;/code&gt;：显示为树形结构。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键点&lt;/strong&gt;：视图&lt;strong&gt;不持有数据&lt;/strong&gt;，只持有指向模型的指针。它通过模型提供的接口来读取需要显示的数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;委托delegate-定制外观与交互的画笔&#34;&gt;委托（Delegate）— 定制外观与交互的画笔
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;职责&lt;/strong&gt;：负责&lt;strong&gt;绘制&lt;/strong&gt;视图中的每一个数据项，并管理数据项的&lt;strong&gt;编辑&lt;/strong&gt;过程（例如，创建一个输入框让用户修改数据）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基类&lt;/strong&gt;：所有委托的抽象基类是 &lt;code&gt;QAbstractItemDelegate&lt;/code&gt;。Qt 提供了默认实现 &lt;code&gt;QStyledItemDelegate&lt;/code&gt;，它也是所有标准视图的默认委托。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键点&lt;/strong&gt;：通过自定义委托，可以精细地控制每个单元格的绘制样式（如字体、颜色、背景、甚至绘制图形），以及定制编辑时使用的编辑器控件（如下拉框、日期选择器等）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;底层实现原理三大核心机制&#34;&gt;底层实现原理：三大核心机制
+&lt;/h2&gt;&lt;h3 id=&#34;模型索引qmodelindex-整个框架的指针&#34;&gt;模型索引（QModelIndex）— 整个框架的&amp;quot;指针&amp;rdquo;
+&lt;/h3&gt;&lt;p&gt;为了让视图和委托能精确地定位到模型中的某一条数据，框架引入了 &lt;code&gt;QModelIndex&lt;/code&gt; 这个概念。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;它就像一个&lt;strong&gt;智能指针&lt;/strong&gt;，包含了数据在模型中的&amp;quot;坐标&amp;quot;（行、列）以及其父项的索引，从而唯一确定一个数据项。&lt;/li&gt;
+&lt;li&gt;视图和委托不直接操作数据，而是通过持有和传递 &lt;code&gt;QModelIndex&lt;/code&gt; 来向模型请求数据（调用 &lt;code&gt;model-&amp;gt;data(index)&lt;/code&gt;）或修改数据（调用 &lt;code&gt;model-&amp;gt;setData(index, value)&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;信号与槽--组件间的通信总线&#34;&gt;信号与槽 — 组件间的通信总线
+&lt;/h3&gt;&lt;p&gt;模型、视图和委托是完全解耦的，它们之间的所有交互都通过信号和槽机制完成。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;模型 → 视图&lt;/strong&gt;：当数据发生变化时，模型会发出信号（如 &lt;code&gt;dataChanged&lt;/code&gt;），所有关联的视图在收到信号后会自行刷新，从而保证数据一致性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;视图 → 模型/委托&lt;/strong&gt;：当用户与视图交互（如点击一个项目）时，视图会发出信号。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;委托 → 模型/视图&lt;/strong&gt;：在编辑过程中，委托会发出信号来通知模型和视图编辑器的状态变化（如开始编辑、数据已修改、结束编辑等）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;性能优化轻量级渲染&#34;&gt;性能优化：轻量级渲染
+&lt;/h3&gt;&lt;p&gt;传统的 GUI 框架可能会为表格的每个单元格创建一个独立的控件（Widget），这在数据量巨大时会导致性能崩溃。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Qt 的视图采用了&lt;strong&gt;按需绘制&lt;/strong&gt;的策略。它只为**当前可见区域（视口，Viewport）**内的数据项创建和布局绘制所需的元素。&lt;/li&gt;
+&lt;li&gt;对于不可见的项目，它们并不存在。当用户滚动视图时，这些&amp;quot;消失&amp;quot;的项目会被回收或重新绘制，从而极大地减少了内存占用和提高了渲染性能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;深入委托delegate的工作流程&#34;&gt;深入委托（Delegate）的工作流程
+&lt;/h2&gt;&lt;p&gt;自定义委托通常需要继承 &lt;code&gt;QStyledItemDelegate&lt;/code&gt; 并重写以下几个核心方法，以实现定制化的显示和编辑：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;paint()&lt;/code&gt;&lt;/strong&gt;：这是绘制单个数据项的核心方法。你可以在这里使用 &lt;code&gt;QPainter&lt;/code&gt; 绘制任何你想要的样式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;sizeHint()&lt;/code&gt;&lt;/strong&gt;：返回绘制该数据项所需的推荐尺寸，用于视图的布局计算。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;createEditor()&lt;/code&gt;&lt;/strong&gt;：当用户开始编辑一个数据项时，视图会调用此方法来创建一个编辑器控件（如 &lt;code&gt;QLineEdit&lt;/code&gt;, &lt;code&gt;QComboBox&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;setEditorData()&lt;/code&gt;&lt;/strong&gt;：将模型中的数据加载到你创建的编辑器控件中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;setModelData()&lt;/code&gt;&lt;/strong&gt;：当用户完成编辑后，此方法负责将编辑器中的数据保存回模型。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;p&gt;Qt 的模型/视图/委托框架通过清晰的职责划分和信号/槽通信机制，实现了数据与界面的优雅解耦，不仅提升了代码的可维护性和可扩展性，也通过性能优化策略保证了处理大规模数据时的流畅性。理解并熟练运用这套框架，是开发高质量 Qt 应用程序的关键。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
