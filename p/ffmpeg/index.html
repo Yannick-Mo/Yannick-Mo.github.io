@@ -432,7 +432,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 4 分钟
+                    阅读时长: 16 分钟
                 </time>
             </div>
         
@@ -469,18 +469,18 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">AVFormatContext</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">AVClass</span> <span class="o">*</span><span class="n">av_class</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVInputFormat</span> <span class="o">*</span><span class="n">iformat</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVOutputFormat</span> <span class="o">*</span><span class="n">oformat</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="o">*</span><span class="n">priv_data</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVIOContext</span> <span class="o">*</span><span class="n">pb</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">nb_streams</span><span class="p">;</span>          <span class="c1">// 流数量
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVStream</span> <span class="o">**</span><span class="n">streams</span><span class="p">;</span>               <span class="c1">// 流数组
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">char</span> <span class="n">filename</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int64_t</span> <span class="n">duration</span><span class="p">;</span>                 <span class="c1">// 总时长（微秒）
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">bit_rate</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVDictionary</span> <span class="o">*</span><span class="n">metadata</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">AVClass</span> <span class="o">*</span><span class="n">av_class</span><span class="p">;</span>                   <span class="c1">// AVClass 日志/选项系统，用于日志输出和参数配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVInputFormat</span> <span class="o">*</span><span class="n">iformat</span><span class="p">;</span>                    <span class="c1">// 输入格式描述（只读），如 mp4、flv 等容器格式信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVOutputFormat</span> <span class="o">*</span><span class="n">oformat</span><span class="p">;</span>                   <span class="c1">// 输出格式描述（只写），用于封装输出文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">void</span> <span class="o">*</span><span class="n">priv_data</span><span class="p">;</span>                           <span class="c1">// 格式私有数据，存储具体格式的内部状态，外部不需要关心
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVIOContext</span> <span class="o">*</span><span class="n">pb</span><span class="p">;</span>                           <span class="c1">// I/O 上下文，管理文件读写、网络流等底层数据传输
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">nb_streams</span><span class="p">;</span>                   <span class="c1">// 流数量，文件中包含的音视频流总数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVStream</span> <span class="o">**</span><span class="n">streams</span><span class="p">;</span>                        <span class="c1">// 流数组，每个元素指向一个 AVStream（视频流/音频流/字幕流等）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">char</span> <span class="n">filename</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>                       <span class="c1">// 文件名或 URL，对应 avformat_open_input 传入的路径
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">duration</span><span class="p">;</span>                          <span class="c1">// 总时长（微秒），可使用 av_q2d(time_base) * duration 转为秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">bit_rate</span><span class="p">;</span>                              <span class="c1">// 平均比特率（bps），不一定准确，仅供参考
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVDictionary</span> <span class="o">*</span><span class="n">metadata</span><span class="p">;</span>                    <span class="c1">// 元数据字典，包含标题、作者、专辑等媒体信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">AVFormatContext</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -500,39 +500,47 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">AVStream</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVCodecParameters</span> <span class="o">*</span><span class="n">codecpar</span><span class="p">;</span>      <span class="c1">// 编码参数（重要）
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVRational</span> <span class="n">time_base</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int64_t</span> <span class="n">duration</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int64_t</span> <span class="n">start_time</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVDictionary</span> <span class="o">*</span><span class="n">metadata</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>                                 <span class="c1">// 流索引，在 AVFormatContext-&gt;streams 数组中的下标
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>                                    <span class="c1">// 流 ID，容器级别标识，通常等于 index 但不一定
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVCodecParameters</span> <span class="o">*</span><span class="n">codecpar</span><span class="p">;</span>               <span class="c1">// 编码参数（重要），包含 codec_id、分辨率、像素格式等
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVRational</span> <span class="n">time_base</span><span class="p">;</span>                      <span class="c1">// 时间基，PTS 和 DTS 的单位，如 1/90000 表示一个单位=1/90000秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">duration</span><span class="p">;</span>                          <span class="c1">// 流持续时间（以 time_base 为单位），duration * time_base = 秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">start_time</span><span class="p">;</span>                        <span class="c1">// 流起始时间（以 time_base 为单位），可能不为 0（如截取片段）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVDictionary</span> <span class="o">*</span><span class="n">metadata</span><span class="p">;</span>                    <span class="c1">// 流的元数据（语言、标题等），与容器级 metadata 不同
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">AVStream</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="3-avcodeccontext解码编码上下文">3. <code>AVCodecContext</code>（解码/编码上下文）
 </h3><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">AVCodecContext</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">codec</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">enum</span> <span class="n">AVCodecID</span> <span class="n">codec_id</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">bit_rate</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVRational</span> <span class="n">time_base</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">enum</span> <span class="n">AVPixelFormat</span> <span class="n">pix_fmt</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">codec</span><span class="p">;</span>                      <span class="c1">// 指向编解码器描述 AVCodec 的指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">enum</span> <span class="n">AVCodecID</span> <span class="n">codec_id</span><span class="p">;</span>                   <span class="c1">// 编解码器 ID，如 AV_CODEC_ID_H264、AV_CODEC_ID_AAC
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">bit_rate</span><span class="p">;</span>                              <span class="c1">// 比特率（bps），编码时设置目标码率，解码时读取实际码率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">;</span>                         <span class="c1">// 视频宽高（像素），编码时输入，解码时输出
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVRational</span> <span class="n">time_base</span><span class="p">;</span>                      <span class="c1">// 时间基，通常编码时设置，解码时由容器提供
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">enum</span> <span class="n">AVPixelFormat</span> <span class="n">pix_fmt</span><span class="p">;</span>                <span class="c1">// 像素格式（视频），如 AV_PIX_FMT_YUV420P、AV_PIX_FMT_RGB24
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">sample_rate</span><span class="p">;</span>                           <span class="c1">// 采样率（音频），如 44100、48000
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">channels</span><span class="p">;</span>                              <span class="c1">// 声道数（音频），如 2（立体声）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint64_t</span> <span class="n">channel_layout</span><span class="p">;</span>                   <span class="c1">// 声道布局（音频），如 AV_CH_LAYOUT_STEREO
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">enum</span> <span class="n">AVSampleFormat</span> <span class="n">sample_fmt</span><span class="p">;</span>            <span class="c1">// 采样格式（音频），如 AV_SAMPLE_FMT_S16、AV_SAMPLE_FMT_FLTP
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">AVCodecContext</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -549,80 +557,102 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">AVCodec</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">long_name</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">enum</span> <span class="n">AVMediaType</span> <span class="n">type</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">enum</span> <span class="n">AVCodecID</span> <span class="n">id</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>                          <span class="c1">// 编解码器短名称，如 &#34;h264&#34;、&#34;aac&#34;、&#34;libx264&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">long_name</span><span class="p">;</span>                     <span class="c1">// 编解码器全称/描述，如 &#34;H.264 / AVC / MPEG-4 AVC&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">enum</span> <span class="n">AVMediaType</span> <span class="n">type</span><span class="p">;</span>                     <span class="c1">// 媒体类型，AVMEDIA_TYPE_VIDEO / AVMEDIA_TYPE_AUDIO / AVMEDIA_TYPE_SUBTITLE
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">enum</span> <span class="n">AVCodecID</span> <span class="n">id</span><span class="p">;</span>                         <span class="c1">// 编解码器唯一 ID，如 AV_CODEC_ID_H264
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">AVCodec</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="5-avcodecparameters编码参数">5. <code>AVCodecParameters</code>（编码参数）
 </h3><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">AVCodecParameters</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">enum</span> <span class="n">AVMediaType</span> <span class="n">codec_type</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">enum</span> <span class="n">AVCodecID</span> <span class="n">codec_id</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">enum</span> <span class="n">AVPixelFormat</span> <span class="n">format</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span><span class="line"><span class="cl">    <span class="k">enum</span> <span class="n">AVMediaType</span> <span class="n">codec_type</span><span class="p">;</span>               <span class="c1">// 媒体类型：AVMEDIA_TYPE_VIDEO（视频）/ AVMEDIA_TYPE_AUDIO（音频）/ AVMEDIA_TYPE_SUBTITLE（字幕）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">enum</span> <span class="n">AVCodecID</span> <span class="n">codec_id</span><span class="p">;</span>                   <span class="c1">// 编解码器 ID，用于 avcodec_find_decoder/encoder 查找对应的编解码器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">;</span>                         <span class="c1">// 视频宽高（像素），音频流此字段为 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">enum</span> <span class="n">AVPixelFormat</span> <span class="n">format</span><span class="p">;</span>                 <span class="c1">// 像素格式（视频）或采样格式（音频），描述每个像素/采样的数据排列方式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">sample_rate</span><span class="p">;</span>                           <span class="c1">// 采样率（音频），如 44100、48000，视频流为 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">channels</span><span class="p">;</span>                              <span class="c1">// 声道数（音频），如 1（单声道）、2（立体声），视频流为 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint64_t</span> <span class="n">channel_layout</span><span class="p">;</span>                   <span class="c1">// 声道布局（音频），如 AV_CH_LAYOUT_STEREO
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">bit_rate</span><span class="p">;</span>                              <span class="c1">// 平均比特率（bps），仅供参考
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">AVCodecParameters</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="6-avpacket压缩数据包">6. <code>AVPacket</code>（压缩数据包）
 </h3><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">AVPacket</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int64_t</span> <span class="n">pts</span><span class="p">,</span> <span class="n">dts</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">stream_index</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>                             <span class="c1">// 指向压缩数据缓冲区，存储编码后的音视频压缩数据（H.264 NALU、AAC帧等）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>                                  <span class="c1">// data 缓冲区中有效数据的字节数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">pts</span><span class="p">;</span>                               <span class="c1">// 显示时间戳（Presentation TimeStamp），以 time_base 为单位，表示此包何时应当显示
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">dts</span><span class="p">;</span>                               <span class="c1">// 解码时间戳（Decoding TimeStamp），以 time_base 为单位，表示此包何时应当解码（B 帧时 dts &lt; pts）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">stream_index</span><span class="p">;</span>                          <span class="c1">// 所属流索引，对应该包属于 AVFormatContext-&gt;streams 中的哪个流
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>                                 <span class="c1">// 标志位，如 AV_PKT_FLAG_KEY（关键帧标志）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">duration</span><span class="p">;</span>                          <span class="c1">// 包持续时间（以 time_base 为单位），相邻包 pts 差值，可能为 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">pos</span><span class="p">;</span>                               <span class="c1">// 包在文件中的字节偏移量，用于定位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">AVPacket</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="7-avframe未压缩帧">7. <code>AVFrame</code>（未压缩帧）
 </h3><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">AVFrame</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="n">AV_NUM_DATA_POINTERS</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">linesize</span><span class="p">[</span><span class="n">AV_NUM_DATA_POINTERS</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">format</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int64_t</span> <span class="n">pts</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">key_frame</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="n">AV_NUM_DATA_POINTERS</span><span class="p">];</span>       <span class="c1">// 数据指针数组，data[0] 指向 Y/亮度平面，data[1] 指向 U/Cb，data[2] 指向 V/Cr（planar 格式）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">linesize</span><span class="p">[</span><span class="n">AV_NUM_DATA_POINTERS</span><span class="p">];</span>        <span class="c1">// 每行字节数（行跨度），各平面可能不同，如 Y 平面 linesize[0] &gt;= width，U/V 平面 linesize[1] &gt;= width/2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">;</span>                         <span class="c1">// 帧宽高（像素），解码后的实际图像尺寸
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">format</span><span class="p">;</span>                                <span class="c1">// 像素格式（视频）或采样格式（音频），如 AV_PIX_FMT_YUV420P
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">pts</span><span class="p">;</span>                               <span class="c1">// 显示时间戳（Presentation TimeStamp），以 time_base 为单位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">key_frame</span><span class="p">;</span>                             <span class="c1">// 是否为关键帧，1 表示关键帧（I 帧），0 表示非关键帧（P/B 帧）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int64_t</span> <span class="n">pkt_dts</span><span class="p">;</span>                           <span class="c1">// 来源包的解码时间戳，从 AVPacket.dts 复制而来
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">sample_rate</span><span class="p">;</span>                           <span class="c1">// 采样率（音频帧），如 44100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">channels</span><span class="p">;</span>                              <span class="c1">// 声道数（音频帧），如 2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">nb_samples</span><span class="p">;</span>                            <span class="c1">// 音频帧包含的采样点数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">AVFrame</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -638,8 +668,8 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">AVRational</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>   <span class="c1">// 分子
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">den</span><span class="p">;</span>   <span class="c1">// 分母
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>   <span class="c1">// 分子（numerator），如 1/90000 中的 1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">den</span><span class="p">;</span>   <span class="c1">// 分母（denominator），如 1/90000 中的 90000
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">AVRational</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -649,11 +679,27 @@
 </h3><h4 id="avformat_open_input"><code>avformat_open_input()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avformat_open_input</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">**</span><span class="n">ps</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">url</span><span class="p">,</span> 
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 打开输入媒体文件/流，分配 AVFormatContext 并读取文件头信息
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param ps       二级指针，传入 &amp;AVFormatContext*，函数会为其分配内存并填充头信息
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param url      要打开的文件路径或网络流 URL（如 &#34;video.mp4&#34;、&#34;rtmp://...&#34;）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param fmt      输入格式，传入 NULL 则自动检测文件格式
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param options  附加选项字典，可传入如超时时间、缓冲区大小等参数，NULL 表示使用默认值
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 0 表示成功，负数表示错误码
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avformat_open_input</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">**</span><span class="n">ps</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">url</span><span class="p">,</span> 
 </span></span><span class="line"><span class="cl">                        <span class="n">AVInputFormat</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="n">AVDictionary</span> <span class="o">**</span><span class="n">options</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -669,12 +715,12 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">fmtCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="nf">avformat_open_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="s">&#34;video.mp4&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">errbuf</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">av_strerror</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">errbuf</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Cannot open file: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">fmtCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>                         <span class="c1">// 初始化为 NULL，函数内部会为其分配内存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="nf">avformat_open_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="s">&#34;video.mp4&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>  <span class="c1">// 打开文件，自动检测格式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>                                          <span class="c1">// 返回值 &lt; 0 表示打开失败
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">char</span> <span class="n">errbuf</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">av_strerror</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">errbuf</span><span class="p">));</span>           <span class="c1">// 将错误码转为可读的错误信息字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Cannot open file: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -682,9 +728,23 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avformat_find_stream_info</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">ic</span><span class="p">,</span> <span class="n">AVDictionary</span> <span class="o">**</span><span class="n">options</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 读取媒体文件的部分数据包，探测并填充各流的详细信息（如编码器、分辨率、码率等）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *        必须在 avformat_open_input 之后、解码之前调用
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param ic      已打开的 AVFormatContext
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param options 附加选项，传入 NULL 使用默认值
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return &gt;= 0 表示成功，负数表示错误码
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avformat_find_stream_info</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">ic</span><span class="p">,</span> <span class="n">AVDictionary</span> <span class="o">**</span><span class="n">options</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -696,8 +756,8 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">avformat_find_stream_info</span><span class="p">(</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Could not find stream info</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">avformat_find_stream_info</span><span class="p">(</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>     <span class="c1">// 探测流信息，填充 codecpar 等字段
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Could not find stream info</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// 处理错误
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -706,9 +766,23 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">av_read_frame</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 从媒体文件中读取下一帧压缩数据包，可能来自任意流（视频/音频/字幕）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *        返回的 pkt 使用完毕后需调用 av_packet_unref 释放内部引用
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param s   已打开的 AVFormatContext
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param pkt 预先分配好的 AVPacket，函数会填充其 data、size、pts、stream_index 等字段
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 0 表示成功，AVERROR_EOF 表示文件结束，其他负数表示错误
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">av_read_frame</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -722,21 +796,29 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span> <span class="o">=</span> <span class="nf">av_packet_alloc</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="nf">av_read_frame</span><span class="p">(</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="n">pkt</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 处理 pkt
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">av_packet_unref</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="nf">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pkt</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span> <span class="o">=</span> <span class="nf">av_packet_alloc</span><span class="p">();</span>                     <span class="c1">// 分配 AVPacket（推荐使用 av_packet_alloc 而非栈上分配）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">while</span> <span class="p">(</span><span class="nf">av_read_frame</span><span class="p">(</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="n">pkt</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>              <span class="c1">// 循环读取每一帧压缩数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 处理 pkt，根据 pkt-&gt;stream_index 判断属于哪个流
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">av_packet_unref</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span>                              <span class="c1">// 释放本包内部引用，为下一次读取准备
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pkt</span><span class="p">);</span>                                  <span class="c1">// 释放 AVPacket 本身
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="avformat_close_input"><code>avformat_close_input()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">avformat_close_input</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">**</span><span class="n">s</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 关闭输入媒体文件，释放 AVFormatContext 及其内部所有资源，并将指针置为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param s 二级指针，传入 &amp;AVFormatContext*，调用后 *s 变为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">avformat_close_input</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">**</span><span class="n">s</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -748,7 +830,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">fmtCtx</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">avformat_close_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">);</span>  <span class="c1">// fmtCtx 被置为 NULL
+</span></span><span class="line"><span class="cl">    <span class="nf">avformat_close_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">);</span>  <span class="c1">// 关闭文件，释放所有流及相关资源，并将 fmtCtx 置为 NULL
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -756,9 +838,23 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVRational</span> <span class="nf">av_guess_frame_rate</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="n">AVStream</span> <span class="o">*</span><span class="n">st</span><span class="p">,</span> <span class="n">AVFrame</span> <span class="o">*</span><span class="n">frame</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 猜测视频帧率，优先使用帧级别的帧率信息，其次是容器级别
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param ctx   格式上下文，提供容器级别的帧率参考
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param st    视频流，提供流级别的帧率信息
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param frame 视频帧，可传入 NULL，非 NULL 时使用帧级别的帧率
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 帧率有理数，如 30000/1001（约 29.97fps）或 25/1（25fps）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="n">AVRational</span> <span class="nf">av_guess_frame_rate</span><span class="p">(</span><span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="n">AVStream</span> <span class="o">*</span><span class="n">st</span><span class="p">,</span> <span class="n">AVFrame</span> <span class="o">*</span><span class="n">frame</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -768,8 +864,8 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVRational</span> <span class="n">fps</span> <span class="o">=</span> <span class="nf">av_guess_frame_rate</span><span class="p">(</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="n">videoStream</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">double</span> <span class="n">frame_duration</span> <span class="o">=</span> <span class="nf">av_q2d</span><span class="p">(</span><span class="nf">av_inv_q</span><span class="p">(</span><span class="n">fps</span><span class="p">));</span>  <span class="c1">// 每帧持续时间（秒）
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVRational</span> <span class="n">fps</span> <span class="o">=</span> <span class="nf">av_guess_frame_rate</span><span class="p">(</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="n">videoStream</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>  <span class="c1">// 猜测视频帧率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">double</span> <span class="n">frame_duration</span> <span class="o">=</span> <span class="nf">av_q2d</span><span class="p">(</span><span class="nf">av_inv_q</span><span class="p">(</span><span class="n">fps</span><span class="p">));</span>  <span class="c1">// av_inv_q 取倒数得到每帧时长，av_q2d 转为浮点秒数
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="模块libavcodec编解码">模块：libavcodec（编解码）
@@ -777,9 +873,19 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="nf">avcodec_find_decoder</span><span class="p">(</span><span class="k">enum</span> <span class="n">AVCodecID</span> <span class="n">id</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 根据编解码器 ID 查找对应的解码器描述
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param id 编解码器 ID，从 AVCodecParameters-&gt;codec_id 获取
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 找到的 AVCodec 指针，找不到返回 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="nf">avcodec_find_decoder</span><span class="p">(</span><span class="k">enum</span> <span class="n">AVCodecID</span> <span class="n">id</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -792,9 +898,9 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVCodecParameters</span> <span class="o">*</span><span class="n">codecPar</span> <span class="o">=</span> <span class="n">fmtCtx</span><span class="o">-&gt;</span><span class="n">streams</span><span class="p">[</span><span class="n">videoIdx</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">codecpar</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">dec</span> <span class="o">=</span> <span class="nf">avcodec_find_decoder</span><span class="p">(</span><span class="n">codecPar</span><span class="o">-&gt;</span><span class="n">codec_id</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">dec</span><span class="p">)</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVCodecParameters</span> <span class="o">*</span><span class="n">codecPar</span> <span class="o">=</span> <span class="n">fmtCtx</span><span class="o">-&gt;</span><span class="n">streams</span><span class="p">[</span><span class="n">videoIdx</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">codecpar</span><span class="p">;</span>  <span class="c1">// 获取视频流的编码参数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">dec</span> <span class="o">=</span> <span class="nf">avcodec_find_decoder</span><span class="p">(</span><span class="n">codecPar</span><span class="o">-&gt;</span><span class="n">codec_id</span><span class="p">);</span>      <span class="c1">// 根据 codec_id 查找解码器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">dec</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Codec not found</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -803,9 +909,19 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVCodecContext</span> <span class="o">*</span><span class="nf">avcodec_alloc_context3</span><span class="p">(</span><span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">codec</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 为指定编解码器分配 AVCodecContext，并用编解码器默认值初始化
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param codec 编解码器描述，由 avcodec_find_decoder/encoder 返回
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 分配的 AVCodecContext 指针，失败返回 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="n">AVCodecContext</span> <span class="o">*</span><span class="nf">avcodec_alloc_context3</span><span class="p">(</span><span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">codec</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -817,8 +933,8 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">codecCtx</span> <span class="o">=</span> <span class="nf">avcodec_alloc_context3</span><span class="p">(</span><span class="n">dec</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">codecCtx</span><span class="p">)</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">codecCtx</span> <span class="o">=</span> <span class="nf">avcodec_alloc_context3</span><span class="p">(</span><span class="n">dec</span><span class="p">);</span>  <span class="c1">// 为解码器分配上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">codecCtx</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// 内存分配失败
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -827,9 +943,23 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avcodec_parameters_to_context</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">codec</span><span class="p">,</span> <span class="k">const</span> <span class="n">AVCodecParameters</span> <span class="o">*</span><span class="n">par</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 将 AVCodecParameters 中的编码参数复制到 AVCodecContext 中
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *        通常在 avcodec_alloc_context3 之后、avcodec_open2 之前调用
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param codec 目标编解码上下文，需已分配
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param par   源编码参数，从 AVStream-&gt;codecpar 获取
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return &gt;= 0 表示成功，负数表示错误码
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avcodec_parameters_to_context</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">codec</span><span class="p">,</span> <span class="k">const</span> <span class="n">AVCodecParameters</span> <span class="o">*</span><span class="n">par</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -841,8 +971,8 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_parameters_to_context</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">codecPar</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_parameters_to_context</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">codecPar</span><span class="p">);</span>  <span class="c1">// 将流参数复制到解码器上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Failed to copy codec parameters</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -851,9 +981,23 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avcodec_open2</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">avctx</span><span class="p">,</span> <span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">codec</span><span class="p">,</span> <span class="n">AVDictionary</span> <span class="o">**</span><span class="n">options</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 打开编解码器，完成初始化，使其准备好接收数据
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param avctx   编解码上下文，需已分配并填充参数
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param codec   编解码器，由 avcodec_find_decoder/encoder 返回
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param options 附加选项字典，如设置线程数、码率控制等，NULL 表示使用默认值
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 0 表示成功，负数表示错误码
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avcodec_open2</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">avctx</span><span class="p">,</span> <span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">codec</span><span class="p">,</span> <span class="n">AVDictionary</span> <span class="o">**</span><span class="n">options</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -865,8 +1009,8 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_open2</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_open2</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>  <span class="c1">// 打开解码器，准备解码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Cannot open codec</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -875,9 +1019,23 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avcodec_send_packet</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">avctx</span><span class="p">,</span> <span class="k">const</span> <span class="n">AVPacket</span> <span class="o">*</span><span class="n">avpkt</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 向解码器发送一个压缩数据包进行解码，与 avcodec_receive_frame 配对使用
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *        传入 NULL 表示 flush（冲刷），让解码器输出所有缓冲帧
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param avctx 编解码上下文
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param avpkt 压缩数据包，传 NULL 表示输入结束，解码器将输出缓冲帧
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 0 表示成功，AVERROR(EAGAIN) 表示当前无法接收需先取帧，AVERROR_EOF 表示解码器已关闭
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avcodec_send_packet</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">avctx</span><span class="p">,</span> <span class="k">const</span> <span class="n">AVPacket</span> <span class="o">*</span><span class="n">avpkt</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -887,10 +1045,14 @@
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_send_packet</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">pkt</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="nf">AVERROR</span><span class="p">(</span><span class="n">EAGAIN</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="n">AVERROR_EOF</span><span class="p">)</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_send_packet</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">pkt</span><span class="p">);</span>  <span class="c1">// 将压缩包送入解码器
+</span></span></span><span class="line"><span class="cl"><span class="c1">// EAGAIN 表示解码器内部缓冲区满，需要先 avcodec_receive_frame 取出帧
+</span></span></span><span class="line"><span class="cl"><span class="c1">// AVERROR_EOF 表示解码器已关闭（已发送过 NULL 包 flush）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="nf">AVERROR</span><span class="p">(</span><span class="n">EAGAIN</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="n">AVERROR_EOF</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Error sending packet</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -899,9 +1061,23 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avcodec_receive_frame</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">avctx</span><span class="p">,</span> <span class="n">AVFrame</span> <span class="o">*</span><span class="n">frame</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 从解码器获取一个解码后的帧，与 avcodec_send_packet 配对使用
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *        需要循环调用直到返回 EAGAIN 或 EOF
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param avctx 编解码上下文
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param frame 预先分配的 AVFrame，函数会填充解码后的数据
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 0 表示成功获取一帧，AVERROR(EAGAIN) 表示需要先发送更多包，AVERROR_EOF 表示无更多帧
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">avcodec_receive_frame</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">avctx</span><span class="p">,</span> <span class="n">AVFrame</span> <span class="o">*</span><span class="n">frame</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -920,14 +1096,14 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_receive_frame</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">frame</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="nf">AVERROR</span><span class="p">(</span><span class="n">EAGAIN</span><span class="p">)</span> <span class="o">||</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">AVERROR_EOF</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_receive_frame</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">frame</span><span class="p">);</span>  <span class="c1">// 尝试从解码器取出一帧
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="nf">AVERROR</span><span class="p">(</span><span class="n">EAGAIN</span><span class="p">)</span> <span class="o">||</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">AVERROR_EOF</span><span class="p">)</span>  <span class="c1">// EAGAIN: 需要更多输入; EOF: 所有帧已取完
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Error receiving frame</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 成功获得一帧，处理 frame
+</span></span><span class="line"><span class="cl">    <span class="c1">// 成功获得一帧，处理 frame（如显示、转换格式、保存等）
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -935,9 +1111,17 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">avcodec_free_context</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">**</span><span class="n">avctx</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 释放 AVCodecContext 及其内部所有资源，并将指针置为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param avctx 二级指针，传入 &amp;AVCodecContext*，调用后 *avctx 变为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">avcodec_free_context</span><span class="p">(</span><span class="n">AVCodecContext</span> <span class="o">**</span><span class="n">avctx</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -946,7 +1130,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">avcodec_free_context</span><span class="p">(</span><span class="o">&amp;</span><span class="n">codecCtx</span><span class="p">);</span>  <span class="c1">// 释放并置 NULL
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">avcodec_free_context</span><span class="p">(</span><span class="o">&amp;</span><span class="n">codecCtx</span><span class="p">);</span>  <span class="c1">// 释放解码器上下文，并将 codecCtx 置为 NULL
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="模块libavutil内存工具">模块：libavutil（内存、工具）
@@ -954,9 +1138,17 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVFrame</span> <span class="o">*</span><span class="nf">av_frame_alloc</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 分配一个 AVFrame 并初始化为默认值，使用完毕后需调用 av_frame_free 释放
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 成功返回分配的 AVFrame 指针，失败返回 NULL（内存不足）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="n">AVFrame</span> <span class="o">*</span><span class="nf">av_frame_alloc</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -968,8 +1160,8 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVFrame</span> <span class="o">*</span><span class="n">frame</span> <span class="o">=</span> <span class="nf">av_frame_alloc</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">frame</span><span class="p">)</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVFrame</span> <span class="o">*</span><span class="n">frame</span> <span class="o">=</span> <span class="nf">av_frame_alloc</span><span class="p">();</span>  <span class="c1">// 分配帧内存，所有字段被初始化为默认值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">frame</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// 分配失败
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -978,9 +1170,17 @@
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">av_frame_free</span><span class="p">(</span><span class="n">AVFrame</span> <span class="o">**</span><span class="n">frame</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 释放 AVFrame 及其内部所有引用（如 data 缓冲区），并将指针置为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param frame 二级指针，传入 &amp;AVFrame*，调用后 *frame 变为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">av_frame_free</span><span class="p">(</span><span class="n">AVFrame</span> <span class="o">**</span><span class="n">frame</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -989,16 +1189,26 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">av_frame_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">frame</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">av_frame_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">frame</span><span class="p">);</span>  <span class="c1">// 安全释放，即使 frame 为 NULL 也不会出错
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="av_packet_alloc"><code>av_packet_alloc()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVPacket</span> <span class="o">*</span><span class="nf">av_packet_alloc</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 分配一个 AVPacket 并初始化为默认值，使用完毕后需调用 av_packet_free 释放
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *        推荐使用此函数而非栈上分配，因为内部有引用计数管理
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 成功返回分配的 AVPacket 指针，失败返回 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="n">AVPacket</span> <span class="o">*</span><span class="nf">av_packet_alloc</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -1007,16 +1217,24 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span> <span class="o">=</span> <span class="nf">av_packet_alloc</span><span class="p">();</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span> <span class="o">=</span> <span class="nf">av_packet_alloc</span><span class="p">();</span>  <span class="c1">// 分配 AVPacket，推荐方式
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="av_packet_free"><code>av_packet_free()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">av_packet_free</span><span class="p">(</span><span class="n">AVPacket</span> <span class="o">**</span><span class="n">pkt</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 释放 AVPacket 及其内部引用，并将指针置为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param pkt 二级指针，传入 &amp;AVPacket*，调用后 *pkt 变为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">av_packet_free</span><span class="p">(</span><span class="n">AVPacket</span> <span class="o">**</span><span class="n">pkt</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -1025,16 +1243,26 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pkt</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pkt</span><span class="p">);</span>  <span class="c1">// 安全释放，会先 av_packet_unref 再释放内存
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="av_packet_unref"><code>av_packet_unref()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">av_packet_unref</span><span class="p">(</span><span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 减少 AVPacket 内部数据的引用计数，释放引用但不释放 AVPacket 本身
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *        在循环中每次读完包后必须调用，否则内存泄漏
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param pkt AVPacket 指针，调用后 data/size 等字段归零
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">av_packet_unref</span><span class="p">(</span><span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -1043,16 +1271,26 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">av_packet_unref</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span>  <span class="c1">// 在循环中每次读完包后调用
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">av_packet_unref</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span>  <span class="c1">// 在循环中每次读完包后调用，释放内部数据引用
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="av_q2d"><code>av_q2d()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">double</span> <span class="nf">av_q2d</span><span class="p">(</span><span class="n">AVRational</span> <span class="n">a</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 将 AVRational 有理数转换为 double 浮点数，常用于时间戳计算
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param a AVRational 结构体，如 time_base = {1, 90000}
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return double 值，如 1/90000 ≈ 0.000011111...
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">double</span> <span class="nf">av_q2d</span><span class="p">(</span><span class="n">AVRational</span> <span class="n">a</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -1062,17 +1300,31 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVRational</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">stream</span><span class="o">-&gt;</span><span class="n">time_base</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">double</span> <span class="n">seconds</span> <span class="o">=</span> <span class="nf">av_q2d</span><span class="p">(</span><span class="n">tb</span><span class="p">)</span> <span class="o">*</span> <span class="n">pts</span><span class="p">;</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">AVRational</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">stream</span><span class="o">-&gt;</span><span class="n">time_base</span><span class="p">;</span>                <span class="c1">// 获取流的时间基，如 {1, 90000}
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">double</span> <span class="n">seconds</span> <span class="o">=</span> <span class="nf">av_q2d</span><span class="p">(</span><span class="n">tb</span><span class="p">)</span> <span class="o">*</span> <span class="n">pts</span><span class="p">;</span>                <span class="c1">// 将 PTS 从 time_base 单位转换为秒
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="av_strerror"><code>av_strerror()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">av_strerror</span><span class="p">(</span><span class="kt">int</span> <span class="n">errnum</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">errbuf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">errbuf_size</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 将 FFmpeg 错误码转换为可读的错误信息字符串
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param errnum      错误码，通常是各 FFmpeg 函数的返回值
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param errbuf      输出缓冲区，用于存放错误描述字符串
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param errbuf_size 缓冲区大小（字节），建议至少 128
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 0 表示成功，其他值表示 errnum 无法识别
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">av_strerror</span><span class="p">(</span><span class="kt">int</span> <span class="n">errnum</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">errbuf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">errbuf_size</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -1083,12 +1335,14 @@
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">char</span> <span class="n">errbuf</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">avformat_open_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">av_strerror</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">errbuf</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Error: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="nf">avformat_open_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">av_strerror</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">errbuf</span><span class="p">));</span>  <span class="c1">// 将错误码转为字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Error: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">errbuf</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -1096,14 +1350,46 @@
 </h3><h4 id="sws_getcachedcontext"><code>sws_getCachedContext()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="nf">sws_getCachedContext</span><span class="p">(</span><span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> 
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 获取或缓存 SwsContext，用于视频像素格式转换（如 YUV420P → RGB24）和缩放
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *        首次调用时根据参数创建新的 SwsContext，后续调用若参数相同则复用已有上下文
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param ctx        已有的 SwsContext，首次传 NULL，后续传入上次返回值实现缓存复用
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param srcW       源图像宽度（像素）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param srcH       源图像高度（像素）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param srcFormat  源像素格式，如 AV_PIX_FMT_YUV420P
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param dstW       目标图像宽度（像素）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param dstH       目标图像高度（像素）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param dstFormat  目标像素格式，如 AV_PIX_FMT_RGB24
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param flags      缩放算法标志，如 SWS_BILINEAR（双线性）、SWS_FAST_BILINEAR（快速）、SWS_BICUBIC（双三次）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param srcFilter  源滤波器，一般传 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param dstFilter  目标滤波器，一般传 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param param      附加参数，一般传 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return SwsContext 指针，失败返回 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="nf">sws_getCachedContext</span><span class="p">(</span><span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> 
 </span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">srcW</span><span class="p">,</span> <span class="kt">int</span> <span class="n">srcH</span><span class="p">,</span> <span class="k">enum</span> <span class="n">AVPixelFormat</span> <span class="n">srcFormat</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">dstW</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dstH</span><span class="p">,</span> <span class="k">enum</span> <span class="n">AVPixelFormat</span> <span class="n">dstFormat</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="n">SwsFilter</span> <span class="o">*</span><span class="n">srcFilter</span><span class="p">,</span> <span class="n">SwsFilter</span> <span class="o">*</span><span class="n">dstFilter</span><span class="p">,</span> 
@@ -1120,22 +1406,44 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">swsCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="n">swsCtx</span> <span class="o">=</span> <span class="nf">sws_getCachedContext</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">,</span> 
-</span></span><span class="line"><span class="cl">    <span class="n">srcWidth</span><span class="p">,</span> <span class="n">srcHeight</span><span class="p">,</span> <span class="n">srcPixFmt</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">dstWidth</span><span class="p">,</span> <span class="n">dstHeight</span><span class="p">,</span> <span class="n">AV_PIX_FMT_RGB32</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">SWS_BILINEAR</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">swsCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>           <span class="c1">// 使用 static 缓存，避免每帧重复创建
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">swsCtx</span> <span class="o">=</span> <span class="nf">sws_getCachedContext</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">,</span>              <span class="c1">// 传入上次的 ctx，参数不变时内部复用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">srcWidth</span><span class="p">,</span> <span class="n">srcHeight</span><span class="p">,</span> <span class="n">srcPixFmt</span><span class="p">,</span>                <span class="c1">// 源：解码器输出的宽高和像素格式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">dstWidth</span><span class="p">,</span> <span class="n">dstHeight</span><span class="p">,</span> <span class="n">AV_PIX_FMT_RGB32</span><span class="p">,</span>         <span class="c1">// 目标：要转换到的宽高和 RGB32 格式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">SWS_BILINEAR</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>               <span class="c1">// 双线性插值算法
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="sws_scale"><code>sws_scale()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sws_scale</span><span class="p">(</span><span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="k">const</span> <span class="n">srcSlice</span><span class="p">[],</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 执行实际的像素格式转换和缩放操作
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param c           SwsContext，由 sws_getCachedContext 创建
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param srcSlice    源数据指针数组，即 AVFrame-&gt;data（多平面格式如 YUV420P 的可有多个平面）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param srcStride   源行跨度数组，即 AVFrame-&gt;linesize（每行字节数）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param srcSliceY   源起始行（通常传 0，表示从第 0 行开始）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param srcSliceH   源行数（即图像高度）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param dst         目标数据指针数组，需预先分配好内存
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param dstStride   目标行跨度数组，如 RGB24 格式下为 width * 3
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 输出的行数（即图像高度），0 表示失败
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sws_scale</span><span class="p">(</span><span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="k">const</span> <span class="n">srcSlice</span><span class="p">[],</span>
 </span></span><span class="line"><span class="cl">              <span class="k">const</span> <span class="kt">int</span> <span class="n">srcStride</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">srcSliceY</span><span class="p">,</span> <span class="kt">int</span> <span class="n">srcSliceH</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">              <span class="kt">uint8_t</span> <span class="o">*</span><span class="k">const</span> <span class="n">dst</span><span class="p">[],</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">dstStride</span><span class="p">[]);</span>
 </span></span></code></pre></td></tr></table>
@@ -1151,21 +1459,29 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">dstData</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">rgb_buffer</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">dstLinesize</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">bytes_per_line</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="nf">sws_scale</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">,</span> 
-</span></span><span class="line"><span class="cl">          <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="k">const</span><span class="o">*</span><span class="p">)</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">linesize</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">          <span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">          <span class="n">dstData</span><span class="p">,</span> <span class="n">dstLinesize</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">dstData</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">rgb_buffer</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">};</span>     <span class="c1">// 目标数据：RGB 只有一个平面，其余为 NULL
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">dstLinesize</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">bytes_per_line</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>           <span class="c1">// 目标行跨度：RGB 每行 = width * 3 字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">sws_scale</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">,</span>                                           <span class="c1">// 转换上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="k">const</span><span class="o">*</span><span class="p">)</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">linesize</span><span class="p">,</span>  <span class="c1">// 源：解码后的 AVFrame 数据和行跨度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>                                         <span class="c1">// 从第 0 行开始，转换 height 行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="n">dstData</span><span class="p">,</span> <span class="n">dstLinesize</span><span class="p">);</span>                             <span class="c1">// 目标：RGB 缓冲区和行跨度
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="sws_freecontext"><code>sws_freeContext()</code>
 </h4><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">sws_freeContext</span><span class="p">(</span><span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">swsContext</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 释放 SwsContext 占用的所有资源
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param swsContext 要释放的 SwsContext，传 NULL 安全（无操作）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">sws_freeContext</span><span class="p">(</span><span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">swsContext</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>示例</strong>：</p>
@@ -1178,9 +1494,9 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">swsCtx</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">sws_freeContext</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">swsCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">sws_freeContext</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">);</span>  <span class="c1">// 释放格式转换上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">swsCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>            <span class="c1">// 置空，防止野指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><hr>
@@ -1306,126 +1622,184 @@
 </span><span class="lnt">117
 </span><span class="lnt">118
 </span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;libavformat/avformat.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;libavcodec/avcodec.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;libswscale/swscale.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;libavutil/imgutils.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;libavformat/avformat.h&gt;   // 解封装/封装：avformat_open_input、av_read_frame 等</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;libavcodec/avcodec.h&gt;     // 编解码：avcodec_send_packet、avcodec_receive_frame 等</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;libswscale/swscale.h&gt;     // 像素格式转换：sws_scale、sws_getCachedContext 等</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;libavutil/imgutils.h&gt;     // 图像工具：av_image_get_buffer_size 等</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;                  // 标准输入输出：fprintf、stderr 等</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">fmtCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">codecCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">codec</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">AVFrame</span> <span class="o">*</span><span class="n">frame</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">swsCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">videoStreamIdx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 1. 打开文件
+</span></span><span class="line"><span class="cl">    <span class="n">AVFormatContext</span> <span class="o">*</span><span class="n">fmtCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>       <span class="c1">// 格式上下文（解封装容器），管理整个媒体文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVCodecContext</span> <span class="o">*</span><span class="n">codecCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>      <span class="c1">// 编解码上下文，解码器状态和参数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">const</span> <span class="n">AVCodec</span> <span class="o">*</span><span class="n">codec</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>          <span class="c1">// 编解码器描述，指向静态的编解码器信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVPacket</span> <span class="o">*</span><span class="n">pkt</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>                 <span class="c1">// 压缩数据包（从文件读取的编码数据）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVFrame</span> <span class="o">*</span><span class="n">frame</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>                <span class="c1">// 解码后的原始帧（未压缩 YUV 数据）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">struct</span> <span class="n">SwsContext</span> <span class="o">*</span><span class="n">swsCtx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>     <span class="c1">// 像素格式转换上下文（YUV → RGB）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">videoStreamIdx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>              <span class="c1">// 视频流索引，-1 表示未找到
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>                              <span class="c1">// 函数返回值，用于错误检查
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ==================== 1. 打开文件 ====================
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 打开媒体文件，分配 fmtCtx 并读取文件头元信息
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="nf">avformat_open_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="s">&#34;input.mp4&#34;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Cannot open file</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 2. 获取流信息
+</span></span><span class="line"><span class="cl">    <span class="c1">// ==================== 2. 获取流信息 ====================
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 读取部分数据包，探测并填充各流的编码参数（codecpar）
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="nf">avformat_find_stream_info</span><span class="p">(</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Cannot find stream info</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>  <span class="c1">// 使用 goto 统一清理资源，避免重复释放代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 3. 查找视频流
+</span></span><span class="line"><span class="cl">    <span class="c1">// ==================== 3. 查找视频流 ====================
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 遍历所有流，找到第一个视频流
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">fmtCtx</span><span class="o">-&gt;</span><span class="n">nb_streams</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">fmtCtx</span><span class="o">-&gt;</span><span class="n">streams</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">codecpar</span><span class="o">-&gt;</span><span class="n">codec_type</span> <span class="o">==</span> <span class="n">AVMEDIA_TYPE_VIDEO</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">videoStreamIdx</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">videoStreamIdx</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>  <span class="c1">// 记录视频流索引
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">videoStreamIdx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;No video stream</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">videoStreamIdx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// 没有找到视频流
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;No video stream</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 4. 准备解码器
+</span></span><span class="line"><span class="cl">    <span class="c1">// ==================== 4. 准备解码器 ====================
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 4a. 获取视频流的编码参数（codec_id、分辨率、像素格式等）
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AVCodecParameters</span> <span class="o">*</span><span class="n">codecPar</span> <span class="o">=</span> <span class="n">fmtCtx</span><span class="o">-&gt;</span><span class="n">streams</span><span class="p">[</span><span class="n">videoStreamIdx</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">codecpar</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">codec</span> <span class="o">=</span> <span class="nf">avcodec_find_decoder</span><span class="p">(</span><span class="n">codecPar</span><span class="o">-&gt;</span><span class="n">codec_id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4b. 根据编码 ID 查找对应的解码器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">codec</span> <span class="o">=</span> <span class="nf">avcodec_find_decoder</span><span class="p">(</span><span class="n">codecPar</span><span class="o">-&gt;</span><span class="n">codec_id</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">codec</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Codec not found</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="n">codecCtx</span> <span class="o">=</span> <span class="nf">avcodec_alloc_context3</span><span class="p">(</span><span class="n">codec</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4c. 分配解码器上下文并用默认值初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">codecCtx</span> <span class="o">=</span> <span class="nf">avcodec_alloc_context3</span><span class="p">(</span><span class="n">codec</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">codecCtx</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Cannot alloc codec context</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">avcodec_parameters_to_context</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">codecPar</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4d. 将流参数复制到解码器上下文（宽高、像素格式、extradata 等）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="nf">avcodec_parameters_to_context</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">codecPar</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Copy params failed</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">avcodec_open2</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">codec</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4e. 打开解码器，完成初始化，使其准备好接收数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="nf">avcodec_open2</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">codec</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Cannot open codec</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 5. 分配包和帧
+</span></span><span class="line"><span class="cl">    <span class="c1">// ==================== 5. 分配包和帧 ====================
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 分配 AVPacket 用于存储从文件读取的压缩数据
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">pkt</span> <span class="o">=</span> <span class="nf">av_packet_alloc</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="n">frame</span> <span class="o">=</span> <span class="nf">av_frame_alloc</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 分配 AVFrame 用于存储解码后的原始帧数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">frame</span> <span class="o">=</span> <span class="nf">av_frame_alloc</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">pkt</span> <span class="o">||</span> <span class="o">!</span><span class="n">frame</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Alloc failed</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 6. 准备格式转换（YUV -&gt; RGB24）
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">codecCtx</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">codecCtx</span><span class="o">-&gt;</span><span class="n">height</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">rgb_buffer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="nf">av_malloc</span><span class="p">(</span><span class="nf">av_image_get_buffer_size</span><span class="p">(</span><span class="n">AV_PIX_FMT_RGB24</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ==================== 6. 准备格式转换（YUV → RGB24）====================
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">codecCtx</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">;</span>    <span class="c1">// 视频宽度（解码器上下文已填充）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">codecCtx</span><span class="o">-&gt;</span><span class="n">height</span><span class="p">;</span>  <span class="c1">// 视频高度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 计算 RGB24 格式存储一帧所需的缓冲区大小，并分配内存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// av_image_get_buffer_size: 根据像素格式、宽高、对齐字节数计算所需内存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">rgb_buffer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="nf">av_malloc</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">av_image_get_buffer_size</span><span class="p">(</span><span class="n">AV_PIX_FMT_RGB24</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rgb_buffer</span><span class="p">)</span> <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 7. 解码循环
+</span></span><span class="line"><span class="cl">    <span class="c1">// ==================== 7. 解码循环 ====================
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 循环读取文件中的每一个压缩数据包
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="nf">av_read_frame</span><span class="p">(</span><span class="n">fmtCtx</span><span class="p">,</span> <span class="n">pkt</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">pkt</span><span class="o">-&gt;</span><span class="n">stream_index</span> <span class="o">==</span> <span class="n">videoStreamIdx</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_send_packet</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">pkt</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="nf">AVERROR</span><span class="p">(</span><span class="n">EAGAIN</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 只处理视频流的数据包，跳过音频等其他流
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">pkt</span><span class="o">-&gt;</span><span class="n">stream_index</span> <span class="o">==</span> <span class="n">videoStreamIdx</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 7a. 将压缩包发送给解码器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_send_packet</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">pkt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// EAGAIN 是正常的（解码器内部缓冲区满），需先取帧再重试
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="nf">AVERROR</span><span class="p">(</span><span class="n">EAGAIN</span><span class="p">))</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Send packet error</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 7b. 循环从解码器获取解码帧（一个包可能产生多个帧）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                <span class="n">ret</span> <span class="o">=</span> <span class="nf">avcodec_receive_frame</span><span class="p">(</span><span class="n">codecCtx</span><span class="p">,</span> <span class="n">frame</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="nf">AVERROR</span><span class="p">(</span><span class="n">EAGAIN</span><span class="p">)</span> <span class="o">||</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">AVERROR_EOF</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>  <span class="c1">// EAGAIN: 需要更多输入; EOF: 解码完毕
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                    <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Receive frame error</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                <span class="p">}</span>
-</span></span><span class="line"><span class="cl">                <span class="c1">// 格式转换
+</span></span><span class="line"><span class="cl">                <span class="c1">// ====== 7c. 像素格式转换：YUV → RGB24 ======
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="c1">// 获取或复用 SwsContext（首次创建，后续缓存复用）
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">swsCtx</span> <span class="o">=</span> <span class="nf">sws_getCachedContext</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">codecCtx</span><span class="o">-&gt;</span><span class="n">pix_fmt</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">AV_PIX_FMT_RGB24</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                    <span class="n">SWS_BILINEAR</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">swsCtx</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">dst</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">rgb_buffer</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">};</span>
-</span></span><span class="line"><span class="cl">                    <span class="kt">int</span> <span class="n">dstLinesize</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">width</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
-</span></span><span class="line"><span class="cl">                    <span class="nf">sws_scale</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span><span class="o">*</span> <span class="k">const</span><span class="o">*</span><span class="p">)</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                              <span class="n">frame</span><span class="o">-&gt;</span><span class="n">linesize</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">dstLinesize</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                    <span class="c1">// 此时 rgb_buffer 中包含 RGB24 图像，可显示或保存
+</span></span><span class="line"><span class="cl">                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">codecCtx</span><span class="o">-&gt;</span><span class="n">pix_fmt</span><span class="p">,</span>    <span class="c1">// 源：解码器输出尺寸和像素格式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">AV_PIX_FMT_RGB24</span><span class="p">,</span>     <span class="c1">// 目标：RGB24 格式，尺寸不变
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="n">SWS_BILINEAR</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>     <span class="c1">// 双线性插值算法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">if</span> <span class="p">(</span><span class="n">swsCtx</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">// 目标数据平面指针数组（RGB 是交织格式，只有一个平面）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">dst</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">rgb_buffer</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">// 目标行跨度：RGB24 每像素 3 字节，所以每行 = width * 3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="kt">int</span> <span class="n">dstLinesize</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">width</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">// 执行格式转换
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="nf">sws_scale</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                              <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span><span class="o">*</span> <span class="k">const</span><span class="o">*</span><span class="p">)</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span>  <span class="c1">// 源数据（YUV 平面）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                              <span class="n">frame</span><span class="o">-&gt;</span><span class="n">linesize</span><span class="p">,</span>                      <span class="c1">// 源行跨度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                              <span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>                            <span class="c1">// 从第 0 行到第 height 行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                              <span class="n">dst</span><span class="p">,</span> <span class="n">dstLinesize</span><span class="p">);</span>                    <span class="c1">// 目标数据和行跨度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="c1">// 此时 rgb_buffer 中包含 RGB24 图像数据，可显示或保存为图片
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="p">}</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">av_frame_unref</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 释放帧内部引用，为下一帧准备（复用同一个 AVFrame）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="nf">av_frame_unref</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">            <span class="p">}</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">av_packet_unref</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 释放包内部引用，为下一次 av_read_frame 准备
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">av_packet_unref</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nl">cleanup</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pkt</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">av_frame_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">frame</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">avcodec_free_context</span><span class="p">(</span><span class="o">&amp;</span><span class="n">codecCtx</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">avformat_close_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">swsCtx</span><span class="p">)</span> <span class="nf">sws_freeContext</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">av_free</span><span class="p">(</span><span class="n">rgb_buffer</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// ==================== 清理资源 ====================
+</span></span></span><span class="line"><span class="cl"><span class="c1">// goto 标签，无论正常结束还是错误退出，都统一在此释放所有资源
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nl">cleanup</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pkt</span><span class="p">);</span>                <span class="c1">// 释放 AVPacket 并置 NULL
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">av_frame_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">frame</span><span class="p">);</span>               <span class="c1">// 释放 AVFrame 并置 NULL
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">avcodec_free_context</span><span class="p">(</span><span class="o">&amp;</span><span class="n">codecCtx</span><span class="p">);</span>     <span class="c1">// 关闭解码器并释放上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">avformat_close_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fmtCtx</span><span class="p">);</span>      <span class="c1">// 关闭文件并释放格式上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">swsCtx</span><span class="p">)</span> <span class="nf">sws_freeContext</span><span class="p">(</span><span class="n">swsCtx</span><span class="p">);</span> <span class="c1">// 释放像素格式转换上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">av_free</span><span class="p">(</span><span class="n">rgb_buffer</span><span class="p">);</span>                 <span class="c1">// 释放 RGB 缓冲区（av_malloc 分配的内存用 av_free 释放）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
