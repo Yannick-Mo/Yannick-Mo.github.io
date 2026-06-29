@@ -1378,11 +1378,13 @@ $$<h2 id="注意事项">注意事项
         bottom: 0;
         z-index: 1;
         transition: all 0.3s ease;
+        pointer-events: none;
     }
     [data-scheme="dark"] .code-more-box {
         background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(#1a1a1a));
     }
     .code-more-btn {
+        pointer-events: auto;
         display: block;
         margin: auto;
         width: 44px;
