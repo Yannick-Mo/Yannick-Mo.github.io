@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="标准Transformer（原版）完整架构流程笔记，涵盖编码器-解码器结构、多头自注意力、位置编码、掩码机制等核心概念">
+<title>标准Transformer完整架构流程笔记</title>
+
+<link rel='canonical' href='https://Yannick-Mo.github.io/p/%E6%A0%87%E5%87%86transformer%E5%AE%8C%E6%95%B4%E6%9E%B6%E6%9E%84%E6%B5%81%E7%A8%8B%E7%AC%94%E8%AE%B0/'>
+
+<link rel="stylesheet" href="/scss/style.min.22fe0601e48b9f23a7b6d2523f0f78450a0b5b3b25fdd49d655878cc28ca49b7.css"><meta property='og:title' content="标准Transformer完整架构流程笔记">
+<meta property='og:description' content="标准Transformer（原版）完整架构流程笔记，涵盖编码器-解码器结构、多头自注意力、位置编码、掩码机制等核心概念">
+<meta property='og:url' content='https://Yannick-Mo.github.io/p/%E6%A0%87%E5%87%86transformer%E5%AE%8C%E6%95%B4%E6%9E%B6%E6%9E%84%E6%B5%81%E7%A8%8B%E7%AC%94%E8%AE%B0/'>
+<meta property='og:site_name' content='雅尼克.莫(Yannick.Mo)'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Transformer' /><meta property='article:tag' content='NLP' /><meta property='article:tag' content='深度学习' /><meta property='article:tag' content='Seq2Seq' /><meta property='article:tag' content='Attention' /><meta property='article:published_time' content='2026-07-29T13:51:28&#43;08:00'/><meta property='article:modified_time' content='2026-07-29T13:51:28&#43;08:00'/><meta property='og:image' content='https://Yannick-Mo.github.io/img/avatar.png' />
+<meta name="twitter:title" content="标准Transformer完整架构流程笔记">
+<meta name="twitter:description" content="标准Transformer（原版）完整架构流程笔记，涵盖编码器-解码器结构、多头自注意力、位置编码、掩码机制等核心概念"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://Yannick-Mo.github.io/img/avatar.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+<script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7/dist/turbo.es5-umd.min.js"></script><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/waifu.css">
+<script type="module" src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/waifu-tips.js"></script>
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu14133112665799786173.png" width="300"
+                            height="282" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😁</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">雅尼克.莫(Yannick.Mo)</a></h1>
+            <h2 class="site-description">欢迎来到我的网站</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/1399620506'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1766655316953" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4996" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M419.5 309.304c-17.514-9.487-35.029-18.974-52.543-28.583l-87.209-47.435c-11.798-6.447-16.663-16.299-9.973-28.462 6.69-12.284 17.88-13.136 29.434-6.81 68.113 37.096 136.347 74.072 204.338 111.655 17.393 9.609 48.773 3.892 59.842-12.406a66632.417 66632.417 0 0 0 104.115-151.55c1.216-1.825 2.432-3.65 3.648-5.352 9.852-13.745 21.164-17.393 31.38-9.366 11.799 9.366 9.853 20.434 2.19 31.624a18582.62 18582.62 0 0 0-42.205 61.788c-19.461 28.583-38.922 57.166-60.694 88.911h245.084c22.867 0 26.394 3.649 26.515 26.515 0.244 156.78 0.365 313.44 0.609 470.22 0 22.38-4.014 26.272-26.88 26.394-5.96 0-12.042 0.608-17.88-0.122-21.65-2.432-37.462-0.364-45.003 26.394-6.811 24.083-32.475 36.367-55.585 33.935-26.758-2.798-44.395-18.61-51.206-43.544-4.135-15.082-11.19-17.15-24.812-17.028-94.02 0.608-187.918 0.365-281.938 0.122-10.825 0-17.15 0.973-20.312 14.109-6.811 28.218-30.043 46.098-55.706 46.584-26.637 0.487-49.747-16.907-57.531-46.22-3.284-12.284-8.758-15.081-20.07-14.473-14.595 0.851-29.312 0.365-44.029 0.121-16.055-0.364-23.11-6.932-23.11-22.623 0.122-159.334 0.365-318.791 0.73-478.247 0-16.542 6.69-22.015 25.056-22.015 75.532-0.122 151.064 0 226.474 0h15.812c0.487-1.338 0.973-2.676 1.46-4.136z m417.555 490.29V349.076H188.648v450.516h648.407z m-520.94 37.948h-44.638c3.041 12.77 9.244 21.771 21.164 22.501 13.258 0.973 19.582-8.879 23.474-22.501z m394.445-0.122c4.5 13.623 10.582 23.596 23.961 22.623 12.042-0.851 17.637-10.217 21.286-22.623H710.56z" fill="#1296DB" p-id="4997"></path><path d="M513.399 768.578H252.746c-25.299 0-29.312-4.014-29.312-29.313 0.121-108.98 0.243-217.96 0.486-327.062 0-22.988 4.744-27.732 27.61-27.732h523.008c23.23 0 27.974 4.622 28.096 27.367 0.365 109.588 0.608 219.055 0.73 328.643 0 23.475-4.865 27.975-29.07 28.097H513.4z m250.678-38.557V423.393H262.234V730.02h501.843z" fill="#1296DB" p-id="4998"></path><path d="M515.71 675.653c-6.69 4.743-12.893 10.095-19.948 13.865-23.23 12.285-46.34 11.19-67.747-3.77-23.596-16.542-34.057-40.746-31.989-68.964 0.487-6.082 11.677-15.69 18.123-15.934 6.325-0.243 14.352 8.515 18.974 15.204 3.65 5.352 2.068 13.866 4.622 20.312 4.865 12.285 13.866 23.961 27.367 21.042 9.973-2.067 18.974-12.163 26.393-20.434 3.65-4.135 3.041-12.284 4.014-18.609 1.703-12.041 8.636-19.339 20.434-19.096 10.703 0.244 17.636 6.812 19.096 18.488 0.851 7.42 1.094 16.663 5.473 21.528 7.055 7.906 17.028 17.393 26.15 17.758 8.15 0.244 18.123-9.73 24.57-17.514 4.257-5.109 4.013-14.231 5.351-21.65 2.19-11.798 8.88-18.975 21.042-18.123 12.042 0.973 18.366 8.757 17.88 21.042-1.216 31.015-13.38 56.193-42.084 70.058-26.758 12.893-51.814 7.42-73.708-12.527-1.216-0.852-2.554-1.582-4.013-2.676z m214.068-116.035c0.365 18.366-14.596 28.461-28.461 20.555-37.097-21.163-73.586-43.421-109.954-65.801-9.608-5.96-11.676-15.69-6.081-25.542 5.716-10.096 15.812-12.772 25.177-7.42 37.462 21.65 74.56 43.908 111.413 66.653 4.257 2.798 6.325 9.244 7.906 11.555z m-316.602-70.667c3.406 3.406 12.163 8.15 13.136 13.988 1.095 6.932-2.554 18.974-7.906 21.65-32.232 16.541-65.315 31.38-98.52 46.097-10.095 4.5-21.164 1.095-23.718-9.852-1.703-7.176 1.338-20.677 6.447-23.353 33.204-17.028 67.504-31.745 101.439-47.192 1.46-0.608 3.162-0.486 9.122-1.338z" fill="#1296DB" p-id="4999"></path></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.douyin.com/user/MS4wLjABAAAAaWBHMYjfaJN34aCrci_aWVyr9e-zaNSUhhqmsk3_xMbhRmCBmSmLzPhzv0TowMWH'
+                        target="_blank"
+                        title="douyin"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1766656006310" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10109" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M890.368 431.1552a362.8544 362.8544 0 0 1-210.6368-66.2016c0 94.5152 0 188.9792 1.1776 283.4944 0 12.6464 0.6144 25.2928-0.5632 37.888a307.2 307.2 0 0 1-40.96 131.2256 288.2048 288.2048 0 0 1-79.4624 89.088A256 256 0 0 1 414.72 956.0064a308.7872 308.7872 0 0 1-78.2336-6.6048A282.112 282.112 0 0 1 235.52 905.472c-0.6144-0.6144-1.792-1.2288-1.792-1.8432a272.64 272.64 0 0 1-79.4624-86.6816A281.0368 281.0368 0 0 1 249.344 433.5616 282.112 282.112 0 0 1 434.7392 394.24v35.84c0.6144 15.0528 0 30.1056 0.6144 44.544v76.4416a107.776 107.776 0 0 0-60.16-1.792 155.8528 155.8528 0 0 0-65.024 31.2832 108.4928 108.4928 0 0 0-27.6992 34.304 133.9392 133.9392 0 0 0-13.2608 73.4208 129.1776 129.1776 0 0 0 28.928 66.2528 152.1664 152.1664 0 0 0 38.5024 31.8976 127.6928 127.6928 0 0 0 187.8016-111.36V287.8976c0.6144-74.0352 0-148.0704 0.6144-222.1056h152.8832a171.264 171.264 0 0 0 3.584 39.1168h0.6144a231.1168 231.1168 0 0 0 22.272 62.0032 187.5968 187.5968 0 0 0 67.4304 74.6496c1.792 1.1776 2.9696 3.0208 4.8128 4.1984a212.5824 212.5824 0 0 0 69.7856 28.3136 272.5888 272.5888 0 0 0 43.9296 4.8128z m0 0" fill="#6C6CEA" p-id="10110"></path><path d="M836.7104 336.5376a536.7808 536.7808 0 0 0-4.096-65.8432A221.6448 221.6448 0 0 1 776.6528 245.76c-1.8432-1.1776-3.0208-3.0208-4.8128-4.1984a187.5968 187.5968 0 0 1-67.4304-74.6496 231.1168 231.1168 0 0 1-22.272-62.0032h-0.6144a171.264 171.264 0 0 1-3.584-39.1168h-152.8832c-0.6144 74.0352 0 148.0704-0.6144 222.1056v387.6352a127.6928 127.6928 0 0 1-187.8016 111.36 152.1664 152.1664 0 0 1-38.5024-31.8976 129.1776 129.1776 0 0 1-28.928-66.2528 133.9392 133.9392 0 0 1 13.2608-73.4208 109.2096 109.2096 0 0 1 27.6992-34.304 155.9552 155.9552 0 0 1 64.9728-31.2832 107.9808 107.9808 0 0 1 60.2112 1.792V475.0848c-0.6144-14.4384 0-29.4912-0.6144-44.544V394.24a282.112 282.112 0 0 0-185.3952 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 282.2656 282.2656 0 0 0-1.792 290.0992 273.6128 273.6128 0 0 0 16.1792 24.7296 525.056 525.056 0 0 0 506.88-128.4096c1.4848-8.9088 2.6624-17.8688 3.2768-26.9312 1.1776-12.5952 0.5632-25.2416 0.5632-37.888-1.1776-94.5152-1.1776-188.9792-1.1776-283.4944a363.8272 363.8272 0 0 0 149.2992 61.44 527.872 527.872 0 0 0 7.424-89.856z" fill="#757BF2" p-id="10111"></path><path d="M743.7312 220.16a201.8304 201.8304 0 0 1-39.3216-52.992 231.1168 231.1168 0 0 1-22.272-62.0032h-0.6144a171.264 171.264 0 0 1-3.584-39.1168h-152.8832c-0.6144 74.0352 0 148.0704-0.6144 222.1056v326.7584a526.2336 526.2336 0 0 0 155.2896-174.08V364.9536c8.9088 6.2976 18.176 12.032 27.648 17.4592a521.5232 521.5232 0 0 0 36.352-162.2528zM273.7152 709.4272a125.3376 125.3376 0 0 1-4.5056-20.48 133.9392 133.9392 0 0 1 13.2608-73.4208 109.2096 109.2096 0 0 1 27.6992-34.304 155.9552 155.9552 0 0 1 64.9728-31.2832 107.9808 107.9808 0 0 1 60.2112 1.792V475.0848c-0.6144-14.4384 0-29.4912-0.6144-44.544V394.24a282.112 282.112 0 0 0-185.3952 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 284.3136 284.3136 0 0 0-39.68 174.9504 525.8752 525.8752 0 0 0 103.8336 10.24c18.0736 0.0512 35.7888-0.8704 53.504-2.6112z" fill="#8486F8" p-id="10112"></path><path d="M435.2 458.8032c0-9.3184 0-18.7904-0.3584-28.2624V394.24a282.112 282.112 0 0 0-185.4976 39.3216 277.4528 277.4528 0 0 0-93.2864 93.2864 288.1536 288.1536 0 0 0-20.48 40.4992A521.8304 521.8304 0 0 0 435.2 458.8032zM639.0272 65.792h-113.9712c-0.6144 74.0352 0 148.0704-0.6144 222.1056v83.2a522.24 522.24 0 0 0 114.5856-305.3056z" fill="#8D92F8" p-id="10113"></path></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yannick-Mo'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页|home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E-about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于 | About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档|Archive</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索|search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>技术链接|Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://Yannick-Mo.github.io/" selected>简体中文</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/en/" >English</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/zh-tw/" >正體中文</option>
+                                
+                                    <option value="https://Yannick-Mo.github.io/ja/" >日本語</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#适用场景与宏观哲学">适用场景与宏观哲学</a></li>
+    <li><a href="#第一阶段输入嵌入与位置编码input-preparation">第一阶段：输入嵌入与位置编码（Input Preparation）</a></li>
+    <li><a href="#第二阶段编码器encoder-理解源语言">第二阶段：编码器（Encoder）—— 理解源语言</a>
+      <ol>
+        <li><a href="#前置设定">前置设定</a></li>
+        <li><a href="#子层一多头自注意力子层multi-head-self-attention-sub-layer">子层一：多头自注意力子层（Multi-Head Self-Attention Sub-layer）</a>
+          <ol>
+            <li><a href="#步骤-21多头自注意力multi-head-self-attention">步骤 2.1：多头自注意力（Multi-Head Self-Attention）</a></li>
+            <li><a href="#步骤-22残差连接add">步骤 2.2：残差连接（Add）</a></li>
+            <li><a href="#步骤-23层归一化layernorm">步骤 2.3：层归一化（LayerNorm）</a></li>
+          </ol>
+        </li>
+        <li><a href="#子层二前馈网络子层feed-forward-network-sub-layer">子层二：前馈网络子层（Feed-Forward Network Sub-layer）</a>
+          <ol>
+            <li><a href="#步骤-24前馈网络ffn">步骤 2.4：前馈网络（FFN）</a></li>
+            <li><a href="#步骤-25残差连接add">步骤 2.5：残差连接（Add）</a></li>
+            <li><a href="#步骤-26层归一化layernorm">步骤 2.6：层归一化（LayerNorm）</a></li>
+          </ol>
+        </li>
+        <li><a href="#额外补充原论文中未列在你这张表里但实际存在的细节">额外补充（原论文中未列在你这张表里，但实际存在的细节）</a></li>
+        <li><a href="#这一层的最终产出与下游关系">这一层的最终产出与下游关系</a></li>
+      </ol>
+    </li>
+    <li><a href="#第三阶段解码器decoder-生成目标语言">第三阶段：解码器（Decoder）—— 生成目标语言</a>
+      <ol>
+        <li><a href="#前置设定-1">前置设定</a></li>
+        <li><a href="#子层一带掩码的多头自注意力子层masked-multi-head-self-attention-sub-layer">子层一：带掩码的多头自注意力子层（Masked Multi-Head Self-Attention Sub-layer）</a>
+          <ol>
+            <li><a href="#步骤-31带掩码的多头自注意力masked-multi-head-self-attention">步骤 3.1：带掩码的多头自注意力（Masked Multi-Head Self-Attention）</a></li>
+            <li><a href="#步骤-32残差连接add">步骤 3.2：残差连接（Add）</a></li>
+            <li><a href="#步骤-33层归一化layernorm">步骤 3.3：层归一化（LayerNorm）</a></li>
+          </ol>
+        </li>
+        <li><a href="#子层二交叉注意力子层cross-attention-sub-layer也叫编码器-解码器注意力">子层二：交叉注意力子层（Cross-Attention Sub-layer，也叫编码器-解码器注意力）</a>
+          <ol>
+            <li><a href="#步骤-34交叉注意力cross-attention">步骤 3.4：交叉注意力（Cross-Attention）</a></li>
+            <li><a href="#步骤-35残差连接add">步骤 3.5：残差连接（Add）</a></li>
+            <li><a href="#步骤-36层归一化layernorm">步骤 3.6：层归一化（LayerNorm）</a></li>
+          </ol>
+        </li>
+        <li><a href="#子层三前馈网络子层feed-forward-network-sub-layer">子层三：前馈网络子层（Feed-Forward Network Sub-layer）</a>
+          <ol>
+            <li><a href="#步骤-37前馈网络ffn">步骤 3.7：前馈网络（FFN）</a></li>
+            <li><a href="#步骤-38残差连接add">步骤 3.8：残差连接（Add）</a></li>
+            <li><a href="#步骤-39层归一化layernorm">步骤 3.9：层归一化（LayerNorm）</a></li>
+          </ol>
+        </li>
+        <li><a href="#本层完成后的流向与跨层细节">本层完成后的流向与跨层细节</a></li>
+        <li><a href="#最终输出与生成6-层全部结束后">最终输出与生成（6 层全部结束后）</a></li>
+        <li><a href="#额外补充训练与推理时的关键差异">额外补充：训练与推理时的关键差异</a></li>
+      </ol>
+    </li>
+    <li><a href="#第四阶段输出生成output-projection">第四阶段：输出生成（Output Projection）</a></li>
+    <li><a href="#第五阶段训练时的掩码mask详解极易混淆">第五阶段：训练时的掩码（Mask）详解（极易混淆）</a></li>
+    <li><a href="#第六阶段训练目标与损失loss">第六阶段：训练目标与损失（Loss）</a></li>
+    <li><a href="#第七阶段推理inference时的解码差异">第七阶段：推理（Inference）时的解码差异</a></li>
+    <li><a href="#附录原版标准transformer-vs-现代大模型你之前问的核心差异对照表">附录：原版标准Transformer VS 现代大模型（你之前问的）核心差异对照表</a></li>
+    <li><a href="#流程图速记文字版">流程图速记（文字版）</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" >
+                深度学习
+            </a>
+        
+            <a href="/categories/nlp/" >
+                NLP
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E6%A0%87%E5%87%86transformer%E5%AE%8C%E6%95%B4%E6%9E%B6%E6%9E%84%E6%B5%81%E7%A8%8B%E7%AC%94%E8%AE%B0/">标准Transformer完整架构流程笔记</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            标准Transformer（原版）完整架构流程笔记，涵盖编码器-解码器结构、多头自注意力、位置编码、掩码机制等核心概念
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2026-07-29T13:51:28&#43;08:00'>2026-07-29</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 17 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="-标准transformer原版完整架构流程笔记">📘 标准Transformer（原版）完整架构流程笔记
+</h1><h2 id="适用场景与宏观哲学">适用场景与宏观哲学
+</h2><ul>
+<li><strong>任务类型</strong>：Seq2Seq（如英译中）。输入是一整个源句子（如英文），输出是逐个生成的目标句子（如中文）。</li>
+<li><strong>宏观三件套</strong>：
+<ol>
+<li><strong>编码器（Encoder）</strong>：**双向（Bi-directional）**读取整个源句子，将其提炼为&quot;记忆向量&quot;。</li>
+<li><strong>解码器（Decoder）</strong>：**自回归（Auto-regressive）**从左到右生成目标句子，生成时通过&quot;交叉注意力&quot;不断查阅编码器的记忆。</li>
+<li><strong>共享桥梁</strong>：解码器最后一层输出 -&gt; 线性层（Linear）-&gt; Softmax -&gt; 输出概率分布。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="第一阶段输入嵌入与位置编码input-preparation">第一阶段：输入嵌入与位置编码（Input Preparation）
+</h2><p><strong>这一步编码器和解码器完全一致，但输入内容不同（源语言 vs 目标语言）。</strong></p>
+<ol>
+<li>
+<p><strong>词元嵌入（Token Embedding）</strong>：</p>
+<ul>
+<li>将输入Token ID转化为密集向量 <code>X_emb</code>，形状 <code>(Batch, Seq_Len, d_model)</code>（<code>d_model</code> 通常为512或1024）。</li>
+<li>乘以 <code>sqrt(d_model)</code> 进行缩放（原论文操作，为了平衡嵌入与位置编码的量级）。</li>
+</ul>
+</li>
+<li>
+<p><strong>位置编码（Positional Encoding）</strong>——<strong>这里是标准写法，而非RoPE</strong>：</p>
+<ul>
+<li>不使用可学习嵌入，而是直接<strong>加法</strong>加入固定公式计算的向量。</li>
+<li>公式：对于位置 <code>pos</code> 和维度索引 <code>i</code>：
+<ul>
+<li>偶数位：<code>PE(pos, 2i) = sin(pos / 10000^(2i/d_model))</code></li>
+<li>奇数位：<code>PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))</code></li>
+</ul>
+</li>
+<li><strong>最终输入向量</strong>：<code>X = X_emb + PE</code>（形状不变）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="第二阶段编码器encoder-理解源语言">第二阶段：编码器（Encoder）—— 理解源语言
+</h2><h3 id="前置设定">前置设定
+</h3><p>假设输入到这一层的张量为 <strong>X</strong>，形状为 <code>(B, S, d_model)</code>：</p>
+<ul>
+<li><strong>B</strong>：批次大小</li>
+<li><strong>S</strong>：源语言序列长度（比如句子有10个词）</li>
+<li><strong>d_model</strong>：模型维度（原论文为512）</li>
+</ul>
+<p><strong>关键点</strong>：编码器是<strong>双向</strong>的，即计算某个位置的注意力时，它可以看到序列中<strong>所有其他位置</strong>（包括它自己以及后面的词），不存在掩码。</p>
+<hr>
+<h3 id="子层一多头自注意力子层multi-head-self-attention-sub-layer">子层一：多头自注意力子层（Multi-Head Self-Attention Sub-layer）
+</h3><p>本子层遵循&quot;核心注意力 → Add → LayerNorm&quot;的流程。</p>
+<h4 id="步骤-21多头自注意力multi-head-self-attention">步骤 2.1：多头自注意力（Multi-Head Self-Attention）
+</h4><p><strong>做什么</strong>：让每个位置的信息去&quot;询问&quot;所有位置，并聚合全局上下文。</p>
+<p><strong>拆解动作</strong>：</p>
+<ol>
+<li>
+<p><strong>生成 Q、K、V</strong><br>
+X 会分别乘以三个权重矩阵 <code>W_Q, W_K, W_V</code>（每个形状均为 <code>d_model × d_model</code>），得到 Q、K、V，形状均为 <code>(B, S, d_model)</code>。<br>
+这里 Q、K、V 来自<strong>同一个输入 X</strong>，所以叫&quot;自&quot;注意力。</p>
+</li>
+<li>
+<p><strong>拆分为多头</strong><br>
+将 <code>d_model</code> 沿特征维度切分成 <strong>h 个头</strong>（原论文 h=8，每头维度 <code>d_k = d_model / h = 64</code>）。<br>
+此时 Q、K、V 的形状变为 <code>(B, h, S, d_k)</code>。每个头独立负责一个子空间，去捕捉不同层面的关系（语法、语义、位置等）。</p>
+</li>
+<li>
+<p><strong>计算注意力分数</strong><br>
+对每个头，计算 <code>Q × K^T</code>（最后两维矩阵乘法），得到分数矩阵，形状 <code>(B, h, S, S)</code>。<br>
+其中第 <code>i</code> 行第 <code>j</code> 列的值表示：<strong>第 i 个位置对第 j 个位置的关注强度（未归一化）</strong>。</p>
+</li>
+<li>
+<p><strong>缩放（Scaling）</strong><br>
+将分数除以 <code>√d_k</code>（即√64=8）。<strong>目的</strong>：防止点积值过大，导致后续 Softmax 进入梯度极小的饱和区。</p>
+</li>
+<li>
+<p><strong>Softmax 归一化</strong><br>
+对分数矩阵的<strong>每一行</strong>（即每个查询位置）做 Softmax，使每一行的注意力权重之和为 1。<br>
+此时矩阵中每个值表示：<strong>当前查询位置应该给每个键位置分配的注意力比例</strong>。因为没有掩码，所有位置的权重都参与计算。</p>
+</li>
+<li>
+<p><strong>加权求和</strong><br>
+将权重矩阵与 V 相乘：<code>Attention_Out = Softmax(···) × V</code>，形状回到 <code>(B, h, S, d_k)</code>。<br>
+这一步得到的是<strong>每个头</strong>加权聚合后的特征。</p>
+</li>
+<li>
+<p><strong>合并多头</strong><br>
+将 h 个头在特征维度上拼接（Concat），得到 <code>(B, S, d_model)</code>，再乘以输出投影矩阵 <code>W_O</code>（<code>d_model × d_model</code>），得到最终的多头输出 <code>Attn_Out</code>，形状 <code>(B, S, d_model)</code>。</p>
+</li>
+</ol>
+<p><strong>此时得到的 Attn_Out</strong>：每个位置的向量都已经融合了全序列其他位置的信息，但它是<strong>线性变换</strong>后的结果，还没与原始输入交互。</p>
+<hr>
+<h4 id="步骤-22残差连接add">步骤 2.2：残差连接（Add）
+</h4><p><strong>做什么</strong>：将原始输入 X 与刚刚算出的 Attn_Out 直接相加：<code>X = X + Attn_Out</code>。</p>
+<p><strong>为什么必须这么做</strong>：</p>
+<ul>
+<li><strong>梯度高速公路</strong>：反向传播时，梯度可以直接通过&quot;加&quot;这条路径流回浅层，避免深层网络梯度消失。</li>
+<li><strong>保留原始信息</strong>：注意力层可能过度拟合或丢失某些局部特征，加上原始 X 相当于给模型一个&quot;保底&quot;选项——如果注意力没用，它至少还能保留输入本身。</li>
+</ul>
+<p><strong>注意</strong>：原版 Transformer 在这里是<strong>先 Add 后 LayerNorm</strong>（即 Post-Norm 结构），这与现在流行的 Pre-Norm（先 LN 后 Add）顺序相反。Post-Norm 训练时对学习率更敏感，但原论文就是这么设计的。</p>
+<hr>
+<h4 id="步骤-23层归一化layernorm">步骤 2.3：层归一化（LayerNorm）
+</h4><p><strong>做什么</strong>：对 <code>X = X + Attn_Out</code> 这个结果做归一化。</p>
+<p><strong>细节</strong>：</p>
+<ul>
+<li>对每个样本的每个位置，计算其 <code>d_model</code> 维特征上的<strong>均值</strong>和<strong>方差</strong>。</li>
+<li>然后用公式 <code>(X - mean) / √(var + ε)</code> 标准化，再乘以可学习的缩放参数 <code>γ</code> 和平移参数 <code>β</code>（形状均为 <code>d_model</code>）。</li>
+<li>输出形状仍为 <code>(B, S, d_model)</code>。</li>
+</ul>
+<p><strong>它与 BatchNorm 的区别</strong>：LayerNorm 在<strong>特征维度</strong>上独立归一化，不受批次大小和序列长度影响，非常适合变长序列（NLP 场景）。<br>
+<strong>作用</strong>：将数据分布拉回均值为 0、方差为 1 的稳定区间，让后续 FFN 层的输入不至于过于爆炸或萎缩，加速收敛。</p>
+<hr>
+<h3 id="子层二前馈网络子层feed-forward-network-sub-layer">子层二：前馈网络子层（Feed-Forward Network Sub-layer）
+</h3><p>本子层遵循&quot;核心 FFN → Add → LayerNorm&quot;的流程。注意，此处的输入 X 已经是子层一（经过 Add+LN）的输出。</p>
+<h4 id="步骤-24前馈网络ffn">步骤 2.4：前馈网络（FFN）
+</h4><p><strong>做什么</strong>：对每个位置<strong>独立</strong>地进行两次线性变换，中间夹一个 ReLU 激活。这是逐位置（Position-wise）的全连接层。</p>
+<p><strong>公式</strong>：<code>FFN(X) = ReLU(X * W_1 + b_1) * W_2 + b_2</code></p>
+<p><strong>张量变化</strong>：</p>
+<ul>
+<li>第一层：<code>X (B, S, 512)</code> 乘以 <code>W_1 (512 × 2048)</code>，加上偏置，得到 <code>(B, S, 2048)</code>。<strong>内层维度扩张到 4 倍</strong>，这是原论文的经典设置。</li>
+<li>激活函数：ReLU 将负数全部置为 0，引入<strong>非线性</strong>，让模型能拟合复杂函数。同时 ReLU 计算简单，能缓解梯度消失。</li>
+<li>第二层：<code>(B, S, 2048)</code> 乘以 <code>W_2 (2048 × 512)</code>，加偏置，投影回 <code>(B, S, 512)</code>。</li>
+</ul>
+<p><strong>关键点</strong>：这个 FFN 对每个位置（S 个）独立运算，参数在所有位置共享。它相当于在注意力层&quot;全局混合&quot;之后，再对每个位置做&quot;深度加工&quot;——注意力负责&quot;看哪里&quot;，FFN 负责&quot;想什么&quot;（提炼更高阶的特征）。</p>
+<hr>
+<h4 id="步骤-25残差连接add">步骤 2.5：残差连接（Add）
+</h4><p><strong>做什么</strong>：将步骤 2.3 归一化后的输出（即 <code>LayerNorm( X + Attn_Out )</code>）与 FFN 的输出相加：<code>X = X + FFN_Out</code>。</p>
+<p>这里的 <code>X</code> 实际上是<strong>经过第一次残差+归一化后的结果</strong>（即子层一的输出），而不是最原始的输入。<br>
+<strong>作用</strong>：与步骤 2.2 相同，给 FFN 层也提供一条梯度直通捷径，确保即使 FFN 学习效果不佳，信息仍能无损传递。</p>
+<hr>
+<h4 id="步骤-26层归一化layernorm">步骤 2.6：层归一化（LayerNorm）
+</h4><p><strong>做什么</strong>：对步骤 2.5 相加的结果再次做 LayerNorm，得到本编码器层的最终输出，形状仍为 <code>(B, S, d_model)</code>。</p>
+<p>这是 Post-Norm 的典型收尾：<strong>每个子层（Attention 或 FFN）都遵循&quot;先 Add 后 Norm&quot;</strong>。<br>
+至此，一个编码器层的全部计算结束。</p>
+<hr>
+<h3 id="额外补充原论文中未列在你这张表里但实际存在的细节">额外补充（原论文中未列在你这张表里，但实际存在的细节）
+</h3><ul>
+<li><strong>Dropout</strong>：在每一步残差相加之前（即 Attn_Out 和 FFN_Out 输出后），都会施加 Dropout（通常 p=0.1），用于正则化，防止过拟合。</li>
+<li><strong>位置编码</strong>：在进入第一个编码器层之前，输入词嵌入已经加上了位置编码（正弦/余弦或可学习）。但每层内部不再额外加位置信息，因为多头注意力本身是置换不变的（打乱顺序点积结果不变），位置信息全靠输入时的那一次注入。</li>
+</ul>
+<hr>
+<h3 id="这一层的最终产出与下游关系">这一层的最终产出与下游关系
+</h3><p>本层输出 <code>X</code> 会作为<strong>下一层编码器</strong>的输入，重复上述 6 次。<br>
+当所有 6 层跑完后，最终得到的张量被称为 <strong>Encoder_Memory</strong>，形状 <code>(B, S_src, d_model)</code>。<br>
+它的每一行都包含了源语言句子中<strong>该词与所有其他词交互后的全局上下文表示</strong>。<br>
+这个 Memory 将作为&quot;钥匙&quot;和&quot;值&quot;（即 K 和 V），送入解码器的**交叉注意力（Cross-Attention）**层，让解码器在生成目标语言时，能够&quot;查阅&quot;整个源句子的信息。</p>
+<hr>
+<h2 id="第三阶段解码器decoder-生成目标语言">第三阶段：解码器（Decoder）—— 生成目标语言
+</h2><h3 id="前置设定-1">前置设定
+</h3><ul>
+<li><strong>解码器输入</strong>：不是原始目标句子，而是**目标句子往右偏移一位（Shifted Right）**的嵌入 + 位置编码。比如要翻译&quot;I love you&quot;，输入是&quot;<code>&lt;BOS&gt;</code> I love&quot;（<code>&lt;BOS&gt;</code>是起始符），目标是预测&quot;I love you <code>&lt;EOS&gt;</code>&quot;。这样第 <code>t</code> 个位置的输入，恰好对应第 <code>t-1</code> 个位置的真实词，强行建立了因果依赖。</li>
+<li><strong>张量</strong>：记本层输入为 <code>X_dec</code>，形状 <code>(B, T, d_model)</code>，其中 <code>T</code> 是目标序列当前长度（训练时是整句并行，推理时逐个增长）。</li>
+<li><strong>记忆</strong>：编码器最终输出的 <code>Encoder_Memory</code> 形状 <code>(B, S, d_model)</code>，在整个解码过程中只读不变。</li>
+</ul>
+<p><strong>核心灵魂</strong>：解码器是**自回归（Autoregressive）**的——生成目标语言时，<strong>当前位置只能看到它自己以及之前已生成的位置，绝对不能偷看未来的词</strong>。这是它和编码器最根本的区别。</p>
+<p>解码器同样堆叠 <code>N=6</code> 层，每一层都按以下<strong>三个子层</strong>串行处理（每个子层都遵循&quot;先 Add 后 LayerNorm&quot;的 Post-Norm 结构）。</p>
+<hr>
+<h3 id="子层一带掩码的多头自注意力子层masked-multi-head-self-attention-sub-layer">子层一：带掩码的多头自注意力子层（Masked Multi-Head Self-Attention Sub-layer）
+</h3><p>本子层遵循&quot;核心注意力 → Add → LayerNorm&quot;的流程。</p>
+<h4 id="步骤-31带掩码的多头自注意力masked-multi-head-self-attention">步骤 3.1：带掩码的多头自注意力（Masked Multi-Head Self-Attention）
+</h4><p><strong>做什么</strong>：让目标语言内部各个位置互相看，但<strong>必须戴上&quot;因果掩码（Causal Mask）&quot;</strong>，确保第 <code>i</code> 个位置只能看到 <code>0</code> 到 <code>i</code> 的位置，看不到 <code>i+1</code> 及以后。</p>
+<p><strong>拆解动作</strong>：</p>
+<ol>
+<li>
+<p><strong>生成 Q、K、V</strong>：和编码器一样，<code>X_dec</code> 分别乘以当前子层的<code>W_Q, W_K, W_V</code>，得到 Q、K、V，形状均为 <code>(B, T, d_model)</code>。拆成 h 个头后，形状为 <code>(B, h, T, d_k)</code>。</p>
+</li>
+<li>
+<p><strong>计算未缩放分数</strong>：<code>Q × K^T</code>，得到分数矩阵形状 <code>(B, h, T, T)</code>。<br>
+此时第 <code>i</code> 行第 <code>j</code> 列，代表目标序列第 <code>i</code> 个位置对第 <code>j</code> 个位置的原始关注度。</p>
+</li>
+<li>
+<p><strong>应用上三角掩码（关键步骤）</strong>：<br>
+生成一个 <code>(T, T)</code> 的上三角矩阵（对角线以上为 <code>1</code>，含对角线及以下为 <code>0</code>）。<br>
+将这个矩阵中为 <code>1</code> 的位置（即未来位置 <code>j &gt; i</code>）的分数，替换为 <strong><code>-inf</code>（负无穷）</strong>。<br>
+<strong>为什么是负无穷</strong>：因为下一步要做 Softmax，<code>-inf</code> 经过 <code>e^(-inf) = 0</code>，这些位置的注意力权重就会变成绝对的 <code>0</code>，相当于物理上切断视线。<br>
+而对角线及以前的位置（<code>j ≤ i</code>）原封不动，正常可见。</p>
+</li>
+<li>
+<p><strong>缩放 + Softmax</strong>：除以 <code>√d_k</code> 后，对每一行做 Softmax。由于未来位置是 <code>0</code>，权重只分配到当前及过去的位置上，总和依然为 1。此时第 <code>i</code> 行的权重分布，只代表&quot;我（第 i 个词）如何看待我和我之前的所有词&quot;。</p>
+</li>
+<li>
+<p><strong>加权求和 + 合并多头</strong>：乘以 V，再拼接并过 <code>W_O</code>，得到 <code>Masked_Attn_Out</code>，形状 <code>(B, T, d_model)</code>。</p>
+</li>
+</ol>
+<p><strong>设计动机</strong>：这是保证&quot;自回归&quot;特性的物理屏障。训练时虽然并行输入整句，但通过这个掩码，每个位置的梯度只依赖于前文，等效于逐个生成时的状态，让模型学会根据历史推未来。</p>
+<hr>
+<h4 id="步骤-32残差连接add">步骤 3.2：残差连接（Add）
+</h4><p><strong>做什么</strong>：将原始输入 <code>X_dec</code> 与 <code>Masked_Attn_Out</code> 直接相加：<code>X_dec = X_dec + Masked_Attn_Out</code>。</p>
+<p><strong>作用</strong>：与编码器相同，保留原始路径，防止自注意力层破坏已经学好的低层特征，同时提供梯度直通捷径。</p>
+<hr>
+<h4 id="步骤-33层归一化layernorm">步骤 3.3：层归一化（LayerNorm）
+</h4><p><strong>做什么</strong>：对步骤 3.2 的相加结果在 <code>d_model</code> 维度上做层归一化，得到新的 <code>X_dec</code>，形状不变。</p>
+<p><strong>作用</strong>：稳定数据分布，为下一个子层（交叉注意力）提供标准化输入。</p>
+<hr>
+<h3 id="子层二交叉注意力子层cross-attention-sub-layer也叫编码器-解码器注意力">子层二：交叉注意力子层（Cross-Attention Sub-layer，也叫编码器-解码器注意力）
+</h3><p>本子层遵循&quot;核心注意力 → Add → LayerNorm&quot;的流程。<strong>这是解码器独有的核心模块</strong>，也是连接编码器和解码器的关键纽带。</p>
+<h4 id="步骤-34交叉注意力cross-attention">步骤 3.4：交叉注意力（Cross-Attention）
+</h4><p><strong>做什么</strong>：用<strong>解码器自己的状态作为&quot;查询（Query）&quot;</strong>，去<strong>编码器输出的 Memory 中&quot;检索&quot;最相关的源语言信息</strong>，作为&quot;键（Key）&ldquo;和&quot;值（Value）&quot;。</p>
+<p><strong>拆解动作</strong>：</p>
+<ol>
+<li>
+<p><strong>生成 Q（来自解码器）</strong>：将上一步归一化后的 <code>X_dec</code>（形状 <code>(B, T, d_model)</code>）乘以当前子层的<code>W_Q</code>，得到 Q，形状 <code>(B, T, d_model)</code>。这里的 Q 代表&quot;我想问编码器什么问题&rdquo;。</p>
+</li>
+<li>
+<p><strong>生成 K 和 V（来自编码器）</strong>：将编码器最终记忆 <code>Encoder_Memory</code>（形状 <code>(B, S, d_model)</code>）分别乘以当前子层的<code>W_K</code> 和 <code>W_V</code>（注意这两组权重与子层一中的 <code>W_K, W_V</code> 是<strong>独立不共享</strong>的），得到 K 和 V，形状均为 <code>(B, S, d_model)</code>。<br>
+这里的 K 代表&quot;源语言所有位置的特征索引&quot;，V 代表&quot;源语言所有位置的具体内容值&quot;。</p>
+</li>
+<li>
+<p><strong>拆分为多头</strong>：Q 拆为 <code>(B, h, T, d_k)</code>，K 和 V 拆为 <code>(B, h, S, d_k)</code>。注意 <strong>Q 的长度是 T（目标长度），K/V 的长度是 S（源长度）</strong>，二者不一定相等！</p>
+</li>
+<li>
+<p><strong>计算注意力分数</strong>：<code>Q × K^T</code>，得到分数矩阵形状 <code>(B, h, T, S)</code>。<br>
+矩阵中第 <code>i</code> 行第 <code>j</code> 列，表示<strong>目标语言第 i 个位置，对源语言第 j 个位置的关注强度</strong>。</p>
+</li>
+<li>
+<p><strong>缩放 + Softmax</strong>：除以 <code>√d_k</code> 后，对分数的<strong>每一行</strong>（即每个目标位置）做 Softmax。<strong>这里没有任何掩码</strong>，因为目标语言的某个词去关注源语言的任意位置（无论前后）都是合理且允许的，不存在&quot;泄露未来&quot;的问题（源语言全文已知）。</p>
+</li>
+<li>
+<p><strong>加权求和 + 合并多头</strong>：将权重矩阵与 V（源语言内容）相乘，得到 <code>(B, h, T, d_k)</code>，再拼接并过输出投影 <code>W_O</code>，得到 <code>Cross_Attn_Out</code>，形状 <code>(B, T, d_model)</code>。</p>
+</li>
+</ol>
+<p><strong>设计动机</strong>：这一步本质是&quot;软对齐&quot;（Soft Alignment）。比如翻译英译中，当解码器生成&quot;苹果&quot;这个词时，Q 会去 K 里检索&quot;apple&quot;，并给对应位置的 V 分配高权重，从而把&quot;apple&quot;的语义特征提取过来。它让解码器在生成每一个目标词时，都能动态地、有选择性地翻阅整本源语言&quot;词典&quot;。</p>
+<hr>
+<h4 id="步骤-35残差连接add">步骤 3.5：残差连接（Add）
+</h4><p><strong>做什么</strong>：将子层一的输出（即步骤 3.3 归一化后的 <code>X_dec</code>）与 <code>Cross_Attn_Out</code> 直接相加：<code>X_dec = X_dec + Cross_Attn_Out</code>。</p>
+<p><strong>设计逻辑</strong>：这里的 <code>X_dec</code> 代表着&quot;我基于前文对自己的理解&quot;，现在加上从源语言检索来的外部信息，实现了&quot;内外结合&quot;。</p>
+<hr>
+<h4 id="步骤-36层归一化layernorm">步骤 3.6：层归一化（LayerNorm）
+</h4><p><strong>做什么</strong>：对步骤 3.5 的相加结果做层归一化，得到新的 <code>X_dec</code>，形状 <code>(B, T, d_model)</code>。</p>
+<p><strong>作用</strong>：为最后一个子层（FFN）提供稳定输入。</p>
+<hr>
+<h3 id="子层三前馈网络子层feed-forward-network-sub-layer">子层三：前馈网络子层（Feed-Forward Network Sub-layer）
+</h3><p>本子层遵循&quot;核心 FFN → Add → LayerNorm&quot;的流程。</p>
+<h4 id="步骤-37前馈网络ffn">步骤 3.7：前馈网络（FFN）
+</h4><p><strong>做什么</strong>：和编码器完全相同，对每个位置独立做非线性变换，加深特征抽象。</p>
+<p><strong>公式</strong>：<code>FFN(X) = ReLU(X * W_1 + b_1) * W_2 + b_2</code></p>
+<p><strong>张量变化</strong>：</p>
+<ul>
+<li>第一层：<code>X_dec (B, T, 512)</code> → <code>(B, T, 2048)</code>，维度扩至 4 倍。</li>
+<li>ReLU 激活，引入非线性。</li>
+<li>第二层：<code>(B, T, 2048)</code> → <code>(B, T, 512)</code>，投影回原维度。</li>
+</ul>
+<p><strong>关键点</strong>：它和交叉注意力输入是串联关系，而不是并联。先&quot;查资料&quot;（交叉注意力），再&quot;写总结&quot;（FFN），逻辑上非常顺畅。此时 FFN 同时基于&quot;我已经写了什么（历史）&ldquo;和&quot;源语言说了什么（对齐信息）&ldquo;来做统一的深度加工。</p>
+<hr>
+<h4 id="步骤-38残差连接add">步骤 3.8：残差连接（Add）
+</h4><p><strong>做什么</strong>：将子层二的输出（即步骤 3.6 归一化后的 <code>X_dec</code>）与 <code>FFN_Out</code> 直接相加：<code>X_dec = X_dec + FFN_Out</code>。</p>
+<p><strong>作用</strong>：给 FFN 层提供梯度直通捷径，确保即使 FFN 学习效果不佳，信息仍能无损传递。</p>
+<hr>
+<h4 id="步骤-39层归一化layernorm">步骤 3.9：层归一化（LayerNorm）
+</h4><p><strong>做什么</strong>：对步骤 3.8 的相加结果做层归一化，输出本解码器层的最终结果，形状 <code>(B, T, d_model)</code>。</p>
+<p>至此，一个解码器层的全部计算结束。</p>
+<hr>
+<h3 id="本层完成后的流向与跨层细节">本层完成后的流向与跨层细节
+</h3><p>这一层的输出会作为<strong>下一层解码器</strong>的输入，重复上述 6 次。注意：<strong>每一层解码器在做交叉注意力时，用的都是同一份 Encoder_Memory（来自顶层编码器）</strong>，但每层都有自己独立可学习的 <code>W_Q, W_K, W_V</code> 投影矩阵，所以每层对源语言的&quot;检索方式&quot;可以不同——浅层可能关注词性，深层可能关注语义逻辑。</p>
+<hr>
+<h3 id="最终输出与生成6-层全部结束后">最终输出与生成（6 层全部结束后）
+</h3><ul>
+<li>第 6 层解码器输出形状 <code>(B, T, d_model)</code>。</li>
+<li>将其送入一个<strong>线性层（Linear）</strong>，将维度从 <code>d_model</code> 映射到 <strong>目标词表大小 <code>V_tgt</code></strong>（比如 3 万），得到 <code>(B, T, V_tgt)</code> 的 logits 分数。</li>
+<li>最后接一个 <strong>Softmax</strong>，将分数转为概率分布，选择概率最高的词作为当前时刻的预测输出。</li>
+</ul>
+<hr>
+<h3 id="额外补充训练与推理时的关键差异">额外补充：训练与推理时的关键差异
+</h3><ul>
+<li><strong>训练时（Teacher Forcing）</strong>：目标整句已知，一次性输入完整偏移序列，利用掩码实现<strong>并行计算</strong>，所有位置的 Loss 同时算出，效率极高。</li>
+<li><strong>推理时（自回归生成）</strong>：只能输入 <code>&lt;BOS&gt;</code>，生成第一个词；然后把第一个词拼进输入，生成第二个词；以此类推，直到生成 <code>&lt;EOS&gt;</code>。<strong>每生成一个词，都要重新跑一遍整个解码器前向传播</strong>（但缓存机制 K/V Cache 可大幅加速，这是工程优化的重点）。</li>
+</ul>
+<h2 id="第四阶段输出生成output-projection">第四阶段：输出生成（Output Projection）
+</h2><p>解码器6层全部跑完后：</p>
+<ol>
+<li>得到最终隐藏状态 <code>X_final</code>（形状 <code>B, T_target, d_model</code>）。</li>
+<li><strong>线性投影（Linear）</strong>：<code>Logits = X_final * W_Proj^T</code>，将 <code>d_model</code> 映射回 <strong>目标词表大小（Vocab_Target）</strong>。</li>
+<li><strong>Softmax</strong>：对 <code>Logits</code> 沿最后一维取 Softmax，得到每个位置的概率分布。</li>
+<li><strong>取最高概率</strong>：<code>Predicted_Token = argmax(Logits)</code>，得到当前步预测的词。</li>
+</ol>
+<hr>
+<h2 id="第五阶段训练时的掩码mask详解极易混淆">第五阶段：训练时的掩码（Mask）详解（极易混淆）
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">层的位置</th>
+          <th style="text-align: left">掩码类型</th>
+          <th style="text-align: left">具体操作</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>编码器自注意力</strong></td>
+          <td style="text-align: left"><strong>无掩码</strong>（Padding Mask除外）</td>
+          <td style="text-align: left">所有词可以看到所有词。例如 <code>[我, 爱, 你]</code> 中，&ldquo;爱&quot;可以同时看到&quot;我&quot;和&quot;你&rdquo;。</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>解码器掩码自注意力</strong></td>
+          <td style="text-align: left"><strong>因果掩码 + Padding掩码</strong></td>
+          <td style="text-align: left"><code>[&lt;SOS&gt;, I, love, you]</code> 中，&ldquo;love&quot;只能看到 <code>&lt;SOS&gt;</code> 和 <code>I</code>，看不到 <code>you</code>（上三角设为 <code>-inf</code>）。</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>解码器交叉注意力</strong></td>
+          <td style="text-align: left"><strong>仅 Padding掩码</strong>（无因果掩码）</td>
+          <td style="text-align: left">Q（目标端）可以无条件地查看 K/V（源端）的所有位置。源端全部可见，不需要遮罩未来（因为源端没有&quot;未来&quot;概念）。</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="第六阶段训练目标与损失loss">第六阶段：训练目标与损失（Loss）
+</h2><ul>
+<li><strong>标签</strong>：原始目标句子（未右移的 Ground Truth）。</li>
+<li><strong>损失函数</strong>：<strong>交叉熵损失（Cross-Entropy Loss）</strong>。</li>
+<li><strong>计算方式</strong>：仅计算目标句子有效词元（忽略 <code>&lt;PAD&gt;</code>）的负对数似然。不涉及解码器输出端的任何额外辅助损失（原版没有MTP）。</li>
+</ul>
+<hr>
+<h2 id="第七阶段推理inference时的解码差异">第七阶段：推理（Inference）时的解码差异
+</h2><ul>
+<li><strong>训练</strong>：并行输入完整的 <code>[&lt;SOS&gt;, 词1, 词2, ...]</code>（Teacher Forcing）。</li>
+<li><strong>推理</strong>：无法并行。解码器输入只有 <code>&lt;SOS&gt;</code>，输出第一个词；然后将 <code>&lt;SOS&gt;</code> + 第一个词作为新输入，再输出第二个词……<strong>循环往复（自回归生成）</strong>，直到输出结束符 <code>&lt;EOS&gt;</code>。</li>
+</ul>
+<hr>
+<h2 id="附录原版标准transformer-vs-现代大模型你之前问的核心差异对照表">附录：原版标准Transformer VS 现代大模型（你之前问的）核心差异对照表
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: left">组件</th>
+          <th style="text-align: left"><strong>标准原版 Transformer</strong></th>
+          <th style="text-align: left"><strong>现代 GPT/DeepSeek（你之前的笔记）</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>架构类型</strong></td>
+          <td style="text-align: left">编码器-解码器（双向+自回归）</td>
+          <td style="text-align: left">仅解码器（纯自回归）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>位置编码</strong></td>
+          <td style="text-align: left"><strong>Sin/Cos 加法</strong>（固定）</td>
+          <td style="text-align: left"><strong>RoPE 旋转乘法</strong>（相对位置）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>归一化顺序</strong></td>
+          <td style="text-align: left"><strong>Post-Norm</strong>（Add -&gt; Norm）</td>
+          <td style="text-align: left"><strong>Pre-Norm</strong>（Norm -&gt; Add）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>归一化函数</strong></td>
+          <td style="text-align: left">LayerNorm（带均值中心化）</td>
+          <td style="text-align: left">RMSNorm（仅缩放，无均值）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>前馈激活</strong></td>
+          <td style="text-align: left"><strong>ReLU</strong></td>
+          <td style="text-align: left"><strong>SwiGLU / GeGLU</strong>（门控线性）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>注意力机制</strong></td>
+          <td style="text-align: left">标准 MHA（Q/K/V全尺寸）</td>
+          <td style="text-align: left"><strong>MLA</strong>（低秩压缩，仅DeepSeek） 或标准MHA</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>层数设置</strong></td>
+          <td style="text-align: left">编码器6层 + 解码器6层（对称）</td>
+          <td style="text-align: left">仅解码器 80+ 层（极深非对称）</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>位置交叉</strong></td>
+          <td style="text-align: left">通过 Cross-Attention 强耦合</td>
+          <td style="text-align: left">无交叉注意力（仅在输入侧拼接上下文）</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="流程图速记文字版">流程图速记（文字版）
+</h2><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">源输入 [英] --&gt; 嵌入+PosEnc --&gt; 编码器(重复6次)  
+</span></span><span class="line"><span class="cl">                                ├─ 自注意力(无掩码)  
+</span></span><span class="line"><span class="cl">                                ├─ Add &amp; Norm  
+</span></span><span class="line"><span class="cl">                                └─ FFN(ReLU) + Add &amp; Norm  
+</span></span><span class="line"><span class="cl">                                     |
+</span></span><span class="line"><span class="cl">                                     | (输出作为 K, V)
+</span></span><span class="line"><span class="cl">                                     ↓
+</span></span><span class="line"><span class="cl">目标输入 [中] --&gt; 嵌入+PosEnc --&gt; 解码器(重复6次)  
+</span></span><span class="line"><span class="cl">                                ├─ 掩码自注意力(因果) + Add &amp; Norm  
+</span></span><span class="line"><span class="cl">                                ├─ 交叉注意力(Q=解码器, K/V=编码器) + Add &amp; Norm  
+</span></span><span class="line"><span class="cl">                                └─ FFN(ReLU) + Add &amp; Norm  
+</span></span><span class="line"><span class="cl">                                     |
+</span></span><span class="line"><span class="cl">                                     ↓
+</span></span><span class="line"><span class="cl">                                 线性层 + Softmax --&gt; 输出中文词
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/transformer/">Transformer</a>
+        
+            <a href="/tags/nlp/">NLP</a>
+        
+            <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+        
+            <a href="/tags/seq2seq/">Seq2Seq</a>
+        
+            <a href="/tags/attention/">Attention</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>根据CC BY-NC-SA 4.0许可授权</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const elementsToRender = [".main-article", ".widget--toc"];
+
+        elementsToRender.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                renderMathInElement(element, {
+                    delimiters: [
+                        { left: "$$", right: "$$", display: true },
+                        { left: "$", right: "$", display: false },
+                        { left: "\\(", right: "\\)", display: false },
+                        { left: "\\[", right: "\\]", display: true }
+                    ],
+                    ignoredClasses: ["gist"]
+                });
+            }
+        });
+    });
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/transformer-k/v-cache-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Transformer K/V Cache 深度解析</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script
+    src="https://giscus.app/client.js"
+    data-repo="Yannick-Mo/Yannick-Mo.github.io"
+    data-repo-id="R_kgDOQuw_0w"
+    data-category="Q&amp;A"
+    data-category-id="DIC_kwDOQuw_084C0QIk"
+    data-mapping="pathname"
+    data-strict="false"
+    data-reactions-enabled="true"
+    data-emit-metadata="true"
+    data-input-position="top"
+    data-theme="light"
+    data-lang="zh-CN"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async
+></script>
+<script>
+    function setGiscusTheme(theme) {
+        let giscus = document.querySelector("iframe.giscus-frame");
+        if (giscus) {
+            giscus.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: theme,
+                        },
+                    },
+                },
+                "https://giscus.app"
+            );
+        }
+    }
+
+    (function () {
+        addEventListener("message", (e) => {
+            if (event.origin !== "https://giscus.app") return;
+            handler();
+        });
+        window.addEventListener("onColorSchemeChange", handler);
+
+        function handler() {
+            if (document.documentElement.dataset.scheme === "light") {
+                setGiscusTheme('light');
+            } else {
+                setGiscusTheme('dark_dimmed');
+            }
+        }
+    })();
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2025 - 
+        
+        2026 雅尼克.莫(Yannick.Mo)
+    </section>
+    
+    <section class="powerby">
+        
+            少年，你不是可以逆风翻盘吗？
+        
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+    
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.c432297ce8e65b7951da08373ceabec6f7cc83933801a7002336738bb8bdeabf.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function () {
+  function getMermaidTheme() {
+    const scheme = document.documentElement.getAttribute('data-scheme');
+    return scheme === 'dark' ? 'dark' : 'default';
+  }
+
+  function runMermaid() {
+    if (!window.mermaid) return;
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: getMermaidTheme(),
+      themeVariables: { fontFamily: "JetBrains Mono" }
+    });
+    mermaid.run({ querySelector: ".mermaid" });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", runMermaid);
+  } else {
+    runMermaid();
+  }
+  document.addEventListener("turbo:load", runMermaid);
+
+  new MutationObserver(function () { runMermaid(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-scheme'] });
+})();
+</script>
+
+
+
+
+<style>
+     
+    body {
+        background: url(https://Yannick-Mo.github.io/background/bg.png) no-repeat center top;
+        background-size: cover;
+        background-attachment: fixed;
+        background-color: #ffffff;
+        position: relative;
+    }
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.50);
+        z-index: -1;
+    }
+    [data-scheme="dark"] body {
+        background-color: #1a1a1a;
+    }
+    [data-scheme="dark"] body::before {
+        background-color: rgba(26, 26, 26, 0.8);
+    }
+
+     
+    .left-sidebar {
+        padding-bottom: calc(var(--main-top-padding) + 100px) !important;
+    }
+
+     
+    .site-avatar .site-logo {
+        transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    .site-avatar:hover .site-logo {
+        transform: rotate(360deg);
+    }
+
+     
+    #TableOfContents > ul ul,
+    #TableOfContents > ul ol,
+    #TableOfContents > ol ul,
+    #TableOfContents > ol ol {
+        display: none;
+    }
+    #TableOfContents > ul .open,
+    #TableOfContents > ol .open {
+        display: block;
+    }
+
+     
+    #backTopBtn {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 20px;
+        z-index: 99;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        background-image: url(https://Yannick-Mo.github.io/icons/backTop.svg);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+	border: none;
+        background-color: transparent;
+    }
+    #backTopBtn:hover {
+        opacity: 1;
+    }
+
+     
+    .highlight {
+        max-height: 400px;
+        overflow: hidden;
+        position: relative;
+        transition: max-height 0.3s ease-in-out;
+    }
+    .code-show {
+        max-height: 9999px !important;
+    }
+    .code-more-box {
+        width: 100%;
+        padding-top: 78px;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), to(#fff));
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+    [data-scheme="dark"] .code-more-box {
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(#1a1a1a));
+    }
+    .code-more-btn {
+        pointer-events: auto;
+        display: block;
+        margin: auto;
+        width: 44px;
+        height: 22px;
+        background: #f0f0f5;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+        padding-top: 6px;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+    }
+    .code-more-btn:hover {
+        opacity: 1;
+    }
+    [data-scheme="dark"] .code-more-btn {
+        background: #333;
+    }
+    .code-more-img {
+        cursor: pointer !important;
+        display: block;
+        margin: auto;
+        width: 22px;
+        height: 16px;
+        transition: transform 0.2s ease;
+    }
+    .code-more-img-fold {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script data-turbo-eval="false">
+    const codeMoreIconUrl = "https://Yannick-Mo.github.io/icons/codeMore.svg";
+    const backTopIconUrl = "https://Yannick-Mo.github.io/icons/backTop.svg";
+
+    
+    (function() {
+        window.addEventListener('scroll', function() {
+            document.querySelectorAll(".open").forEach(el => el.classList.remove("open"));
+            let li = document.querySelector(".active-class");
+            if (!li) return;
+            if (li.children.length > 1) li.children[1].classList.add("open");
+            let ul = li.parentElement;
+            do {
+                ul.classList.add("open");
+                ul = ul.parentElement?.parentElement;
+            } while (ul && (ul.localName === 'ul' || ul.localName === 'ol'));
+        });
+
+        window.addEventListener('scroll', function() {
+            let btn = document.getElementById("backTopBtn");
+            if (!btn) return;
+            btn.style.display = (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) ? "block" : "none";
+        });
+    })();
+
+    
+    function initScrollTop() {
+        if (document.getElementById("backTopBtn")) return;
+        let sidebar = document.querySelector(".right-sidebar");
+        if (!sidebar) return;
+        let btn = document.createElement("div");
+        btn.id = "backTopBtn";
+        btn.onclick = function() { window.scrollTo({ top: 0, behavior: "smooth" }); };
+        btn.style.backgroundImage = "url(" + backTopIconUrl + ")";
+        sidebar.appendChild(btn);
+    }
+
+    
+    function initCodeMoreBox() {
+        document.querySelectorAll(".highlight").forEach(codeBlock => {
+            if (codeBlock.querySelector(".code-more-box")) return;
+            if (codeBlock.scrollHeight <= codeBlock.clientHeight) return;
+            let box = document.createElement('div');
+            box.classList.add('code-more-box');
+            let btn = document.createElement('span');
+            btn.classList.add('code-more-btn');
+            let img = document.createElement('img');
+            img.classList.add('code-more-img');
+            img.src = codeMoreIconUrl;
+            btn.addEventListener('click', function() {
+                codeBlock.classList.toggle('code-show');
+                img.classList.toggle('code-more-img-fold', codeBlock.classList.contains('code-show'));
+                window.dispatchEvent(new Event('resize'));
+            });
+            btn.appendChild(img);
+            box.appendChild(btn);
+            codeBlock.appendChild(box);
+        });
+    }
+
+    
+    let sakuraIsLoaded = false;
+    function initSakura() {
+        if (sakuraIsLoaded) return;
+        const sakuraScript = document.createElement('script');
+        sakuraScript.src = "https://Yannick-Mo.github.io/background/sakura.js";
+        sakuraScript.onload = function() { sakuraIsLoaded = true; };
+        document.body.appendChild(sakuraScript);
+    }
+
+    
+    function initPage() {
+        initScrollTop();
+        initCodeMoreBox();
+        initSakura();
+    }
+    document.addEventListener('DOMContentLoaded', initPage);
+    document.addEventListener('turbo:load', initPage);
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<div id="global-player" data-turbo-permanent></div>
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function() {
+    if (window.globalPlayer) return;
+    var songs = [
+        {
+            name: "起风了",
+            artist: "买辣椒也用券",
+            url: "\/audio\/qifengle.mp3",
+            cover: "\/img\/qifengle.png"
+        },
+        {
+            name: "凉城",
+            artist: "任然",
+            url: "\/audio\/liangcheng.mp3",
+            cover: "\/img\/liangcheng.png"
+        },
+        {
+            name: "不如就等风来",
+            artist: "林宝馨",
+            url: "\/audio\/burujiudengfenglai.mp3",
+            cover: "\/img\/burujiudengfenglai.png"
+        },
+        {
+            name: "Catch My Breath",
+            artist: "Kelly Clarkson",
+            url: "\/audio\/catch-my-breath.mp3",
+            cover: "\/img\/catch-my-breath.png"
+        },
+        {
+            name: "离开我的依赖",
+            artist: "王艳薇",
+            url: "\/audio\/li-kai-wo-de-yi-lai.mp3",
+            cover: "\/img\/li-kai-wo-de-yi-lai.png"
+        },
+        {
+            name: "Shots",
+            artist: "Imagine Dragons",
+            url: "\/audio\/shots.mp3",
+            cover: "\/img\/shots.png"
+        },
+        {
+            name: "失控",
+            artist: "井迪儿",
+            url: "\/audio\/shi-kong.mp3",
+            cover: "\/img\/shi-kong.png"
+        },
+        {
+            name: "晚风",
+            artist: "Lker林柯",
+            url: "\/audio\/wan-feng.mp3",
+            cover: "\/img\/wan-feng.png"
+        },
+        {
+            name: "海阔天空",
+            artist: "Beyond",
+            url: "\/audio\/hai-kuo-tian-kong.mp3",
+            cover: "\/img\/hai-kuo-tian-kong.png"
+        },
+        {
+            name: "爱错",
+            artist: "王力宏",
+            url: "\/audio\/ai-cuo.mp3",
+            cover: "\/img\/ai-cuo.png"
+        },
+        {
+            name: "夜空中最亮的星",
+            artist: "逃跑计划",
+            url: "\/audio\/ye-kong-zui-liang-de-xing.mp3",
+            cover: "\/img\/ye-kong-zui-liang-de-xing.png"
+        },
+        {
+            name: "晴天",
+            artist: "周杰伦",
+            url: "\/audio\/qing-tian.mp3",
+            cover: "\/img\/qing-tian.png"
+        },
+        {
+            name: "稻香",
+            artist: "周杰伦",
+            url: "\/audio\/dao-xiang.mp3",
+            cover: "\/img\/dao-xiang.png"
+        },
+        {
+            name: "花海",
+            artist: "周杰伦",
+            url: "\/audio\/hua-hai.mp3",
+            cover: "\/img\/hua-hai.png"
+        },
+        {
+            name: "七里香",
+            artist: "周杰伦",
+            url: "\/audio\/qi-li-xiang.mp3",
+            cover: "\/img\/qi-li-xiang.png"
+        },
+        {
+            name: "红色高跟鞋",
+            artist: "蔡健雅",
+            url: "\/audio\/hong-se-gao-gen-xie.mp3",
+            cover: "\/img\/hong-se-gao-gen-xie.png"
+        },
+    ];
+    if (songs.length > 0) {
+        window.globalPlayer = new APlayer({
+            container: document.getElementById('global-player'),
+            fixed: true,
+            mini: true,
+            autoplay: false,
+            loop: 'all',
+            order: 'list',
+            preload: 'auto',
+            volume: 0.3,
+            audio: songs
+        });
+    }
+})();
+</script><script data-turbo-eval="false">
+(function() {
+    var config = {
+        waifuPath: '/waifu-tips.json',
+        cubism2Path: 'https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/live2d.min.js',
+        tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
+        showToggleAfterQuit: true,
+        logLevel: 'warn',
+        drag: false,
+    };
+
+    function initWaifu() {
+        if (document.getElementById('waifu')) return;
+        if (window.initWidget) {
+            window.initWidget(config);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', initWaifu);
+    document.addEventListener('turbo:load', initWaifu);
+})();
+</script>
+<style>
+#waifu { left: auto !important; right: 65px !important; }
+#waifu-toggle { left: auto !important; right: 0 !important; justify-content: flex-start !important; margin-left: 0 !important; margin-right: -100px !important; transition: margin-right 1s !important; }
+#waifu-toggle.waifu-toggle-active { display: flex !important; margin-right: -50px !important; }
+#waifu-toggle.waifu-toggle-active:hover { margin-right: -30px !important; }
+#waifu-tips { left: auto !important; right: calc(100% + (10px + 300px * (var(--ws, 1) - 1))) !important; margin: calc(-30px + 400px * (1 - var(--ws, 1))) 0 !important; }
+</style>
+<script data-turbo-eval="false">
+(function() {
+    var KEY = 'waifu-scale';
+    function apply(s) {
+        var m = document.getElementById('live2d');
+        if (m) m.style.transform = 'scale(' + s + ')';
+        var t = document.getElementById('waifu-tips');
+        if (t) t.style.setProperty('--ws', s);
+    }
+    function init() {
+        var tool = document.getElementById('waifu-tool');
+        if (!tool || document.getElementById('waifu-tool-zoomin')) return;
+        var saved = parseFloat(localStorage.getItem(KEY)) || 1;
+        apply(saved);
+        function mk(id, text, title, delta) {
+            var btn = document.createElement('span');
+            btn.id = id;
+            btn.textContent = text;
+            btn.title = title;
+            btn.style.cssText = 'cursor:pointer;color:#7b8c9d;font-size:20px;font-weight:bold;line-height:25px;text-align:center;transition:color .3s;user-select:none;';
+            btn.addEventListener('mouseenter', function() { this.style.color = '#0684bd'; });
+            btn.addEventListener('mouseleave', function() { this.style.color = '#7b8c9d'; });
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var cur = parseFloat(localStorage.getItem(KEY)) || 1;
+                var nxt = Math.round(Math.min(Math.max(cur + delta, 0.3), 3) * 10) / 10;
+                localStorage.setItem(KEY, nxt);
+                apply(nxt);
+            });
+            return btn;
+        }
+        tool.insertBefore(mk('waifu-tool-zoomout', '−', '缩小', -0.1), tool.firstChild);
+        tool.insertBefore(mk('waifu-tool-zoomin', '+', '放大', 0.1), tool.firstChild);
+    }
+    var obs = new MutationObserver(function() { init(); });
+    obs.observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('turbo:load', function() { setTimeout(init, 300); });
+    setTimeout(init, 800);
+})();
+</script><script src="/waifu-games/menu.js" data-turbo-eval="false"></script><div id="ambient-widget" data-turbo-permanent>
+    <button id="ambient-toggle" title="氛围音">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+    </button>
+    <div id="ambient-panel" class="hidden">
+        <button data-sound="rain">🌧️ 雨声</button>
+        <button data-sound="coffee" class="active">☕ 咖啡店</button>
+        <button data-sound="fire">🔥 壁炉</button>
+    </div>
+</div>
+<style>
+#ambient-widget {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+#ambient-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card-background);
+    color: var(--card-text-color-main);
+    box-shadow: var(--shadow-l2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+#ambient-toggle:hover { transform: scale(1.1); }
+#ambient-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 12px;
+    background: var(--card-background);
+    box-shadow: var(--shadow-l2);
+    transition: all 0.2s;
+}
+#ambient-panel.hidden { display: none; }
+#ambient-panel button {
+    border: none;
+    background: transparent;
+    color: var(--card-text-color-main);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: left;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+#ambient-panel button:hover { background: var(--card-separator-color); }
+#ambient-panel button.active {
+    background: var(--accent-color);
+    color: #fff;
+}
+[data-scheme="dark"] #ambient-toggle,
+[data-scheme="dark"] #ambient-panel {
+    background: #2d2d2d;
+}
+</style>
+<script data-turbo-eval="false">
+(function() {
+    if (window._ambientInited) return;
+    window._ambientInited = true;
+
+    var ctx, sources = {}, gains = {}, currentSound = 'coffee', isPlaying = false;
+
+    function createNoiseBuffer() {
+        var buf = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
+        var d = buf.getChannelData(0);
+        for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+        return buf;
+    }
+
+    function startRain() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1200;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.25;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.rain = src; gains.rain = gain;
+    }
+
+    function startCoffee() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 200;
+        filter.Q.value = 0.5;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.15;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.coffee = src; gains.coffee = gain;
+    }
+
+    function startFire() {
+        var buf = createNoiseBuffer();
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        var lp = ctx.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = 400;
+        var hp = ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 60;
+        var gain = ctx.createGain();
+        gain.gain.value = 0.2;
+        src.connect(lp);
+        lp.connect(hp);
+        hp.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        sources.fire = src; gains.fire = gain;
+
+        var crackle = setInterval(function() {
+            if (gains.fire) {
+                gains.fire.gain.value = 0.3 + Math.random() * 0.15;
+                setTimeout(function() { if (gains.fire) gains.fire.gain.value = 0.2; }, 80);
+            }
+        }, 300);
+        sources._crackle = crackle;
+    }
+
+    var starters = { rain: startRain, coffee: startCoffee, fire: startFire };
+
+    function stopAll() {
+        Object.keys(sources).forEach(function(k) {
+            if (k === '_crackle') { clearInterval(sources[k]); return; }
+            try { sources[k].stop(); } catch(e) {}
+        });
+        sources = {};
+        gains = {};
+        if (window.globalPlayer) { try { window.globalPlayer.pause(); } catch(e) {} }
+    }
+
+    function play(name) {
+        if (!ctx) {
+            ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+        stopAll();
+        if (starters[name]) starters[name]();
+        currentSound = name;
+        isPlaying = true;
+    }
+
+    function stop() {
+        stopAll();
+        isPlaying = false;
+    }
+
+    var btn = document.getElementById('ambient-toggle');
+    var panel = document.getElementById('ambient-panel');
+    var soundBtns = panel.querySelectorAll('button[data-sound]');
+
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        panel.classList.toggle('hidden');
+    });
+
+    soundBtns.forEach(function(b) {
+        b.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var sound = this.dataset.sound;
+            soundBtns.forEach(function(x) { x.classList.remove('active'); });
+            if (isPlaying && currentSound === sound) {
+                stop();
+            } else {
+                this.classList.add('active');
+                play(sound);
+            }
+            panel.classList.add('hidden');
+        });
+    });
+
+    document.addEventListener('click', function() { panel.classList.add('hidden'); });
+})();
+</script>
+<button id="fireworks-btn" title="烟花模式" data-turbo-permanent>🎆</button>
+
+<link rel="stylesheet" href="/fireworks/style.css" data-turbo-track="reload">
+<script src="/fireworks/fireworks-bundle.js" data-turbo-eval="false"></script>
+<script data-turbo-eval="false">
+(function() {
+  
+  var btn = document.getElementById('fireworks-btn');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      if (!window.FireworksMode) return;
+      if (window._fwRunning) return;
+      window.FireworksMode.start();
+    });
+  }
+
+  
+  var navCount = 0;
+  document.addEventListener('turbo:load', function() {
+    navCount++;
+    if (navCount === 1) return; 
+
+    var toggle = document.getElementById('dark-mode-toggle');
+    if (toggle && !toggle.dataset.fwFixed) {
+      toggle.dataset.fwFixed = '1';
+      toggle.addEventListener('click', function() {
+        var el = document.documentElement;
+        el.dataset.scheme = el.dataset.scheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('StackColorScheme', el.dataset.scheme);
+      });
+    }
+  });
+})();
+</script>
+    </body>
+</html>

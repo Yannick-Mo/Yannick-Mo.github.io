@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>VLLM on 雅尼克.莫(Yannick.Mo)</title>
+        <link>https://Yannick-Mo.github.io/tags/vllm/</link>
+        <description>Recent content in VLLM on 雅尼克.莫(Yannick.Mo)</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>雅尼克.莫(Yannick.Mo)</copyright>
+        <lastBuildDate>Wed, 29 Jul 2026 14:14:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/vllm/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Transformer K/V Cache 深度解析</title>
+        <link>https://Yannick-Mo.github.io/p/transformer-k/v-cache-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/</link>
+        <pubDate>Wed, 29 Jul 2026 14:14:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/p/transformer-k/v-cache-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/</guid>
+        <description>&lt;p&gt;Transformer工程落地的核心痛点。K/V Cache（键值缓存）不仅是加速技巧，更是&lt;strong&gt;大模型推理系统设计的基石&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第一步先看没有-cache时会发生什么灾难&#34;&gt;第一步：先看&amp;quot;没有 Cache&amp;quot;时，会发生什么灾难
+&lt;/h3&gt;&lt;p&gt;在推理阶段（生成阶段），解码器是&lt;strong&gt;逐个蹦词&lt;/strong&gt;的。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;第 1 步&lt;/strong&gt;：输入 &lt;code&gt;[&amp;lt;BOS&amp;gt;]&lt;/code&gt;，生成第 1 个词 &lt;code&gt;w1&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 2 步&lt;/strong&gt;：输入 &lt;code&gt;[&amp;lt;BOS&amp;gt;, w1]&lt;/code&gt;，生成第 2 个词 &lt;code&gt;w2&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 3 步&lt;/strong&gt;：输入 &lt;code&gt;[&amp;lt;BOS&amp;gt;, w1, w2]&lt;/code&gt;，生成第 3 个词 &lt;code&gt;w3&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;如果不用 Cache&lt;/strong&gt;，第 3 步会把 &lt;code&gt;[&amp;lt;BOS&amp;gt;, w1, w2]&lt;/code&gt; &lt;strong&gt;整个序列&lt;/strong&gt;重新喂进解码器，重新计算 &lt;code&gt;w1&lt;/code&gt; 和 &lt;code&gt;w2&lt;/code&gt; 的 Q、K、V，重新跑一遍完整的注意力矩阵（形状 &lt;code&gt;T × T&lt;/code&gt;）。&lt;/p&gt;
+&lt;p&gt;这就导致&lt;strong&gt;计算复杂度呈平方级增长（O(T²)）&lt;/strong&gt;。生成第 1000 个词时，前面 999 个词的 K/V 要被重复计算 999 次，这在生产中是&lt;strong&gt;完全不可接受的&lt;/strong&gt;（GPU 会冒烟）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第二步引入-kv-cache-的核心逻辑用显存换时间&#34;&gt;第二步：引入 K/V Cache 的核心逻辑——用显存换时间
+&lt;/h3&gt;&lt;p&gt;仔细看掩码自注意力的公式：&lt;code&gt;Attention(Q_t, K, V)&lt;/code&gt;。
+当我们要生成&lt;strong&gt;当前第 &lt;code&gt;t&lt;/code&gt; 个位置&lt;/strong&gt;的新词时：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Q（查询）&lt;/strong&gt;：只由&lt;strong&gt;当前最新输入的 token&lt;/strong&gt; 计算得出，形状 &lt;code&gt;(B, 1, d_model)&lt;/code&gt;。只有&amp;quot;我&amp;quot;在提问。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;K（键）和 V（值）&lt;/strong&gt;：需要包括&lt;strong&gt;第 1 到第 &lt;code&gt;t&lt;/code&gt; 个位置&lt;/strong&gt;的所有 token，因为我要看过去的全部历史。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Cache 的骚操作来了&lt;/strong&gt;：
+既然第 1 到第 &lt;code&gt;t-1&lt;/code&gt; 个位置的 K 和 V 在前面的步骤中已经算过了，且&lt;strong&gt;它们的内容永远不变&lt;/strong&gt;（因为自回归中过去的词不会变），那我何必重算？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;做法&lt;/strong&gt;：在 GPU 显存中划出一块连续区域（即 K/V Cache），把每一层解码器计算出的历史 K 和 V 矩阵&lt;strong&gt;像拼积木一样存下来&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第三步带-cache-的单步生成流程物理张量变化&#34;&gt;第三步：带 Cache 的单步生成流程（物理张量变化）
+&lt;/h3&gt;&lt;p&gt;假设当前处于第 &lt;code&gt;t&lt;/code&gt; 步，解码器有 &lt;code&gt;L&lt;/code&gt; 层（原论文 6 层，现在大模型几十上百层）。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;输入&lt;/strong&gt;：只有新生成的这一个 token，形状 &lt;code&gt;(B, 1)&lt;/code&gt;（词嵌入后变为 &lt;code&gt;(B, 1, d_model)&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 1 层掩码自注意力&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;根据这个新 token 的 &lt;code&gt;X&lt;/code&gt;，计算它的 &lt;code&gt;Q_new&lt;/code&gt;、&lt;code&gt;K_new&lt;/code&gt;、&lt;code&gt;V_new&lt;/code&gt;，形状均为 &lt;code&gt;(B, 1, d_head)&lt;/code&gt;（按头算）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;读取 Cache&lt;/strong&gt;：从显存中取出该层之前存好的历史 K 和 V，形状为 &lt;code&gt;(B, t-1, d_head)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;拼接（关键物理动作）&lt;/strong&gt;：将 &lt;code&gt;K_new&lt;/code&gt; 拼到历史 K 后面，得到 &lt;code&gt;K_all = [K_history | K_new]&lt;/code&gt;，形状 &lt;code&gt;(B, t, d_head)&lt;/code&gt;。V 同理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算注意力&lt;/strong&gt;：用 &lt;code&gt;Q_new&lt;/code&gt;（形状 &lt;code&gt;B, 1, d&lt;/code&gt;）去点乘 &lt;code&gt;K_all&lt;/code&gt;（形状 &lt;code&gt;B, t, d&lt;/code&gt;），得到分数 &lt;code&gt;(B, 1, t)&lt;/code&gt;。此时矩阵的&lt;strong&gt;长度刚好是 &lt;code&gt;t&lt;/code&gt;&lt;/strong&gt;，只包含当前及过去位置。因为 Q 只有一个向量，天然就不存在偷看未来的可能性，&lt;strong&gt;连上三角掩码矩阵都不需要生成了&lt;/strong&gt;（节约了计算量）。&lt;/li&gt;
+&lt;li&gt;加权求和后得到当前层的输出 &lt;code&gt;(B, 1, d)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更新 Cache&lt;/strong&gt;：将计算出的 &lt;code&gt;K_new&lt;/code&gt; 和 &lt;code&gt;V_new&lt;/code&gt; &lt;strong&gt;写回&lt;/strong&gt;显存中该层的缓存区。此时 Cache 长度变为 &lt;code&gt;t&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;经过交叉注意力、FFN&lt;/strong&gt;（交叉注意力的 K/V 来自 Encoder，全程固定，只需存一份，不参与这里的缓存增长）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;循环 L 层&lt;/strong&gt;，最终输出 logits，预测下一个词。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第四步量化-cache-带来的恐怖显存占用&#34;&gt;第四步：量化 Cache 带来的&amp;quot;恐怖&amp;quot;显存占用
+&lt;/h3&gt;&lt;p&gt;Cache 并非免费午餐，它的代价是&lt;strong&gt;显存墙&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;假设一个 70B 参数的模型（如 LLaMA 2 70B）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;层数 &lt;code&gt;L = 80&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;隐藏维度 &lt;code&gt;d_model = 8192&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;多头数 &lt;code&gt;h = 64&lt;/code&gt;，每头维度 &lt;code&gt;d_k = 128&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;生成序列长度 &lt;code&gt;T = 4096&lt;/code&gt;，批次 &lt;code&gt;B = 32&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;计算单份 K/V Cache 的内存大小（FP16，每个数占 2 字节）&lt;/strong&gt;：
+公式是：&lt;code&gt;Cache_Memory = 2（K和V两份） × B × T × L × d_model&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;代入数值：&lt;code&gt;2 × 32 × 4096 × 80 × 8192&lt;/code&gt; 字节。
+我们算一下：&lt;code&gt;2 × 32 = 64&lt;/code&gt;；&lt;code&gt;64 × 4096 = 262,144&lt;/code&gt;；&lt;code&gt;262,144 × 80 = 20,971,520&lt;/code&gt;；&lt;code&gt;20,971,520 × 8192 ≈ 171,798,691,840&lt;/code&gt; 字节 ≈ &lt;strong&gt;160 GB&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：仅仅是存 K/V，就要吃掉 &lt;strong&gt;160 GB 显存&lt;/strong&gt;。而模型权重本身还有 140 GB 左右。&lt;strong&gt;显存瓶颈远大于算力瓶颈&lt;/strong&gt;——这也是为什么你经常看到大模型推理时，GPU 算力利用率（MFU）很低，因为它在&amp;quot;等数据从显存搬运到计算单元&amp;quot;，时间都花在 I/O 上了。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第五步工业级的高级优化技巧这才是真正的深入&#34;&gt;第五步：工业级的高级优化技巧（这才是真正的&amp;quot;深入&amp;quot;）
+&lt;/h3&gt;&lt;p&gt;基础 Cache 只是开始，工业界为了解决上面的显存和带宽问题，发展出了极其精妙的优化手段：&lt;/p&gt;
+&lt;h4 id=&#34;1-分页注意力pagedattention--vllm-的核心&#34;&gt;1. 分页注意力（PagedAttention —— vLLM 的核心）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;痛点&lt;/strong&gt;：传统 Cache 必须在显存中申请&lt;strong&gt;连续&lt;/strong&gt;的内存空间。但每个请求生成的序列长度不一，且提前未知，导致大量显存碎片（Internal Fragmentation）。比如预分配 2048 长度，实际只生成了 128，剩下 1920 的长度就白白浪费了。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：像操作系统的虚拟内存一样，把 K/V Cache 切成固定大小的&amp;quot;页&amp;quot;（Page，比如每页存 16 个 token 的 K/V）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;好处&lt;/strong&gt;：物理上不连续没关系，逻辑上通过页表（Block Table）索引。空间按需分配，&lt;strong&gt;碎片率降低 90% 以上&lt;/strong&gt;。同时支持同一个 Prompt 在多个请求中共享 Cache（比如系统提示词），极其适合高并发场景。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-连续批处理continuous-batching又称动态批处理&#34;&gt;2. 连续批处理（Continuous Batching，又称动态批处理）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;痛点&lt;/strong&gt;：传统静态批处理（Static Batching）必须等整个批次中最长的那个序列生成完，所有请求才能一起结束。短序列生成了 10 个词，但要干等长序列生成 100 个词，GPU 在干等时是空闲的。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：每次迭代（生成一个 token 后），检查哪些请求已经生成了 &lt;code&gt;&amp;lt;EOS&amp;gt;&lt;/code&gt;，立即把它们&amp;quot;踢出&amp;quot;批次，空出来的显存位置立刻塞入新的请求。这使得 &lt;strong&gt;GPU 利用率提升 2-4 倍&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-kv-缓存量化kv-cache-quantization如-fp8--int4&#34;&gt;3. KV 缓存量化（KV Cache Quantization，如 FP8 / INT4）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;注意力分数对 K/V 的精度异常敏感（尤其 V 负责内容，精度不够会胡言乱语），但研究发现可以针对 K 和 V 使用不同的精度策略。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型做法&lt;/strong&gt;：K 缓存保持较高精度（如 FP16），V 缓存压到 INT8 甚至 4-bit。因为 K 主要负责&amp;quot;找位置&amp;quot;，精度低一点会丢失细微匹配，但 V 负责&amp;quot;取内容&amp;quot;，冗余度稍高。通过这种方式，&lt;strong&gt;可将 160 GB 压缩至 50 GB 以下&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-flashdecoding--flashattention-的配合&#34;&gt;4. FlashDecoding / FlashAttention 的配合
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;当 Cache 长度变长（比如处理 10 万上下文），序列维度 &lt;code&gt;t&lt;/code&gt; 极大。单靠一个 GPU 核心算 &lt;code&gt;Q × K_all^T&lt;/code&gt;（形状 &lt;code&gt;1 × 100k&lt;/code&gt;）依然很慢。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优化&lt;/strong&gt;：将长序列的 Cache 切分成小块，交给不同的 GPU 线程块（Thread Block）并行计算局部分数，最后在全局做一次归约（Reduce Sum）。这解决了长上下文场景下的&amp;quot;内存带宽墙&amp;quot;问题。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;5-投机采样speculative-decoding中的-cache-处理&#34;&gt;5. 投机采样（Speculative Decoding）中的 Cache 处理
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;这是目前最火的加速推理范式。用小模型（Draft Model）快速生成 5-6 个候选 token，大模型（Target Model）并行验证。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;这里的 Cache 讲究&amp;quot;回滚&amp;quot;&lt;/strong&gt;：如果验证失败，大模型需要&lt;strong&gt;丢弃&lt;/strong&gt;这 5-6 个 token 对应的 K/V，并将 Cache 指针恢复至验证前的位置（通过维护版本号或逻辑长度指针实现，不物理擦除数据）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第六步一个极易混淆的交叉注意力补充说明&#34;&gt;第六步：一个极易混淆的&amp;quot;交叉注意力&amp;quot;补充说明
+&lt;/h3&gt;&lt;p&gt;在解码器的**交叉注意力（Cross-Attention）**层，K 和 V 来自编码器的 Memory。
+这块 Cache 的处理方式完全不同：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;因为源句子是固定的，Encoder_Memory 在解码开始前&lt;strong&gt;一次性算好&lt;/strong&gt;，存入显存。&lt;/li&gt;
+&lt;li&gt;在生成整个目标句子的过程中，交叉注意力层的 K 和 V &lt;strong&gt;不会随着 &lt;code&gt;t&lt;/code&gt; 增长而增长&lt;/strong&gt;，它们永远是固定的 &lt;code&gt;(B, S_src, d)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;因此，这里的&amp;quot;Cache&amp;quot;更像是一个只读的全局共享变量，不存在&amp;quot;拼接&amp;quot;操作，也基本不占用增长性的显存开销。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;总结一句核心本质&#34;&gt;总结一句核心本质
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;K/V Cache 的本质是用显存（空间）换取时间&lt;/strong&gt;，将自回归生成从 &lt;strong&gt;O(T²)&lt;/strong&gt; 的时间复杂度降为 &lt;strong&gt;O(T)&lt;/strong&gt;（只增加一个 token 的长度）。而现代工程优化的全部努力——分页、量化、连续批处理——都是在&lt;strong&gt;对抗显存碎片和带宽限制&lt;/strong&gt;，让这张&amp;quot;空间换时间&amp;quot;的赌局能玩得转。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

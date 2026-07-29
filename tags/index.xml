@@ -7,7 +7,79 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
-        <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 29 Jul 2026 14:14:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>KVCache</title>
+        <link>https://Yannick-Mo.github.io/tags/kvcache/</link>
+        <pubDate>Wed, 29 Jul 2026 14:14:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/kvcache/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>PagedAttention</title>
+        <link>https://Yannick-Mo.github.io/tags/pagedattention/</link>
+        <pubDate>Wed, 29 Jul 2026 14:14:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/pagedattention/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Transformer</title>
+        <link>https://Yannick-Mo.github.io/tags/transformer/</link>
+        <pubDate>Wed, 29 Jul 2026 14:14:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/transformer/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>VLLM</title>
+        <link>https://Yannick-Mo.github.io/tags/vllm/</link>
+        <pubDate>Wed, 29 Jul 2026 14:14:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/vllm/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>推理优化</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/</link>
+        <pubDate>Wed, 29 Jul 2026 14:14:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Attention</title>
+        <link>https://Yannick-Mo.github.io/tags/attention/</link>
+        <pubDate>Wed, 29 Jul 2026 13:51:28 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/attention/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>NLP</title>
+        <link>https://Yannick-Mo.github.io/tags/nlp/</link>
+        <pubDate>Wed, 29 Jul 2026 13:51:28 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/nlp/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Seq2Seq</title>
+        <link>https://Yannick-Mo.github.io/tags/seq2seq/</link>
+        <pubDate>Wed, 29 Jul 2026 13:51:28 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/seq2seq/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>深度学习</title>
+        <link>https://Yannick-Mo.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Wed, 29 Jul 2026 13:51:28 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>AVL</title>
         <link>https://Yannick-Mo.github.io/tags/avl/</link>
         <pubDate>Thu, 25 Jun 2026 00:00:00 +0800</pubDate>
