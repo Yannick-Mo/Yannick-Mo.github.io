@@ -7,7 +7,47 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>雅尼克.莫(Yannick.Mo)</copyright>
-        <lastBuildDate>Wed, 29 Jul 2026 14:14:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 31 Jul 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://Yannick-Mo.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Agent</title>
+        <link>https://Yannick-Mo.github.io/tags/agent/</link>
+        <pubDate>Fri, 31 Jul 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/agent/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>LangChain</title>
+        <link>https://Yannick-Mo.github.io/tags/langchain/</link>
+        <pubDate>Fri, 31 Jul 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/langchain/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>LangGraph</title>
+        <link>https://Yannick-Mo.github.io/tags/langgraph/</link>
+        <pubDate>Fri, 31 Jul 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/langgraph/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>LLM</title>
+        <link>https://Yannick-Mo.github.io/tags/llm/</link>
+        <pubDate>Fri, 31 Jul 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/llm/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>StateGraph</title>
+        <link>https://Yannick-Mo.github.io/tags/stategraph/</link>
+        <pubDate>Fri, 31 Jul 2026 00:00:00 +0800</pubDate>
+        
+        <guid>https://Yannick-Mo.github.io/tags/stategraph/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>KVCache</title>
         <link>https://Yannick-Mo.github.io/tags/kvcache/</link>
         <pubDate>Wed, 29 Jul 2026 14:14:00 +0800</pubDate>
